@@ -13,7 +13,7 @@ print(id(a), id(b))
 
 # 깊은 복사
 # 원본을 복사해서 복사본을 따로 만드는 것. 원본을 변경해도 복사본은 바뀌지 않음.
-# deepcopy()
+# deepcopy() , [:]
 c = [1,2,3]
 d = c[:]
 print(id(c), id(d))
