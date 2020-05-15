@@ -33,3 +33,24 @@ print(swap(1,2))
 a,b = swap(1,2)
 print(a)
 print(b)
+
+def setValue(newValue):
+    x = newValue
+
+setValue(5)
+result = setValue(5)
+print(result)
+
+#def intersect(prelist, postlist):
+#    retList = []
+#    for x in prelist:
+#        if x in postlist and not in retList:
+
+def intersect(prelist, postlist):
+    retList = []
+    for x in prelist:
+        if x in postlist and x not in retList:
+            retList.append(x)
+    return retList
+
+print(intersect('HAM','SPAM'))  ## 두 단어의 교집합
