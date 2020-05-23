@@ -29,3 +29,5 @@ print(sys.path)
 
 # import testmodule as test1
 # import testmodule as test2    <- 이름은 다르지만 동일한 것 참조.
+# test1. defaultvalue = 100
+# test2.printDefaultValue()    => 100 출력
