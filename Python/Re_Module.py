@@ -33,7 +33,6 @@ soup =BeautifulSoup("""
     """, "html.parser")
 
 #<b>태그 중에 class=lime이라고 되어 있는 태그를 검색합니다. 
-#print(soup.find("b", {"class":"lime"}))
 print(soup.find('b',{'class':'lime'}))
 print(soup.find('b',{'class':'lime'}).get_text())
 
