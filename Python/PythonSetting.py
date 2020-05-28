@@ -15,7 +15,7 @@
 # Jupyter Notebook 데이터 분석
 # 1. 접속 암호 설정
 # 2. Jupyter Notebook 서버 실행
-# 3. http://localhost:8888 주소로 접속하여 설정한 암호 입력
+# 3. http://localhost:8888 주소로 접속하여 설정한 암호 입력 혹은 8889
 # 4. 새로운 Python 노트북을 생성하면 노트북 안에서 Cell 단위로 코드 실행
 
 # jupyter --version : 버전 확인
