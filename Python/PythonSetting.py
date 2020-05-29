@@ -26,21 +26,21 @@
 
 # 메인 화면 오른쪽 위의 new 에서 python3 를 클릭하여 파일 생성 후 작업
 # untitled 를 클릭하여 파일 이름 변경
-import pasdas as pd
+#import pasdas as pd
 
-df = pd.read_excel('data/환율-20180914.xls', index_col='통화명')
-df.head()
+#df = pd.read_excel('data/환율-20180914.xls', index_col='통화명')
+#df.head()
 # 위 부분을 작성하여 나오는 결과값 확인해 볼 것 => 표 형식으로 결과값 출력됨
 
 # 한글 폰트 설정
-%matplotlib inline
-from matplotlib import rc
-from matplotlib import pyplot as plt
-plt.rcParams['axes.unicode_minus'] = False
-rc('font', family= 'Malgun Gothic')  #window일 경우
+#%matplotlib inline
+#from matplotlib import rc
+#from matplotlib import pyplot as plt
+#plt.rcParams['axes.unicode_minus'] = False
+#rc('font', family= 'Malgun Gothic')  #window일 경우
 #rc('font',family='AppleGothic') Mac일 경우
 
-df2 = df.sort_values('송금 - 보내실 때', ascending = True)    # 지정 빌드 오름차순 정렬
+#df2 = df.sort_values('송금 - 보내실 때', ascending = True)    # 지정 빌드 오름차순 정렬
 
 # 지정 2개 컬럼에 대한 가로형 막대그래프를 10인치 * 10인치 크기로 그린다.
-df2[['송금 - 보내실 때', '송금 - 받으실 때']].plot(kind='barh', figsize = (10, 10))
+#df2[['송금 - 보내실 때', '송금 - 받으실 때']].plot(kind='barh', figsize = (10, 10))
