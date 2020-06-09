@@ -99,3 +99,96 @@
 
 - reshape() : 다차원으로 변형하는 함수
 
+
+
+### numpy 슬라이싱, 인덱싱, 연산
+
+- numpy 슬라이싱
+
+  ```python
+  import numpy as np
+  
+  list2 = [
+      [1, 2, 3],
+      [4, 5, 6],
+      [7, 8, 9]
+  ]
+  
+  arr = np.array(list2)
+  
+  a = arr[0:2, 0:2]
+  print(a)
+  # [[1 2]
+  # [4 5]]
+  
+  b = arr[1:, 1:]
+  print(b)
+  #[[5 6]
+  # [8 9]]
+  ```
+
+  
+
+- numpy 정수 인덱싱(integer indexing)
+
+  - numpy배열 a에 대해서 a[[row1, row2], [col1, col2]]는 a[row1, col1]과 a[row2, col2]
+
+  ```python
+  import numpy as np
+  
+  list3 = [
+      [1, 2, 3, 4],
+      [5, 6, 7, 8],
+      [9, 10, 11, 12]
+  ]
+  
+  a = np.array(list3)
+  
+  # 정수 인덱싱
+  res = a[[0, 2], [1, 3]]     # 즉 배열 기준 0행 1열 값과 2행 3열 값을 가져오라는 의미.
+  print(res)
+  #[ 2 12]
+  ```
+
+  
+
+- numpy boolean 인덱싱(boolean indexing)
+
+  ```python
+  import numpy as np
+  
+  list4 = [
+      [1, 2, 3],
+      [4, 5, 6],
+      [7, 8, 9]
+  ]
+  
+  aa = np.array(list4)
+  
+  b_arr = np.array([
+      [False, True, False],
+      [True, False, True],
+      [False, True, False]
+  ])      # False는 선택하지 않고 True는 선택하겠다는 의미.
+  
+  n = aa[b_arr]
+  print(n)
+  # [2 4 6 8]
+  
+  # 표현식을 통한 boolean indexing 배열 생성
+  ## 배열 aa에 대해서 짝수인 배열 요소만 True로 지정하겠다는 가정
+  b_arr = (aa % 2==0)
+  print(b_arr)
+  #[[False  True False]
+  # [ True False  True]
+  # [False  True False]]
+  
+  print(aa[b_arr])
+  # [2 4 6 8]
+  
+  aaa = aa[aa%2 == 0]		# 익숙해지면 이렇게 간단한 표현도 가능하다.
+  print(aaa)
+  # [2 4 6 8]
+  ```
+
+  
