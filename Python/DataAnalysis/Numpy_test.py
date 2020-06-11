@@ -150,3 +150,26 @@ print(p)
 
 p = np.prod(a, axis = 1)
 print(p)
+
+
+x = np.float32(1.0)
+print(x)
+print(type(x))
+print(x.dtype)
+
+z = np.arange(5, dtype='f')    # range 함수와 비슷하지만 나란히 정렬하여 배열을 만든다. 데이터 타입 설정이 가능하다.
+print(z)
+bb = np.arange(3, 10)
+print(bb)
+cc = np.arange(3, 10, dtype=np.float)
+print(cc)
+dd = np.arange(2, 3, 0.1)
+print(dd)
+print(dd.dtype)
+
+aa = np.array([1, 2, 3], dtype='f')
+print(aa.dtype)
+
+xx = np.int8(aa)
+print(xx)
+print(xx.dtype)

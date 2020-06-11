@@ -315,4 +315,72 @@
   # [ 2 12]
   ```
 
+
+
+
+### numpy 자료형(data Type)
+
+- int, float, bool(True/False), complex
+
+  - 정수형(int : integer)
+    - int8(-127 ~ -127), int16(-32768 ~ -32767), int32, int64 (부호가 있는 정수형)
+    - uint (Unsigned integer : 부호가 없는 정수형) : uint8 (0 ~ 255), unit16(0 ~ 65535), unit32, unit64
+  - 실수형 (float)
+    - float16, float32, float64
+  - 복소수형 (complex)
+    - complex64 : 두개의 32비트 부동소수점으로 표시되는 복소수
+    - complex128 : 두개의 64비트 부동 소수점으로 표시되는 복소수
+
+- 데이터의 type을 알아보기 위한 dtype
+
+  - 데이터의 타입을 알아볼 수 있다.
+
+  ```python
+  import numpy as np
+  
+  x = np.float32(1.0)
+  print(x)
+  # 1.0
+  print(type(x))
+  # <class 'numpy.float32'>
+  print(x.dtype)
+  # float32
+  ```
+
+  - 데이터 타입을 지정해줄 수 있으며 데이터 타입 변환도 가능하다.
+
+  ```python
+  aa = np.array([1, 2, 3], dtype='f')
+  print(aa.dtype)
+  # float32
+  
+  xx = np.int8(aa)
+  print(xx)
+  # [1 2 3]
+  print(xx.dtype)
+  # int8
+  ```
+
+  - 데이터 타입을 활용한 **arange()** 함수
+    - range 함수와 비슷하지만 나란히 정렬하여 배열을 만든다. 데이터 타입 설정이 가능하다.
+
+  ```python
+  z = np.arange(5, dtype='f')    # range 함수와 비슷하지만 나란히 정렬하여 배열을 만든다. 데이터 타입 설정이 가능하다.
+  print(z)
+  # [0. 1. 2. 3. 4.]
+  
+  bb = np.arange(3, 10)
+  print(bb)
+  # [3 4 5 6 7 8 9]
+  cc = np.arange(3, 10, dtype=np.float)
+  print(cc)
+  # [3. 4. 5. 6. 7. 8. 9.]
+  
+  dd = np.arange(2, 3, 0.1)
+  print(dd)
+  # [2.  2.1 2.2 2.3 2.4 2.5 2.6 2.7 2.8 2.9]
+  print(dd.dtype)
+  # float64
+  ```
+
   
