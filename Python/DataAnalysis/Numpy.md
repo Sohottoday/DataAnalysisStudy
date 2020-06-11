@@ -191,4 +191,128 @@
   # [2 4 6 8]
   ```
 
+
+
+
+### numpy 연산
+
+- 연산자를 이용할 경우에는 +, -, *, /
+
+  - 배열 a와 배열 b가 있을 때, a + b는 a[0] + b[0], a[1] + b[1] ... 와 같은 방식으로 결과를 리턴
+
+- 함수를 사용할 경우에는 add(), substract(), multiply(), divide()
+
+  ```python
+  import numpy as np
+  
+  a = np.array([1, 2, 3])
+  b = np.array([4, 5, 6])
+  
+  c = a + b
+  print(c)
+  # [5 7 9]
+  
+  c = np.add(a, b)
+  print(c)
+  # [5 7 9]
+  
+  # 리스트와는 계산 결과 값부터 다르다.
+  d = [1, 2, 3]
+  e = [4, 5, 6]
+  f = d + e
+  print(f)
+  # [1, 2, 3, 4, 5, 6]
+  
+  c = a - b
+  print(c)
+  # [-3 -3 -3]
+  
+  c = np.subtract(a, b)
+  print(c)
+  # [-3 -3 -3]
+  
+  #c = a * b
+  c = np.multiply(a, b)
+  print(c)
+  # [ 4 10 18]
+  
+  #c = a/b
+  c = np.divide(a, b)
+  print(c)
+  # [0.25 0.4  0.5 ]
+  ```
+
+  
+
+- 1차원 배열을 벡터라 하고 2차원 이상의 배열을 매트릭스라 한다.
+
+- 2차원 배열의 곱	multiply()가 아니라 **product** 라고 한다
+
+  - a, b	*	x, y		=	ax + bw, ay +bz
+
+    c, d		  w, z	          cx + dw, cy + cz
+
+- numpy에서 vector와 matrix의 product를 구하기 위해서 **dot()** 함수를 이용한다.
+
+  ```python
+  list11 = [
+      [1, 2],
+      [3, 4]
+  ]
+  
+  list12 = [
+      [5, 6],
+      [7, 8]
+  ]
+  
+  a = np.array(list11)
+  b = np.array(list12)
+  
+  # numpy에서 vector와 matrix의 product를 구하기 위해서 dot() 함수를 이용한다.
+  product = np.dot(a, b)
+  print(product)
+  #[[19 22]
+  # [43 50]]
+  ```
+
+  
+
+- numpy에서는 배열간의 연산을 위한 여러 함수들을 제공한다.
+
+  - sum() : 각 배열의 요소를 더하는 함수
+  - prod() : 배열의 요소들을 곱하는 함수
+  - 이 함수들은 axis 옵션을 사용한다. axis 0이면 컬럼끼리 더하고, 1이면 행끼리 더한다.
+
+  ```python
+  list11 = [
+      [1, 2],
+      [3, 4]
+  ]
+  a = np.array(list11)
+  
+  s = np.sum(a)
+  print(s)
+  # 10
+  
+  s = np.sum(a, axis = 0)
+  print(s)
+  # [4 6]
+  
+  s = np.sum(a, axis = 1)
+  print(s)
+  # [3 7]
+  
+  p = np.prod(a)
+  print(p)
+  # 24
+  
+  p = np.prod(a, axis = 0)
+  print(p)
+  # [3 8]
+  
+  p = np.prod(a, axis = 1)
+  print(p)
+  # [ 2 12]
+  ```
+
   

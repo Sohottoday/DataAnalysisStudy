@@ -85,3 +85,68 @@ print(aa[b_arr])
 
 aaa = aa[aa%2 == 0]
 print(aaa)
+
+a = np.array([1, 2, 3])
+b = np.array([4, 5, 6])
+
+c = a + b
+print(c)
+
+c = np.add(a, b)
+print(c)
+
+# 리스트와는 계산 결과 값부터 다르다.
+d = [1, 2, 3]
+e = [4, 5, 6]
+f = d + e
+print(f)
+
+c = a - b
+print(c)
+
+c = np.subtract(a, b)
+print(c)
+
+#c = a * b
+c = np.multiply(a, b)
+print(c)
+
+#c = a/b
+c = np.divide(a, b)
+print(c)
+print('-----')
+# 2차원 배열의 곱 / 매트릭스 배열의 곱
+# 1차원 배열을 벡터라 하고 2차원 이상의 배열을 매트릭스라 한다.
+list11 = [
+    [1, 2],
+    [3, 4]
+]
+
+list12 = [
+    [5, 6],
+    [7, 8]
+]
+
+a = np.array(list11)
+b = np.array(list12)
+
+# numpy에서 vector와 matrix의 product를 구하기 위해서 dot() 함수를 이용한다.
+product = np.dot(a, b)
+print(product)
+
+s = np.sum(a)
+print(s)
+
+s = np.sum(a, axis = 0)
+print(s)
+s = np.sum(a, axis = 1)
+print(s)
+
+p = np.prod(a)
+print(p)
+
+p = np.prod(a, axis = 0)
+print(p)
+
+p = np.prod(a, axis = 1)
+print(p)
