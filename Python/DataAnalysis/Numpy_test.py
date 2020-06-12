@@ -173,3 +173,28 @@ print(aa.dtype)
 xx = np.int8(aa)
 print(xx)
 print(xx.dtype)
+
+
+q = np.array([[1, 2], [3, 4]])
+w = 10
+y = np.array([10, 20])
+
+z = q * w
+print(z)
+
+z = q * y
+print(z)
+
+qq = np.array([[11, 21], [34, 43], [0, 9]])
+print(qq)
+print(qq[0][1])
+
+for row in qq:
+    print(row)
+
+qq = qq.flatten()
+print(qq)
+
+print(qq[np.array([1, 3, 5])])
+print(qq[qq>25])    # numpy에 부등호 연산자를 사용할 경우 True False로 값이 나온다.
+print(qq > 25)

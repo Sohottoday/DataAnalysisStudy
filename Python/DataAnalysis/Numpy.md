@@ -383,4 +383,74 @@
   # float64
   ```
 
+
+
+
+#### numpy 브로드캐스팅(broadcasting)
+
+- 배열의 차원의 크기가 서로 다른 배열에서도 산술 연산을 가능하게 하는 것
+
+  1 2	*	10	=	10 20
+
+  3 4						 30 40
+
+- 더 높은 쪽의 차원의 형태로 계산된다.
+
+  ```python
+  import numpy as np
   
+  q = np.array([[1, 2], [3, 4]])
+  w = 10
+  y = np.array([10, 20])
+  
+  z = q * w
+  print(z)
+  #[[10 20]
+  # [30 40]]
+  
+  z = q * y
+  print(z)
+  #[[10 40]
+  # [30 80]]
+  
+  qq = np.array([[11, 21], [34, 43], [0, 9]])
+  print(qq)
+  #[[11 21]
+  # [34 43]
+  # [ 0  9]]
+  
+  print(qq[0][1])
+  # 21
+  
+  for row in qq:
+      print(row)
+  #[11 21]
+  #[34 43]
+  #[0 9]
+  ```
+
+  
+
+
+
+#### 2차원 배열을 1차원 배열로 변환(평탄화) : flatten()
+
+```python
+qq = qq.flatten()
+print(qq)
+# [11 21 34 43  0  9]
+
+print(qq[np.array([1, 3, 5])])
+# [21 43  9]
+print(qq[qq>25])    # numpy에 부등호 연산자를 사용할 경우 True False로 값이 나온다.
+# [34 43]
+print(qq > 25)
+# [False False  True  True False False]
+```
+
+
+
+
+
+
+
