@@ -104,7 +104,130 @@ print(pd.notnull(obj4))
 
 
 
+- Series의 index 값을 바꾸려 할 때
+
+```python
+data = {
+    'Seoul' : 4000,
+    'Busan' : 2000,
+    'Incheon' : 1500,
+    'Kwangju' : 1000
+}
+obj5 = Series(data)
+print(obj5)
+#Seoul      4000
+#Busan      2000
+#Incheon    1500
+#Kwangju    1000
+#dtype: int64
+
+# 인덱스만 바꾸려고 할 때
+cities = ['Seoul', 'Daegu', 'Incheon', 'Kwangju']
+obj6 = Series(data, index=cities)
+print(obj6)
+#Seoul      4000.0
+#Daegu         NaN
+#Incheon    1500.0
+#Kwangju    1000.0
+#dtype: float64
+```
+
+- Series끼리의 덧셈은 서로 둘 다 존재하는 데이터끼리 더하여 출력해 준다.
+  - NaN값과 일반 값을 더하면 NaN이 된다.
+
+```python
+print(obj5 + obj6)
+#Busan         NaN
+#Daegu         NaN
+#Incheon    3000.0
+#Kwangju    2000.0
+#Seoul      8000.0
+#dtype: float64
+```
+
+- Series객체와 Series의 색인(index)은 name이라는 속성이 존재한다.
+
+```python
+obj6.name = '인구수'        # Series 객체의 이름
+print(obj6)
+#Seoul      4000.0
+#Daegu         NaN
+#Incheon    1500.0
+#Kwangju    1000.0
+#Name: 인구수, dtype: float64
+
+obj6.index.name = '도시'
+print(obj6)
+#도시
+#Seoul      4000.0
+#Daegu         NaN
+#Incheon    1500.0
+#Kwangju    1000.0
+#Name: 인구수, dtype: float64
+```
+
+- index 이름 변경도 가능하다.
+
+```python
+obj6.index = ['Daejeon', 'Busan', 'jaeju', 'jeonju']
+print(obj6)
+#Daejeon    4000.0
+#Busan         NaN
+#jaeju      1500.0
+#jeonju     1000.0
+#Name: 인구수, dtype: float64
+```
+
+
+
 #### DataFrame
+
+- DataFrame은 2차원리스트(2차원 배열) 같은 자료구조
+- R언의 data.frame과 비슷하다.
+
+```python
+import pandas as pd
+a = pd.DataFrame([
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+])
+
+print(a)
+#   0  1  2
+#0  1  2  3
+#1  4  5  6
+#2  7  8  9
+```
+
+- dic(딕셔너리)형태의 데이터타입을 통해서도 dataframe 타입을 만들 수 있다.
+
+```python
+data = {
+    'city' : ['서울', '부산', '광주', '대구'],
+    'year' : [2000, 2001, 2002, 2001],
+    'pop' : [4000, 2000, 1000, 1000]
+}
+df = pd.DataFrame(data)
+print(df)
+#  city  year   pop
+#0   서울  2000  4000
+#1   부산  2001  2000
+#2   광주  2002  1000
+#3   대구  2001  1000
+```
+
+- 컬럼 순서를 원하는대로 지정할 수 있다.
+
+```python
+df = DataFrame(data, columns = ['year', 'city', 'pop'])
+print(df)
+#   year city   pop
+#0  2000   서울  4000
+#1  2001   부산  2000
+#2  2002   광주  1000
+#3  2001   대구  1000
+```
 
 
 

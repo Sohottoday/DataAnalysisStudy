@@ -40,3 +40,48 @@ print(obj4)     # woo 라는 키를 가진 value는 없으므로 NaN
 # 누락된 데이터를 찾을 때 사용하는 함수 : isnull, notnull
 print(pd.isnull(obj4))
 print(pd.notnull(obj4))
+
+data = {
+    'Seoul' : 4000,
+    'Busan' : 2000,
+    'Incheon' : 1500,
+    'Kwangju' : 1000
+}
+obj5 = Series(data)
+print(obj5)
+
+# 인덱스만 바꾸려고 할 때
+cities = ['Seoul', 'Daegu', 'Incheon', 'Kwangju']
+obj6 = Series(data, index=cities)
+print(obj6)
+print(obj5 + obj6)  # 서로 둘 다 존재하는 데이터만 더하여 출력해 준다. (NaN값과 일반값을 더하면 NaN이 됨)
+
+# Series 객체와 Series의 색인(index)은 name이라는 속성이 존재한다.
+obj6.name = '인구수'        # Series 객체의 이름
+print(obj6)
+obj6.index.name = '도시'
+print(obj6)
+obj6.index = ['Daejeon', 'Busan', 'jaeju', 'jeonju']
+print(obj6)
+
+# DataFrame
+a = pd.DataFrame([
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+])
+
+print(a)
+
+
+data = {
+    'city' : ['서울', '부산', '광주', '대구'],
+    'year' : [2000, 2001, 2002, 2001],
+    'pop' : [4000, 2000, 1000, 1000]
+}
+df = pd.DataFrame(data)
+print(df)
+
+# 컬럼 순서를 원하는대로 지정할 수 있다.
+df = DataFrame(data, columns = ['year', 'city', 'pop'])
+print(df)
