@@ -54,6 +54,8 @@ print('d' in obj2)
 #True
 ```
 
+
+
 - Series는 python의 dict 타입을 대신할 수 있다.
 
 ```python
@@ -132,6 +134,8 @@ print(obj6)
 #dtype: float64
 ```
 
+
+
 - Series끼리의 덧셈은 서로 둘 다 존재하는 데이터끼리 더하여 출력해 준다.
   - NaN값과 일반 값을 더하면 NaN이 된다.
 
@@ -144,6 +148,8 @@ print(obj5 + obj6)
 #Seoul      8000.0
 #dtype: float64
 ```
+
+
 
 - Series객체와 Series의 색인(index)은 name이라는 속성이 존재한다.
 
@@ -165,6 +171,8 @@ print(obj6)
 #Kwangju    1000.0
 #Name: 인구수, dtype: float64
 ```
+
+
 
 - index 이름 변경도 가능하다.
 
@@ -200,6 +208,8 @@ print(a)
 #2  7  8  9
 ```
 
+
+
 - dic(딕셔너리)형태의 데이터타입을 통해서도 dataframe 타입을 만들 수 있다.
 
 ```python
@@ -217,6 +227,8 @@ print(df)
 #3   대구  2001  1000
 ```
 
+
+
 - 컬럼 순서를 원하는대로 지정할 수 있다.
 
 ```python
@@ -230,4 +242,138 @@ print(df)
 ```
 
 
+
+- 존재하지 않는 값은 NaN이 출력된다.
+- index 지정을 통해 원하는 index 설정도 가능하다.
+
+```python
+df2 = pd.DataFrame(data, columns=['year', 'city', 'pop', 'debt'], index=['one', 'two', 'three', 'four'])
+print(df2)  
+#       year city   pop debt
+#one    2000   서울  4000  NaN
+#two    2001   부산  2000  NaN
+#three  2002   광주  1000  NaN
+#four   2001   대구  1000  NaN
+```
+
+
+
+- 원하는 컬럼 내용만 따로 확인이 가능하다.
+
+```python
+print(df2['city'])
+#one      서울
+#two      부산
+#three    광주
+#four     대구
+#Name: city, dtype: object
+```
+
+
+
+- 컬럼값만 가져오는 방법
+
+```python
+print(df2.columns)
+#Index(['year', 'city', 'pop', 'debt'], dtype='object')
+```
+
+
+
+- 행 전체 값을 가져오는 방법 (기존에 ix 메서드 였으나 최근 없어지고 loc와 iloc가 기능을 대체)
+  - row(행)의 위치를 접근할 때 사용하는 메서드(index 값을 통해 검색)
+  - 색인을 name속성의 값으로 할당한다.
+
+```python
+print(df2.loc['one'])
+#year    2000
+#city      서울
+#pop     4000
+#debt     NaN
+#Name: one, dtype: object
+```
+
+
+
+- dataframe에 값을 넣는 방법
+
+```python
+df2['debt'] = 1000
+print(df2)
+#       year city   pop  debt
+#one    2000   서울  4000  1000
+#two    2001   부산  2000  1000
+#three  2002   광주  1000  1000
+#four   2001   대구  1000  1000
+
+df2['debt'] = np.arange(4.)
+print(df2)
+#       year city   pop  debt
+#one    2000   서울  4000   0.0
+#two    2001   부산  2000   1.0
+#three  2002   광주  1000   2.0
+#four   2001   대구  1000   3.0
+
+ # Series 객체는 index가 붙는 데이터형식이므로 그냥 넣으면 dataframe과 매칭이 안되어 오류가 난다.
+val = Series([1000, 2000, 3000, 4000], index=['one', 'two', 'three', 'four'])     
+df2['debt'] = val
+print(df2)
+#       year city   pop  debt
+#one    2000   서울  4000  1000
+#two    2001   부산  2000  2000
+#three  2002   광주  1000  3000
+#four   2001   대구  1000  4000
+
+# 이런식으로 인덱스를 지정하지 않고 넣을 수 있는데 지정하지 않은 인덱스의 해당 값은 NaN값이 뜬다.
+val1 = Series([1000, 3000, 5000], index=['one', 'three', 'four'])
+df2['debt'] = val1      
+print(df2)
+#       year city   pop    debt
+#one    2000   서울  4000  1000.0
+#two    2001   부산  2000     NaN
+#three  2002   광주  1000  3000.0
+#four   2001   대구  1000  5000.0
+
+df2['aaa'] = df2.city =='서울'
+print(df2)
+#       year city   pop    debt    aaa
+#one    2000   서울  4000  1000.0   True
+#two    2001   부산  2000     NaN  False
+#three  2002   광주  1000  3000.0  False
+#four   2001   대구  1000  5000.0  False
+```
+
+
+
+- 컬럼 지우는 방법
+
+```python
+del df2['aaa']
+print(df2)
+#       year city   pop    debt
+#one    2000   서울  4000  1000.0
+#two    2001   부산  2000     NaN
+#three  2002   광주  1000  3000.0
+#four   2001   대구  1000  5000.0
+```
+
+
+
+- 딕셔너리 형식 안에 또 하나의 딕셔너리가 존재하는 경우의 dataframe
+
+```python
+data2 = {
+    'seoul' : {2001 : 20, 2002 : 30},
+    'busan' : {2000 : 10, 2001 : 200, 2002 : 300}
+}
+
+df3 = pd.DataFrame(data2)
+print(df3)
+#      seoul  busan
+#2001   20.0    200
+#2002   30.0    300
+#2000    NaN     10
+
+# 메인 딕셔너리의 key값은 컬럼명으로, 내부 딕셔너리 객체의 key값은 index로 나타난다.
+```
 

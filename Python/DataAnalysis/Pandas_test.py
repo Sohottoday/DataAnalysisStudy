@@ -85,3 +85,56 @@ print(df)
 # 컬럼 순서를 원하는대로 지정할 수 있다.
 df = DataFrame(data, columns = ['year', 'city', 'pop'])
 print(df)
+
+
+import numpy as np
+
+data = {
+    'city' : ['서울', '부산', '광주', '대구'],
+    'year' : [2000, 2001, 2002, 2001],
+    'pop' : [4000, 2000, 1000, 1000]
+}
+# 존재하지 않는 값은 NaN이 출력된다.
+# index 지정을 통해 원하는 index 설정도 가능하다.
+df2 = pd.DataFrame(data, columns=['year', 'city', 'pop', 'debt'], index=['one', 'two', 'three', 'four'])
+print(df2)  
+
+#원하는 컬럼 내용만 따로 확인이 가능하다.
+print(df2['city'])
+
+# 컬럼값만 가져오는 방법
+print(df2.columns)
+
+# 행 전체 값을 가져오는 방법    => ix 메서드 활용 : row(행)의 위치를 접근할 때 사용하는 메서드(index 값을 통해 검색)
+print(df2.loc['one'])        # ix는 색인을 name속성의 값으로 할당한다.  // ix메서드가 최근 없어지고 loc와 iloc가 기능을 대체하고 있다.
+
+# dataframe에 값을 넣는 방법
+df2['debt'] = 1000
+print(df2)
+
+df2['debt'] = np.arange(4.)
+print(df2)
+
+val = Series([1000, 2000, 3000, 4000], index=['one', 'two', 'three', 'four'])      # Series 객체는 index가 붙는 데이터형식이므로 그냥 넣으면 dataframe과 매칭이 안되어 오류가 난다.
+df2['debt'] = val
+print(df2)
+
+val1 = Series([1000, 3000, 5000], index=['one', 'three', 'four'])
+df2['debt'] = val1      # 이런식으로 인덱스를 지정하지 않고 넣을 수 있는데 지정하지 않은 인덱스의 해당 값은 NaN값이 뜬다.
+print(df2)
+
+df2['aaa'] = df2.city =='서울'
+print(df2)
+
+# 컬럼 지우는 방법
+del df2['aaa']
+print(df2)
+
+# 딕셔너리 형식 안에 또 하나의 딕셔너리가 존재하는 경우
+data2 = {
+    'seoul' : {2001 : 20, 2002 : 30},
+    'busan' : {2000 : 10, 2001 : 200, 2002 : 300}
+}
+
+df3 = pd.DataFrame(data2)
+print(df3)
