@@ -377,3 +377,147 @@ print(df3)
 # 메인 딕셔너리의 key값은 컬럼명으로, 내부 딕셔너리 객체의 key값은 index로 나타난다.
 ```
 
+- 위의 컬럼과 row 값을 바꾸고 싶다면 T를 추가하면 된다.
+
+``` PYTHON
+print(df3.T)
+#        2001   2002  2000
+#seoul   20.0   30.0   NaN
+#busan  200.0  300.0  10.0
+```
+
+- 데이터프레임에서 values 속성은 저장된 데이터를 2차원 배열로 리턴한다.
+
+``` python
+print(df3.values)
+#[[ 20. 200.]
+# [ 30. 300.]
+# [ nan  10.]]
+```
+
+
+
+- 색인(index) 객체
+  - pandas의 색인 객체는 표형식의 데이터에서 각 행과 열에 대한 헤더(이름)와 다른 메타데이터(축의 이름)를 저장하는 객체
+  - Series나 DataFrame 객체를 생성할 때 사용되는 배열이나 순차적인 이름은 내부적으로 색인으로 변환된다.
+
+``` python
+obj = Series(range(3), index=['a', 'b', 'c'])
+print(obj)
+#a    0
+#b    1
+#c    2
+#dtype: int64
+
+idx = obj.index
+
+print(idx)
+# Index(['a', 'b', 'c'], dtype='object')
+print(idx[1])
+# b
+print(idx[1:])
+# Index(['b', 'c'], dtype='object')
+```
+
+
+
+- 색인 객체는 변경할 수 없다
+  - `idx[1] = 'd'` : 에러가 뜬다
+
+``` python
+index2 = pd.Index(np.arange(3))
+print(index2)
+# Int64Index([0, 1, 2], dtype='int64')
+```
+
+
+
+- 재색인(reindex) : 새로운 색인에 맞도록 객체를 새로 생성하는 기능
+  - 객체가 없는 값은 NaN값으로 대체하며 index 자체를 바꾸는 것이 아닌 출력 순서가 바뀌는 것이다.
+
+``` python
+obj = Series([2.3, 4.3, -4.1, 3.5], index=['d', 'b', 'a', 'c'])
+print(obj)
+#d    2.3
+#b    4.3
+#a   -4.1
+#c    3.5
+#dtype: float64
+
+obj2 = obj.reindex(['a', 'b', 'c', 'd', 'e'])
+print(obj2)
+#a   -4.1
+#b    4.3
+#c    3.5
+#d    2.3
+#e    NaN
+#dtype: float64
+```
+
+
+
+- NaN값 대신 어떠한 값으로 채우고 싶다면 fill_value 속성을 이용한다.
+
+``` python
+obj3 = obj.reindex(['a', 'b', 'c', 'c', 'e', 'f'], fill_value=0.0)
+print(obj3)
+#a   -4.1
+#b    4.3
+#c    3.5
+#c    3.5
+#e    0.0
+#f    0.0
+#dtype: float64
+```
+
+
+
+- 종합 활용
+
+``` python
+df = DataFrame(np.arange(9).reshape(3, 3), index=['a', 'b', 'c'], columns=['x', 'y', 'z'])
+print(df)
+#   x  y  z
+#a  0  1  2
+#b  3  4  5
+#c  6  7  8
+
+df2 = df.reindex(['a', 'b', 'c', 'd'])
+print(df2)
+#     x    y    z
+#a  0.0  1.0  2.0
+#b  3.0  4.0  5.0
+#c  6.0  7.0  8.0
+#d  NaN  NaN  NaN
+
+col = ['x', 'w', 'z']
+print(df.reindex(columns = col))
+#   x   w  z
+#a  0 NaN  2
+#b  3 NaN  5
+#c  6 NaN  8
+```
+
+
+
+- mehtod 속성의 ffill을 활용해 앞의 값으로 채우는 방법도 있다.
+
+```python
+obj4 = Series(['blue', 'red', 'yellow'], index=[0, 2, 4])
+print(obj4)
+#0      blue
+#2       red
+#4    yellow
+#dtype: object
+
+obj5 = obj4.reindex(range(6), method='ffill')
+print(obj5)
+#0      blue
+#1      blue
+#2       red
+#3       red
+#4    yellow
+#5    yellow
+#dtype: object
+```
+

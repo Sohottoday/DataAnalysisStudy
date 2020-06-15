@@ -138,3 +138,46 @@ data2 = {
 
 df3 = pd.DataFrame(data2)
 print(df3)
+
+print(df3.T)
+
+
+obj = Series(range(3), index=['a', 'b', 'c'])
+print(obj)
+
+idx = obj.index
+
+print(idx)
+print(idx[1])
+print(idx[1:])
+
+# 색인 객체는 변경할 수 없다.
+# idx[1] = 'd'   => 에러가 뜬다.
+index2 = pd.Index(np.arange(3))
+print(index2)
+
+# 재색인(reindex) : 새로운 색인에 맞도록 객체를 새로 생성하는 기능
+obj = Series([2.3, 4.3, -4.1, 3.5], index=['d', 'b', 'a', 'c'])
+print(obj)
+
+obj2 = obj.reindex(['a', 'b', 'c', 'd', 'e'])
+print(obj2)
+# 객체가 없는 값은 NaN값으로 대체하며 index 자체를 바꾸는 것이 아닌 출력 순서가 바뀌는 것이다.
+
+# NaN값 대신 어떠한 값으로 채우고 싶다면 fill_value 속성을 이용한다.
+obj3 = obj.reindex(['a', 'b', 'c', 'c', 'e', 'f'], fill_value=0.0)
+print(obj3)
+
+# 종합 활용
+df = DataFrame(np.arange(9).reshape(3, 3), index=['a', 'b', 'c'], columns=['x', 'y', 'z'])
+print(df)
+df2 = df.reindex(['a', 'b', 'c', 'd'])
+print(df2)
+col = ['x', 'w', 'z']
+print(df.reindex(columns = col))
+
+# mehtod 속성의 ffill을 활용해 앞의 값으로 채우는 방법도 있다.
+obj4 = Series(['blue', 'red', 'yellow'], index=[0, 2, 4])
+print(obj4)
+obj5 = obj4.reindex(range(6), method='ffill')
+print(obj5)
