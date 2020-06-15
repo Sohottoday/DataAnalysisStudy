@@ -397,6 +397,8 @@ print(df3.values)
 
 
 
+#### 색인
+
 - 색인(index) 객체
   - pandas의 색인 객체는 표형식의 데이터에서 각 행과 열에 대한 헤더(이름)와 다른 메타데이터(축의 이름)를 저장하는 객체
   - Series나 DataFrame 객체를 생성할 때 사용되는 배열이나 순차적인 이름은 내부적으로 색인으로 변환된다.
@@ -519,5 +521,99 @@ print(obj5)
 #4    yellow
 #5    yellow
 #dtype: object
+```
+
+
+
+- DataFrame 에서의 ffill
+  - 데이터프레임에서 보간은 row(행)에 대해서만 이루어진다. 
+
+``` python
+df = DataFrame(np.arange(9).reshape(3, 3), index=['a', 'b', 'd'], columns=['x', 'y', 'z'])
+col = ['x', 'y', 'w', 'z']
+df3 = df.reindex(index=['a','b', 'c', 'd'], method = 'ffill', columns= col)
+print(df3)
+#   x  y   w  z
+#a  0  1 NaN  2
+#b  3  4 NaN  5
+#c  3  4 NaN  5
+#d  6  7 NaN  8
+# 컬럼값은 NaN으로 채워지지 않으나 row값은 앞의 값으로 채워졌다.
+```
+
+
+
+#### 삭제
+
+- Series 삭제
+  - 여러개의 값을 지울 때에는 list형식으로 준다.
+
+``` python
+obj = Series(np.arange(5), index=['a', 'b', 'c', 'd', 'e'])
+print(obj)
+#a    0
+#b    1
+#c    2
+#d    3
+#e    4
+#dtype: int32
+    
+obj2 = obj.drop('c')
+print(obj2)
+#a    0
+#b    1
+#d    3
+#e    4
+#dtype: int32
+
+obj3 = obj.drop(['b', 'd', 'c'])
+print(obj3)
+#a    0
+#e    4
+#dtype: int32
+```
+
+
+
+- DataFrame 삭제
+  - 컬럼을 지울때에는 axis 값을 1로 준다.
+
+``` python
+df = DataFrame(np.arange(16).reshape(4, 4), index = ['seoul', 'busan', 'daegu', 'incheon'], columns=['one', 'two', 'three', 'four'])
+print(df)
+#         one  two  three  four
+#seoul      0    1      2     3
+#busan      4    5      6     7
+#daegu      8    9     10    11
+#incheon   12   13     14    15
+
+# 행을 지울때
+new_df = df.drop(['seoul', 'busan'])
+print(new_df)
+#         one  two  three  four
+#daegu      8    9     10    11
+#incheon   12   13     14    15
+
+# 컬럼을 지울때 => axis 값을 1로 준다.
+new_df = df.drop(['one', 'three'], axis=1)
+print(new_df)
+#         two  four
+#seoul      1     3
+#busan      5     7
+#daegu      9    11
+#incheon   13    15
+```
+
+
+
+#### Series 슬라이싱
+
+``` python
+obj = Series(np.arange(4.), index=['a', 'b', 'c', 'd'])
+print(obj['b':'d'])
+#b    1.0
+#c    2.0
+#d    3.0
+#dtype: float64
 ```
 

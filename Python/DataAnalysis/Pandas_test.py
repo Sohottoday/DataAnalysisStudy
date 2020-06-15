@@ -181,3 +181,36 @@ obj4 = Series(['blue', 'red', 'yellow'], index=[0, 2, 4])
 print(obj4)
 obj5 = obj4.reindex(range(6), method='ffill')
 print(obj5)
+
+
+
+df = DataFrame(np.arange(9).reshape(3, 3), index=['a', 'b', 'd'], columns=['x', 'y', 'z'])
+col = ['x', 'y', 'w', 'z']
+df3 = df.reindex(index=['a','b', 'c', 'd'], method = 'ffill', columns= col)
+print(df3)      # 컬럼값은 NaN으로 채워지지 않으나 row값은 앞의 값으로 채워졌다.
+# 데이터프레임에서 보간은 row(행)에 대해서만 이루어진다. 
+
+# Series 삭제
+obj = Series(np.arange(5), index=['a', 'b', 'c', 'd', 'e'])
+print(obj)
+
+obj2 = obj.drop('c')
+print(obj2)
+# 여러개의 값을 지울 때에는 list형식으로 준다.
+obj3 = obj.drop(['b', 'd', 'c'])
+print(obj3)
+
+# DataFrame 삭제
+df = DataFrame(np.arange(16).reshape(4, 4), index = ['seoul', 'busan', 'daegu', 'incheon'], columns=['one', 'two', 'three', 'four'])
+print(df)
+
+# 행을 지울때
+new_df = df.drop(['seoul', 'busan'])
+print(new_df)
+
+# 컬럼을 지울때 => axis 값을 1로 준다.
+new_df = df.drop(['one', 'three'], axis=1)
+print(new_df)
+
+obj = Series(np.arange(4.), index=['a', 'b', 'c', 'd'])
+print(obj['b':'d'])
