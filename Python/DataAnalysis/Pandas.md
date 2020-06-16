@@ -617,3 +617,99 @@ print(obj['b':'d'])
 #dtype: float64
 ```
 
+- 슬라이싱을 통한 값 변경
+
+``` python
+obj['b' : 'c'] = 10
+print(obj)
+#a     0.0
+#b    10.0
+#c    10.0
+#d     3.0
+#dtype: float64
+```
+
+
+
+#### DataFrame 슬라이싱
+
+``` python
+data = DataFrame(np.arange(16).reshape(4, 4), index = ['seoul', 'busan', 'kwangju', 'daegu'],
+columns = ['one', 'two', 'three', 'four'])
+print(data)
+#         one  two  three  four
+#seoul      0    1      2     3
+#busan      4    5      6     7
+#kwangju    8    9     10    11
+#daegu     12   13     14    15
+
+print(data['two'])
+#seoul       1
+#busan       5
+#kwangju     9
+#daegu      13
+#Name: two, dtype: int32
+
+print(data[['one' , 'three']])
+#         one  three
+#seoul      0      2
+#busan      4      6
+#kwangju    8     10
+#daegu     12     14
+
+print(data[:2])
+#       one  two  three  four
+#seoul    0    1      2     3
+#busan    4    5      6     7
+
+print(data[2:])
+#         one  two  three  four
+#kwangju    8    9     10    11
+#daegu     12   13     14    15
+
+print(data[data['three'] > 7])
+#         one  two  three  four
+#kwangju    8    9     10    11
+#daegu     12   13     14    15
+
+print(data < 5)
+#           one    two  three   four
+#seoul     True   True   True   True
+#busan     True  False  False  False
+#kwangju  False  False  False  False
+#daegu    False  False  False  False
+
+data[data < 5] = 0
+print(data)
+#         one  two  three  four
+#seoul      0    0      0     0
+#busan      0    5      6     7
+#kwangju    8    9     10    11
+#daegu     12   13     14    15
+```
+
+- loc 활용
+
+``` python
+print(data.loc['seoul'])
+#one      0
+#two      0
+#three    0
+#four     0
+#Name: seoul, dtype: int32
+
+print(data.loc['busan', ['two', 'three']])
+#two      5
+#three    6
+#Name: busan, dtype: int32
+```
+
+- loc를 활용하면 순서를 마음대로 지정이 가능하다
+
+``` python
+print(data.loc[['daegu', 'kwangju'], ['three', 'two']])
+#         three  two
+#daegu       14   13
+#kwangju     10    9
+```
+

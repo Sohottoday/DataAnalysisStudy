@@ -214,3 +214,25 @@ print(new_df)
 
 obj = Series(np.arange(4.), index=['a', 'b', 'c', 'd'])
 print(obj['b':'d'])
+
+# 슬라이싱을 통한 값 변경
+obj['b' : 'c'] = 10
+print(obj)
+
+data = DataFrame(np.arange(16).reshape(4, 4), index = ['seoul', 'busan', 'kwangju', 'daegu'],
+columns = ['one', 'two', 'three', 'four'])
+print(data)
+print(data['two'])
+print(data[['one' , 'three']])
+print(data[:2])
+print(data[2:])
+print(data[data['three'] > 7])
+print(data < 5)
+data[data < 5] = 0
+print(data)
+
+# loc
+print(data.loc['seoul'])
+print(data.loc['busan', ['two', 'three']])
+# 순서를 마음대로 지정 가능하다.
+print(data.loc[['daegu', 'kwangju'], ['three', 'two']])
