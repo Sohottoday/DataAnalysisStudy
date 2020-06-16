@@ -236,3 +236,36 @@ print(data.loc['seoul'])
 print(data.loc['busan', ['two', 'three']])
 # 순서를 마음대로 지정 가능하다.
 print(data.loc[['daegu', 'kwangju'], ['three', 'two']])
+
+
+
+s1 = Series([5, 6, -1, 2], index=['a', 'c', 'd', 'e'])
+s2 = Series([3, 4, -1, 2, 7], index=['a', 'c', 'e', 'f', 'g'])
+
+print(s1 + s2)
+
+df1 = DataFrame(np.arange(9).reshape(3, 3), columns=list('bcd'), index=['seoul', 'busan', 'kwangju'])
+df2 = DataFrame(np.arange(12).reshape(4, 3), columns=list('bde'), index=['incheon', 'seoul', 'busan', 'suwon'])
+
+print(df1 + df2)
+# Series나 DataFrame나 같이 겹쳐있는 값이 있다면 연산하고 그 외에는 NaN과 연산하면 NaN이 되는 법칙에 의해 NaN이 된다.
+
+df3 = DataFrame(np.arange(12).reshape(3, 4), columns=list('abcd'))
+df4 = DataFrame(np.arange(20).reshape(4, 5), columns=list('abcde'))
+print(df3 + df4)
+
+print(df3.add(df4, fill_value=0))
+# fill_value 속성은 NaN값은 0으로 채우겠다는 의미
+# 결론적으로 df4의 값과 0이 더해진 값이 된다.
+
+# DataFrame과 Series간의 연산
+## Numpy의 브로드캐스팅과 유사하다
+print(df3.reindex(columns = df4.columns, fill_value = 0))
+
+arr = np.arange(12,).reshape(3, 4)
+print(arr)
+print(arr[0])
+print(arr -arr[0])
+#0 1 2 3    -    0 1 2 3
+#4 5 6 7
+#8 9 10 11

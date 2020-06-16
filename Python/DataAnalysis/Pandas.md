@@ -713,3 +713,91 @@ print(data.loc[['daegu', 'kwangju'], ['three', 'two']])
 #kwangju     10    9
 ```
 
+
+
+### pandas 연산
+
+#### 색인이 다른 객체를 더하는 산술연산
+
+- Series나 DataFrame나 같이 겹쳐있는 값이 있다면 연산하고 그 외에는 NaN과 연산하면 NaN이 되는 법칙에 의해 NaN이 된다.
+
+``` python
+import pandas as pd
+from pandas import Series, DataFrame
+import numpy as np
+
+s1 = Series([5, 6, -1, 2], index=['a', 'c', 'd', 'e'])
+s2 = Series([3, 4, -1, 2, 7], index=['a', 'c', 'e', 'f', 'g'])
+
+print(s1 + s2)
+#a     8.0
+#c    10.0
+#d     NaN
+#e     1.0
+#f     NaN
+#g     NaN
+#dtype: float64
+
+df1 = DataFrame(np.arange(9).reshape(3, 3), columns=list('bcd'), index=['seoul', 'busan', 'kwangju'])
+df2 = DataFrame(np.arange(12).reshape(4, 3), columns=list('bde'), index=['incheon', 'seoul', 'busan', 'suwon'])
+
+print(df1 + df2)
+#           b   c     d   e
+#busan    9.0 NaN  12.0 NaN
+#incheon  NaN NaN   NaN NaN
+#kwangju  NaN NaN   NaN NaN
+#seoul    3.0 NaN   6.0 NaN
+#suwon    NaN NaN   NaN NaN
+
+df3 = DataFrame(np.arange(12).reshape(3, 4), columns=list('abcd'))
+df4 = DataFrame(np.arange(20).reshape(4, 5), columns=list('abcde'))
+print(df3 + df4)
+#      a     b     c     d   e
+#0   0.0   2.0   4.0   6.0 NaN
+#1   9.0  11.0  13.0  15.0 NaN
+#2  18.0  20.0  22.0  24.0 NaN
+#3   NaN   NaN   NaN   NaN NaN
+
+print(df3.add(df4, fill_value=0))
+#      a     b     c     d     e
+#0   0.0   2.0   4.0   6.0   4.0
+#1   9.0  11.0  13.0  15.0   9.0
+#2  18.0  20.0  22.0  24.0  14.0
+#3  15.0  16.0  17.0  18.0  19.0
+```
+
+- fill_value 속성은 NaN값은 0으로 채우겠다는 의미
+
+  결론적으로 df4의 값과 0이 더해진 값이 된다.
+
+
+
+- DataFrame과 Series와의 연산은 Numpy의 브로드캐스팅과 유사하다.
+
+```python
+print(df3.reindex(columns = df4.columns, fill_value = 0))
+#   a  b   c   d  e
+#0  0  1   2   3  0
+#1  4  5   6   7  0
+#2  8  9  10  11  0
+
+arr = np.arange(12,).reshape(3, 4)
+print(arr)
+#[[ 0  1  2  3]
+# [ 4  5  6  7]
+# [ 8  9 10 11]]
+
+print(arr[0])
+# [0 1 2 3]
+
+print(arr -arr[0])
+#[[0 0 0 0]
+# [4 4 4 4]
+# [8 8 8 8]]
+
+
+#0 1 2 3    -    0 1 2 3
+#4 5 6 7
+#8 9 10 11
+```
+
