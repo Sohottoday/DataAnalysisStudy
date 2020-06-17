@@ -916,3 +916,122 @@ print(df.apply(f, axis=1))	# 열 중심으로 계산
 
 
 
+- 함수 적용
+
+``` python
+def f(x):
+    return Series([x.min(), x.max()], index=['min', 'max'])
+
+print(df.apply(f))
+#            b         d         e
+#min -0.101865 -0.057921 -0.630277
+#max  0.494251  1.782748  0.576976
+```
+
+
+
+- 데이터 프레임 객체에서 실수 값을 문자열 포맷으로 변환할 경우 applymap함수를 이용한다.
+
+``` python
+format = lambda x: '%.2f' % x       # x를 소수점 둘째자리까지면 표기한다는 의미
+print(df.applymap(format))
+#             b      d      e
+#seoul     0.02   1.17   0.50
+#busan     0.49   0.80  -0.63
+#daegu    -0.10   1.78   0.58
+#incheon   0.41  -0.06  -0.29
+```
+
+-  Series 객체에서 실수 값을 문자열 포맷으로 변환 할 경우 map 함수를 이용한다.
+
+``` python
+print(df['e'].map(format))
+#seoul       0.50
+#busan      -0.63
+#daegu       0.58
+#incheon    -0.29
+#Name: e, dtype: object
+```
+
+
+
+#### 정렬과 순위
+
+- 행의 색인이나 열의 색인 순으로 정렬
+
+``` python
+s1 = df['e'].map(format)
+
+print(s1.sort_index())    # index순으로 정렬하겠다는 의미
+#busan      -0.63
+#daegu       0.58
+#incheon    -0.29
+#seoul       0.50
+#Name: e, dtype: object
+
+df2 = DataFrame(np.arange(8).reshape(2, 4), index=['three', 'one'], columns=['d','a','b','c'])
+print(df2)
+#       d  a  b  c
+#three  0  1  2  3
+#one    4  5  6  7
+
+print(df2.sort_index()) # row를 기준으로 정렬
+#       d  a  b  c
+#one    4  5  6  7
+#three  0  1  2  3
+
+print(df2.sort_index(axis=1))   # 컬럼 순으로 정렬
+#       a  b  c  d
+#three  1  2  3  0
+#one    5  6  7  4
+
+```
+
+- 데이터는 기본적으로 오름차순으로 정렬이 된다. 내림차순으로 정렬할 때에는 ascending=False 해준다.
+
+``` python
+print(df2.sort_index(axis=1, ascending=False))
+#       d  c  b  a
+#three  0  3  2  1
+#one    4  7  6  5
+```
+
+- 객체를 값에 따라 정렬할 경우에는 sort_values 메서드를 사용한다.
+
+```python
+obj = Series([4, 7, -3, 1])
+print(obj.sort_values())
+#2   -3
+#3    1
+#0    4
+#1    7
+#dtype: int64
+```
+
+- 정렬을 할 때 비어있는 값은 정렬시 가장 마지막에 위치한다.
+
+``` python
+obj2 = Series([4, np.nan, 8, np.nan, -10, 2])
+print(obj2)
+#0     4.0
+#1     NaN
+#2     8.0
+#3     NaN
+#4   -10.0
+#5     2.0
+#dtype: float64
+
+print(obj2.sort_values(0))
+#4   -10.0
+#5     2.0
+#0     4.0
+#2     8.0
+#1     NaN
+#3     NaN
+#dtype: float64
+```
+
+
+
+
+

@@ -310,3 +310,41 @@ f = lambda x : x.max()-x.min()
 
 print(df.apply(f))  # 행 중심으로 계산
 print(df.apply(f, axis=1))
+
+
+
+def f(x):
+    return Series([x.min(), x.max()], index=['min', 'max'])
+
+print(df.apply(f))
+
+# 데이터 프레임 객체에서 실수 값을 문자열 포맷으로 변환할 경우 applymap함수를 이용한다.
+format = lambda x: '%.2f' % x       # x를 소수점 둘째자리까지면 표기한다는 의미
+print(df.applymap(format))
+
+# Series 객체에서 실수 값을 문자열 포맷으로 변환 할 경우 map 함수를 이용한다.
+
+print(df['e'].map(format))
+
+# 정렬과 순위
+## 행의 색인이나 열의 색인 순으로 정렬
+s1 = df['e'].map(format)
+
+print(s1.sort_index())    # index순으로 정렬하겠다는 의미
+
+df2 = DataFrame(np.arange(8).reshape(2, 4), index=['three', 'one'], columns=['d','a','b','c'])
+print(df2)
+print(df2.sort_index()) # row를 기준으로 정렬
+print(df2.sort_index(axis=1))   # 컬럼 순으로 정렬
+
+# 데이터는 기본적으로 오름차순으로 정렬이 된다. 내림차순으로 정렬할 때에는 ascending=False 해준다.
+print(df2.sort_index(axis=1, ascending=False))
+
+# 객체를 값에 따라 정렬할 경우에는 sort_values 메서드를 사용한다.
+obj = Series([4, 7, -3, 1])
+print(obj.sort_values())
+
+# 정렬을 할 때 비어있는 값은 정렬시 가장 마지막에 위치한다.
+obj2 = Series([4, np.nan, 8, np.nan, -10, 2])
+print(obj2)
+print(obj2.sort_values(0))
