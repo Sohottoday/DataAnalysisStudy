@@ -801,3 +801,118 @@ print(arr -arr[0])
 #8 9 10 11
 ```
 
+- DataFrame과 Series의 연산
+
+``` python
+df = DataFrame(np.arange(12).reshape(4, 3), columns=list('bde'), index=['seoul', 'kwangju', 'daegu', 'incheon'])
+print(df)
+#         b   d   e
+#seoul    0   1   2
+#kwangju  3   4   5
+#daegu    6   7   8
+#incheon  9  10  11
+
+s1 = df.iloc[0]
+print(s1)
+#b    0
+#d    1
+#e    2
+#Name: seoul, dtype: int32
+
+print(df-s1)
+#         b  d  e
+#seoul    0  0  0
+#kwangju  3  3  3
+#daegu    6  6  6
+#incheon  9  9  9
+
+# s1의 0, 1, 2의 값이 df의 b d e에 모두 계산된다.
+
+s2 = Series(range(3), index=list('bef'))
+print(s2)
+#b    0
+#e    1
+#f    2
+#dtype: int64
+
+print(df + s2)
+#           b   d     e   f
+#seoul    0.0 NaN   3.0 NaN
+#kwangju  3.0 NaN   6.0 NaN
+#daegu    6.0 NaN   9.0 NaN
+#incheon  9.0 NaN  12.0 NaN
+
+s3 = df['d']
+print(s3)
+#seoul       1
+#kwangju     4
+#daegu       7
+#incheon    10
+#Name: d, dtype: int32
+
+print(df + s3)
+#          b   d  daegu   e  incheon  kwangju  seoul
+#seoul   NaN NaN    NaN NaN      NaN      NaN    NaN
+#kwangju NaN NaN    NaN NaN      NaN      NaN    NaN
+#daegu   NaN NaN    NaN NaN      NaN      NaN    NaN
+#incheon NaN NaN    NaN NaN      NaN      NaN    NaN
+
+# index가 완전히 새롭게 추가되는 경우이기 때문에 모두 NaN값이 뜨는 결과가 나온다.
+
+# 행에 대한 연산을 수행해야 할 경우에는 함수를 이용한다. (add, sub 등) axis값을 주면 된다.
+print(df.add(s3, axis=0))
+#          b   d   e
+#seoul     1   2   3
+#kwangju   7   8   9
+#daegu    13  14  15
+#incheon  19  20  21
+
+print(df.sub(s3, axis=0))
+#         b  d  e
+#seoul   -1  0  1
+#kwangju -1  0  1
+#daegu   -1  0  1
+#incheon -1  0  1
+```
+
+
+
+#### 함수 적용과 매핑
+
+- 배열의 각 원소에 적용되는 함수를 유니버셜 함수라 한다.
+- numpy.random 모듈에 있는 randn 함수는 임의의 정규분포 데이터를 생성한다.
+
+```python
+df = DataFrame(np.random.randn(4, 3), columns=list('bde'), index=['seoul', 'busan', 'daegu', 'incheon'])
+print(df)
+#                b         d         e
+#seoul    0.168250 -0.703088  0.305677
+#busan    0.208095 -0.301753  0.303408
+#daegu    0.127047 -0.559360  1.138457
+#incheon -0.655010 -2.191097 -0.718302
+
+print(np.abs(df))		# abs : 절대값으로 변환하는 함수
+#                b         d         e
+#seoul    0.168250  0.703088  0.305677
+#busan    0.208095  0.301753  0.303408
+#daegu    0.127047  0.559360  1.138457
+#incheon  0.655010  2.191097  0.718302
+
+f = lambda x : x.max()-x.min()
+
+print(df.apply(f))  # 행 중심으로 계산
+#b    0.863105
+#d    1.889344
+#e    1.856759
+#dtype: float64
+
+print(df.apply(f, axis=1))	# 열 중심으로 계산
+#seoul      1.008765
+#busan      0.605161
+#daegu      1.697818
+#incheon    1.536087
+#dtype: float64
+```
+
+
+

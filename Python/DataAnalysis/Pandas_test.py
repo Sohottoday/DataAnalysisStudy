@@ -269,3 +269,44 @@ print(arr -arr[0])
 #0 1 2 3    -    0 1 2 3
 #4 5 6 7
 #8 9 10 11
+
+
+
+df = DataFrame(np.arange(12).reshape(4, 3), columns=list('bde'), index=['seoul', 'kwangju', 'daegu', 'incheon'])
+print(df)
+
+s1 = df.iloc[0]
+print(s1)
+
+print(df-s1)
+# s1의 0, 1, 2의 값이 df의 b d e에 모두 계산된다.
+
+s2 = Series(range(3), index=list('bef'))
+print(s2)
+
+print(df + s2)
+
+s3 = df['d']
+print(s3)
+
+print(df + s3)
+# index가 완전히 새롭게 추가되는 경우이기 때문에 모두 NaN값이 뜨는 결과가 나온다.
+
+# 행에 대한 연산을 수행해야 할 경우에는 함수를 이용한다. (add, sub 등) axis값을 주면 된다.
+print(df.add(s3, axis=0))
+print(df.sub(s3, axis=0))
+
+# 함수 적용과 매핑
+## 배열의 각 원소에 적용되는 함수를 유니버셜 함수라 한다.
+
+# numpy.random 모듈에 있는 randn 함수는 임의의 정규분표 데이터를 생성한다.
+df = DataFrame(np.random.randn(4, 3), columns=list('bde'), index=['seoul', 'busan', 'daegu', 'incheon'])
+print(df)
+
+print(np.abs(df))
+#절대값으로 변환하는 함수
+
+f = lambda x : x.max()-x.min()
+
+print(df.apply(f))  # 행 중심으로 계산
+print(df.apply(f, axis=1))
