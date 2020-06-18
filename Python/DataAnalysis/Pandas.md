@@ -1033,5 +1033,76 @@ print(obj2.sort_values(0))
 
 
 
+- DataFrame에서 값을 기준으로 정렬하고자 할 때
 
+``` python
+frame = DataFrame({'b':[4, 7, -5, 2], 'a':[0, 1, 0, 1]})
+print(frame)
+#   b  a
+#0  4  0
+#1  7  1
+#2 -5  0
+#3  2  1
+
+print(frame.sort_values(by='b'))     # by 속성에 정렬하고자 하는 컬럼명을 입력해준다.
+#   b  a
+#2 -5  0
+#3  2  1
+#0  4  0
+#1  7  1
+
+print(frame.sort_values(by=['a', 'b']))     # 이처럼 리스트형태로 여러값을 줄 수 있고 a로 먼저 정렬하고 b로 정렬 하겠다는 의미
+#   b  a
+#2 -5  0
+#0  4  0
+#3  2  1
+#1  7  1
+```
+
+
+
+- 순위를 정하는 함수 : rank()
+
+``` python
+obj3 = Series([7, -2, 7, 4, 2, 0, 4])
+print(obj3.rank())      # 아무 속성을 주지 않으면 동률일 경우 .5등이 나온다
+#0    6.5
+#1    1.0
+#2    6.5
+#3    4.5
+#4    3.0
+#5    2.0
+#6    4.5
+#dtype: float64
+
+print(obj3.rank(method='first'))    # method='first'는 동률일 경우 데이터의 순서에 따라 순위를 메긴다는 의미
+#0    6.0
+#1    1.0
+#2    7.0
+#3    4.0
+#4    3.0
+#5    2.0
+#6    5.0
+#dtype: float64
+
+print(obj3.rank(ascending=False, method='first'))
+#0    1.0
+#1    7.0
+#2    2.0
+#3    3.0
+#4    5.0
+#5    6.0
+#6    4.0
+#dtype: float64
+
+print(obj3.rank(ascending=False, method='max'))     # 동률인 값은 뒷단계 기준으로 랭크를 묶어서 출력한다.
+#0    2.0
+#1    7.0
+#2    2.0
+#3    4.0
+#4    5.0
+#5    6.0
+#6    4.0
+#dtype: float64
+```
 

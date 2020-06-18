@@ -348,3 +348,23 @@ print(obj.sort_values())
 obj2 = Series([4, np.nan, 8, np.nan, -10, 2])
 print(obj2)
 print(obj2.sort_values(0))
+
+
+
+# 값을 기준으로 정렬
+frame = DataFrame({'b':[4, 7, -5, 2], 'a':[0, 1, 0, 1]})
+print(frame)
+
+print(frame.sort_values(by='b'))     # by 속성에 정렬하고자 하는 컬럼명을 입력해준다.
+
+print(frame.sort_values(by=['a', 'b']))     # 이처럼 리스트형태로 여러값을 줄 수 있고 a로 먼저 정렬하고 b로 정렬 하겠다는 의미
+
+# 순위를 정하는 함수 : rank()
+obj3 = Series([7, -2, 7, 4, 2, 0, 4])
+print(obj3.rank())      # 아무 속성을 주지 않으면 동률일 경우 .5등이 나온다
+
+print(obj3.rank(method='first'))    # method='first'는 동률일 경우 데이터의 순서에 따라 순위를 메긴다는 의미
+
+print(obj3.rank(ascending=False, method='first'))
+
+print(obj3.rank(ascending=False, method='max'))     # 동률인 값은 뒷단계 기준으로 랭크를 묶어서 출력한다.
