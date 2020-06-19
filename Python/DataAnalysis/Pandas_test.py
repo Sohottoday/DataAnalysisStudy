@@ -451,3 +451,53 @@ print(stringData.isnull())
 stringData[0] = None
 print(stringData.isnull())
 
+
+
+from numpy import nan as NA
+
+# 누락된 데이터 골라내기
+# dropna 를 사용하는 것이 유용한 방법이며, 사용 결과값으로 Series객체를 반환
+
+# dropna() : na값을 배제시킴
+data = Series([1, NA, 3.4, NA, 8])
+print(data.dropna())
+
+# boolean 을 이용해서 직접 계산한 후에 가져오기
+print(data.notnull())
+print(data[data.notnull()])
+
+# DataFrame에서 누락된 데이터 골라 내기
+# dropna는 기본적으로 NA값이 하나라도 있는 row(행) 자체를 제외시켜 버린다.
+data = DataFrame([[1, 5.5, 3], [1, NA, NA], [NA, NA, NA], [NA, 3.3, 3]])
+print(data)
+print(data.dropna())
+
+# how='all' 옵션을 주면 모든 값이 NA인 행만 제외된다.
+print(data.dropna(how='all'))
+
+data[4] = NA
+print(data)
+
+# 열의 값이 모두 NA인 경우에만 지우고자 할 때에는 역시 axis값을 1로 주면 된다.
+print(data.dropna(axis=1, how='all'))
+
+data2 = DataFrame([[1, 2, 3, NA], [NA, 33, 11, NA], [11, NA, NA, NA], [43, NA, NA, NA]])
+print(data2)
+
+# thresh 속성 :  개수를 지정하여 몇개의 value가 들어 있는 행을 가져오고 싶을 경우 
+print(data2.dropna(thresh=2))   # 변수 개수가 2개 이상인 값만 가져온다는 의미
+
+# 누락된 값 채우기
+# DataFrame에서는 누락된 데이터를 완벽하게 골라낼 수 없으므로 다른 데이터도 함께 버려지게 된다.
+# 이런 경우에는 fillna 메서드를 활용해 빈 곳을 채워주면 데이터의 손실을 막을 수 있다.
+
+print(data2.fillna(0))
+
+# fillna의 활용에 따라 각 컬럼마다 다른 값을 채워넣을 수 있다.
+print(data2.fillna({1:10, 3:30}))
+
+print(data2.fillna(method='ffill'))     # method='ffill' 바로 앞의 값을 자신에게 적용
+print(data2.fillna(method='ffill', limit=1))    # ffill로 전달되는 값이 한번만 전달되게 제한(limit) 하라는 의미
+
+data3 = Series([1, NA, 4, NA, 7])
+print(data3.fillna(data3.mean()))   # 평균으로 채우겠다는 의미

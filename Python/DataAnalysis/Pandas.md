@@ -1359,5 +1359,147 @@ print(stringData.isnull())
 
 
 
+- 누락된 데이터 골라내기
+  - dropna를 사용하는 것이 유용한 방법이며, 사용 결과값으로 Series객체를 반환
+- dropna() : na값을 배제시킴
+
+``` python
+data = Series([1, NA, 3.4, NA, 8])
+print(data.dropna())
+#0    1.0
+#2    3.4
+#4    8.0
+#dtype: float64
+```
+
+- boolean을 이용해 직접 계산한 후 가져오기
+
+``` python
+print(data.notnull())
+#0     True
+#1    False
+#2     True
+#3    False
+#4     True
+#dtype: bool
+
+print(data[data.notnull()])
+#0    1.0
+#2    3.4
+#4    8.0
+#dtype: float64
+```
+
+
+
+- DataFrame에서 누락된 데이터 골라 내기
+- dropna()는 기본적으로 NA값이 하나라도 있는 row(행) 자체를 제외시켜 버린다.
+
+``` python
+data = DataFrame([[1, 5.5, 3], [1, NA, NA], [NA, NA, NA], [NA, 3.3, 3]])
+print(data)
+#     0    1    2
+#0  1.0  5.5  3.0
+#1  1.0  NaN  NaN
+#2  NaN  NaN  NaN
+#3  NaN  3.3  3.0
+
+print(data.dropna())
+#     0    1    2
+#0  1.0  5.5  3.0
+```
+
+- `how = 'all'` 옵션을 주면 모든 값이 NA인 행만 제외된다.
+
+``` python
+print(data.dropna(how='all'))
+#     0    1    2
+#0  1.0  5.5  3.0
+#1  1.0  NaN  NaN
+#3  NaN  3.3  3.0
+```
+
+- 열의 값이 모두 NA인 경우에만 지우고자 할 때에는 역시 axis 속성을 1로 주면 된다.
+
+```python
+data[4] = NA
+print(data)
+#     0    1    2   4
+#0  1.0  5.5  3.0 NaN
+#1  1.0  NaN  NaN NaN
+#2  NaN  NaN  NaN NaN
+#3  NaN  3.3  3.0 NaN
+
+print(data.dropna(axis=1, how='all'))
+#     0    1    2
+#0  1.0  5.5  3.0
+#1  1.0  NaN  NaN
+#2  NaN  NaN  NaN
+#3  NaN  3.3  3.0
+```
+
+- thresh 속성 : 개수를 지정하여 지정한 개수 이상의 value가 들어 있는 행을 가져온다.
+
+``` python
+data2 = DataFrame([[1, 2, 3, NA], [NA, 33, 11, NA], [11, NA, NA, NA], [43, NA, NA, NA]])
+print(data2)
+#      0     1     2   3
+#0   1.0   2.0   3.0 NaN
+#1   NaN  33.0  11.0 NaN
+#2  11.0   NaN   NaN NaN
+#3  43.0   NaN   NaN NaN
+
+print(data2.dropna(thresh=2))	# 값의 개수가 2개 이상인 행만 가져온다는 의미
+#     0     1     2   3
+#0  1.0   2.0   3.0 NaN
+#1  NaN  33.0  11.0 NaN
+```
+
+
+
+- 누락된 값 채우기
+  - DataFrame에서는 누락된 데이터를 완벽하게 골라낼 수 없으므로 다른 데이터도 함께 버려지게 된다.
+  - 이런 경우에는 fillna 메서드를 활용해 빈 곳을 채워주면 데이터의 손실을 막을 수 있다.
+
+``` python
+print(data2.fillna(0))
+#      0     1     2    3
+#0   1.0   2.0   3.0  0.0
+#1   0.0  33.0  11.0  0.0
+#2  11.0   0.0   0.0  0.0
+#3  43.0   0.0   0.0  0.0
+```
+
+- fillna의 활용에 따라 각 컬럼마다 다른 값을 채워넣을 수 있다.
+
+```python
+print(data2.fillna({1:10, 3;30}))
+#      0     1     2     3
+#0   1.0   2.0   3.0  30.0
+#1   NaN  33.0  11.0  30.0
+#2  11.0  10.0   NaN  30.0
+#3  43.0  10.0   NaN  30.0
+
+print(data2.fillna(method='ffill'))	# method='ffill' 바로 앞의 값을 자신에게 적용
+#      0     1     2   3
+#0   1.0   2.0   3.0 NaN
+#1   1.0  33.0  11.0 NaN
+#2  11.0  33.0  11.0 NaN
+#3  43.0  33.0  11.0 NaN
+
+print(data2.fillna(method='ffill', limit=1))	# ffill로 전달되는 값이 한번만 전달되게 제한(limit)하라는 의미
+
+data3 = Series([1, NA, 4, NA, 7])
+print(data3.fillna(data3.mean()))	# 평균으로 채우겠다는 의미
+#0    1.0
+#1    4.0
+#2    4.0
+#3    4.0
+#4    7.0
+#dtype: float64
+```
+
+
+
 
 
