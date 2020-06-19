@@ -1227,6 +1227,136 @@ print(df.idxmin())
 
 
 
+- unique() : 중복된 값을 하나로 묶음
+
+``` python
+s1 = Series(['c', 'a', 'd', 'a', 'a', 'b', 'b', 'c', 'c'])
+print(s1.unique())
+#['c' 'a' 'd' 'b']
+```
+
+
+
+- value_counts() : 값의 수를 계산(도수, 카운팅), 반환값은 Series 객체
+  - 결과값이 내림차순으로 출력됨.
+
+``` python
+print(s1.value_counts())
+#c    3
+#a    3
+#b    2
+#d    1
+#dtype: int64
+```
+
+
+
+- isin() : 어떤 값이 Series에 있는지 나타내는 메서드
+  - boolean type(True, False)을 반환한다.
+
+``` python
+mask = s1.isin(['b', 'c']) 
+print(mask)
+#0     True
+#1    False
+#2    False
+#3    False
+#4    False
+#5     True
+#6     True
+#7     True
+#8     True
+#dtype: bool
+
+print(s1[mask]) # 이런식으로 원하는 값만 뽑아낼 수 있다.
+#0    c
+#5    b
+#6    b
+#7    c
+#8    c
+#dtype: object
+```
+
+
+
+- DataFrame에서는 value_counts가 바로 적용되지 못하기 때문에 apply함수를 활용해 각각 적용시킬 수 있도록 해야한다.
+- apply : 한줄씩 함수를 적용하겠다 라는 의미
+
+``` python
+data = DataFrame({
+    'Q1' : [1, 3, 4, 3, 4], 
+    'Q2' : [2, 3, 1, 2, 3],
+    'Q3' : [1, 5, 2, 4, 4]
+    })
+
+print(data)
+#   Q1  Q2  Q3
+#0   1   2   1
+#1   3   3   5
+#2   4   1   2
+#3   3   2   4
+#4   4   3   4
+
+print(data.apply(pd.value_counts))  
+#    Q1   Q2   Q3
+#1  1.0  1.0  1.0
+#2  NaN  2.0  1.0
+#3  2.0  2.0  NaN
+#4  2.0  NaN  2.0
+#5  NaN  NaN  1.0
+```
+
+
+
+- fillna(0) -> na값을 0으로 채우겠다는 함수를 활용해 발전된 결과값 얻기
+
+``` python
+print(data.apply(pd.value_counts).fillna(0))
+#    Q1   Q2   Q3
+#1  1.0  1.0  1.0
+#2  0.0  2.0  1.0
+#3  2.0  2.0  0.0
+#4  2.0  0.0  2.0
+#5  0.0  0.0  1.0
+```
+
+
+
+- 누락된 데이터 처리(pandas의 설계 목표 중 하나는 누락된 데이터를 쉽게 처리하는 것이다.)
+- pandas에서는 누락된 데이터를 실수든 아니든 모두 NaN(Not a Number)으로 취급한다.
+
+``` python
+stringData = Series(['aaa', 'bbbb', np.nan, 'ccccc'])
+print(stringData)
+#0      aaa
+#1     bbbb
+#2      NaN
+#3    ccccc
+#dtype: object
+```
+
+
+
+- 이러한 NaN의 값은 파이썬의 None값 Na와 같은 값으로 취급된다.
+- isnull() : NaN값이 있으면 True로 반환한다.
+
+``` python
+print(stringData.isnull())
+#0    False
+#1    False
+#2     True
+#3    False
+#dtype: bool
+
+stringData[0] = None
+print(stringData.isnull())
+#0     True
+#1    False
+#2     True
+#3    False
+#dtype: bool
+```
+
 
 
 

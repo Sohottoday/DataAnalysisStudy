@@ -411,3 +411,43 @@ print(df.cumsum())
 
 
 
+# unique() : 중복된 값을 하나로 묶음
+s1 = Series(['c', 'a', 'd', 'a', 'a', 'b', 'b', 'c', 'c'])
+print(s1.unique())
+
+# value_counts() : 값의 수를 계산(도수, 카운팅), 반환값은 Series 객체
+print(s1.value_counts())    # 결과값이 내림차순으로 출력됨.
+
+# isin() : 어떤 값이 Series에 있는지 나타내는 메서드
+## boolean type(True, False)을 반환한다.
+mask = s1.isin(['b', 'c']) 
+print(mask)
+print(s1[mask]) # 이런식으로 원하는 값만 뽑아낼 수 있다.
+
+data = DataFrame({
+    'Q1' : [1, 3, 4, 3, 4], 
+    'Q2' : [2, 3, 1, 2, 3],
+    'Q3' : [1, 5, 2, 4, 4]
+    })
+
+print(data)
+print(data.apply(pd.value_counts))  
+# 데이터프레임에서는 value_counts가 바로 적용되지 못하기 때문에
+# apply함수를 활용해 각각 적용시킬 수 있도록 해야 한다.
+# apply : 한줄씩 함수를 적용하겠다 라는 의미
+
+# fillna(0) -> na값을 0으로 채우겠다는 함수를 활용해 발전된 결과값 얻기
+print(data.apply(pd.value_counts).fillna(0))
+
+# 누락된 데이터 처리(pandas의 설계 목표 중 하나는 누락된 데이터를 쉽게 처리하는 것)
+# pandas 에서는 누락된 데이터를 실수든 아니든 모두 NaN(Not a Number)으로 취급한다.
+
+stringData = Series(['aaa', 'bbbb', np.nan, 'ccccc'])
+print(stringData)
+
+# 이러한 NaN의 값은 파이썬의 None값 Na와 같은 값으로 취급된다.
+# isnull() : NaN값이 있으면 True로 반환한다.
+print(stringData.isnull())
+stringData[0] = None
+print(stringData.isnull())
+
