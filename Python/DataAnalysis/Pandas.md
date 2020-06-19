@@ -1106,3 +1106,128 @@ print(obj3.rank(ascending=False, method='max'))     # 동률인 값은 뒷단계
 #dtype: float64
 ```
 
+
+
+- 중복 색인
+  - Series 객체는 중복 색인이 있어도 같이 내보낸다.
+  - 중복되는 색인값이 없을 경우에는 색인을 이용한 결과로 스칼라 값을 반환하고
+  - 중복되는 색인값이 있을 경우에는 색인을 이용한 결과로 Series 객체를 반환한다.
+
+``` python
+obj = Series(range(5), index=['a', 'a', 'b', 'b', 'c'])
+
+print(obj)
+#a    0
+#a    1
+#b    2
+#b    3
+#c    4
+#dtype: int64
+
+print(obj['a'])
+#a    0
+#a    1
+#dtype: int64
+
+print(obj['c'])
+# 4
+
+```
+
+
+
+- DataFrame에서도 중복색인을 허용한다.
+
+``` python
+df = DataFrame(np.random.randn(4, 3), index=['a', 'a', 'b', 'b'])
+print(df.loc['b'])
+#          0         1         2
+#b  0.512300 -1.491978  0.022621
+#b  1.233202  0.302777  0.036826
+```
+
+
+
+### 기술 통계 계산
+
+- pandas는 일반적인  수학/통계 메서드를 가지고 있다.
+- pandas의 메서드는 처음부터 누락된 데이터를 제외하도록 설계되어 있다.
+
+```python
+df = DataFrame([[1.4, np.nan], [7.1, -4.5], [np.nan, np.nan], [0.75, -1.3]], index=['a', 'b', 'c', 'd'], columns=['one', 'two'])
+print(df)
+#    one  two
+#a  1.40  NaN
+#b  7.10 -4.5
+#c   NaN  NaN
+#d  0.75 -1.3
+```
+
+
+
+- sum() : 각 컬럼의 합을 더해서 Series 객체를 반환
+
+``` python
+print(df.sum())
+#one    9.25
+#two   -5.80
+#dtype: float64
+
+print(df.sum(axis=1))   # 각 행의 합을 반환
+#a    1.40
+#b    2.60
+#c    0.00
+#d   -0.55
+#dtype: float64
+```
+
+
+
+- cumsum() : 누산(누적 합계) 메서드
+
+```python
+print(df.cumsum())
+#    one  two
+#a  1.40  NaN
+#b  8.50 -4.5
+#c   NaN  NaN
+#d  9.25 -5.8
+```
+
+
+
+- 전체 행이나 컬럼의 값이 NA가 아니라면 NA값은 제외시키고 계산을 하는데
+  - skipna 속성은 전체 행이나 컬럼의 값이 NA가 아니라도 제외시키지 않을 수 있다.
+  - skipna의 기본값은 True
+
+```python
+print(df.sum(axis=1, skipna=False))
+#a     NaN
+#b    2.60
+#c     NaN
+#d   -0.55
+#dtype: float64
+```
+
+
+
+- idxmin, idxmax와 같은 메서드는 최소, 최대값을 가지고 있는 색인 값 같은 간접 통계를 반환한다.
+
+``` python
+print(df.idxmax())
+#one    b
+#two    d
+#dtype: object
+
+print(df.idxmin())
+#one    d
+#two    b
+#dtype: object
+```
+
+
+
+
+
+
+
