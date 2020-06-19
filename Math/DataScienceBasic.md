@@ -137,11 +137,15 @@ $$
 {\Sigma(X-\mu)^2 \above 1pt N} = \sigma^2(분산)
 $$
 
+![분산](https://user-images.githubusercontent.com/58559786/85148782-7d439200-b28b-11ea-88f6-54fbf725fc81.PNG)
+
 - 표준편차 : 분산을 구한 후에 다시 루트를 씌운 값(분산의 제곱근)
 
 $$
 \sqrt{\Sigma(X-\mu)^2 \above 1pt N} = \sigma(표준편차)
 $$
+
+![표준편차](https://user-images.githubusercontent.com/58559786/85148903-a532f580-b28b-11ea-8330-3f0a32b823c5.PNG)
 
 - 분산, 표준편차와 데이터와의 관계는 분산 또는 표준편차가 크면 데이터는 **평균에 수렴되지 않고 넓게 퍼져있는 형태**이다.
 
