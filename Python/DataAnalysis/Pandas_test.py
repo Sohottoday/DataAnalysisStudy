@@ -501,3 +501,32 @@ print(data2.fillna(method='ffill', limit=1))    # ffill로 전달되는 값이 �
 
 data3 = Series([1, NA, 4, NA, 7])
 print(data3.fillna(data3.mean()))   # 평균으로 채우겠다는 의미
+
+
+
+# 색인의 계층 구조
+## 색인의 계층 : pandas의 중요 기능 중 하나, 다중 색인 단계를 지정할 수 있다.
+
+data = Series(np.random.randn(10), index=[['a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'd', 'd'], [1, 2, 3, 1, 2, 3, 1, 2, 1, 2]])
+print(data)
+
+print(data.index)
+
+# 다중 색인에 접근하기
+print(data['b'])
+
+print(data['a':'c'])
+
+print(data[['a', 'd']])     # 2차원 이상의 배열을 선택하여 불러오고자 할 때에는 대괄호에 신경써야 한다.
+
+print(data[:, 2])       # 콜론으로 첫번째 상위계층은 제외하고 두번째 해당 값을 가져오라는 의미/ a,b,c,d 의 층에 존재하는 2번 값을 가져오라는 의미
+
+df = DataFrame(np.arange(12).reshape(4, 3), index=[['a', 'a', 'b', 'b'], [1, 2, 1, 2]], columns=[['seoul', 'busan', 'kwangu'], ['red', 'green', 'blue']])
+print(df)
+
+# 다중 색인의 이름을 표시하고 싶을때
+df.columns.names=['city', 'color']
+df.index.names=['key1', 'key2']
+print(df)
+
+print(df['seoul'])
