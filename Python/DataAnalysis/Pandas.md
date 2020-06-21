@@ -1579,7 +1579,7 @@ print(df)
 #   2     9    10     11
 ```
 
-- 다중 색인으 ㅣ이름을 표시하고 싶을때
+- 다중 색인의 이름을 표시하고 싶을때
 
 ``` python
 df.columns.names=['city', 'color']
@@ -1601,6 +1601,134 @@ print(df['seoul'])
 # b    1       6
 #      2       9
 ```
+
+
+
+- 색인 위치 바꾸기, 색인 계층의 순서를 바꾸기
+- swaplevel() : 색인 순서를 바꾸는 메서드
+
+``` python
+df2 = df.swaplevel('key1', 'key2')
+print(df2)	 # key1과 key2를 바꾸겠다는 의미
+# city      seoul busan kwangu
+# color       red green   blue
+# key2 key1
+# 1    a        0     1      2
+# 2    a        3     4      5
+# 1    b        6     7      8
+# 2    b        9    10     11
+```
+
+- sort_index() : 사전식으로 계층을 바꾸어 정렬하기 / (기존의 버전에서는 sortlevel())
+
+```python
+print(df2.sort_index())		# index 상위계층 값이 1 2 1 2 가 아닌 1 1 2 2 로 묶여 출력된다.
+# city      seoul busan kwangu
+# color       red green   blue
+# key2 key1
+# 1    a        0     1      2
+#      b        6     7      8
+# 2    a        3     4      5
+#      b        9    10     11
+
+print(df2.sort_index(level=1))		# level값을 1을 줌으로써 2번째 계층을 기준으로 정렬하겠다는 의미
+# city      seoul busan kwangu			a a b b 로 정렬되었다.
+# color       red green   blue
+# key2 key1
+# 1    a        0     1      2
+# 2    a        3     4      5
+# 1    b        6     7      8
+# 2    b        9    10     11
+```
+
+- 활용
+
+``` python
+print(df.sum(level='key2'))		# key2 를 기준으로 묶어서 합산
+# city  seoul busan kwangu
+# color   red green   blue
+# key2
+# 1         6     8     10
+# 2        12    14     16
+
+df3 = DataFrame(np.arange(12).reshape(4, 3), index=[['a', 'a', 'b', 'b'], [1, 2, 1, 2]], columns=[['seoul', 'busan', 'kwangu'], ['red', 'green', 'red']])
+df3.columns.names = ['city', 'color']
+df3.index.names = ['key1', 'key2']
+print(df3)
+# city      seoul busan kwangu
+# color       red green    red
+# key1 key2
+# a    1        0     1      2
+#      2        3     4      5
+# b    1        6     7      8
+#      2        9    10     11
+
+print(df3.sum(level='color', axis=1))
+# color      red  green
+# key1 key2
+# a    1       2      1
+#      2       8      4
+# b    1      14      7
+#      2      20     10
+```
+
+- set_index() : 하나 이상의 컬럼을 색인으로 하는 새로운 DataFrame을 생성
+
+``` python
+df4 = DataFrame({
+    'a':range(7),
+    'b':range(7, 0, -1),
+    'c':['one', 'one', 'one', 'two', 'two', 'two', 'two'],
+    'd':[0, 1, 2, 0, 1, 2, 3]
+    })
+print(df4)
+#   a  b    c  d
+# 0  0  7  one  0
+# 1  1  6  one  1
+# 2  2  5  one  2
+# 3  3  4  two  0
+# 4  4  3  two  1
+# 5  5  2  two  2
+# 6  6  1  two  3
+
+print(df4.set_index(['c', 'd']))
+#        a  b
+# c   d
+# one 0  0  7
+#     1  1  6
+#     2  2  5
+# two 0  3  4
+#     1  4  3
+#     2  5  2
+#     3  6  1
+
+print(df4.set_index(['c', 'd'], drop=False))	# drop=False를 주면 조건으로 준 c와 d의 내용을 유지한 상태로 출력
+#        a  b    c  d
+# c   d
+# one 0  0  7  one  0
+#     1  1  6  one  1
+#     2  2  5  one  2
+# two 0  3  4  two  0
+#     1  4  3  two  1
+#     2  5  2  two  2
+#     3  6  1  two  3
+```
+
+- reset_index() : index가 다시 컬럼으로 되돌아감
+
+``` python
+print(df4.set_index(['c', 'd']).reset_index())
+#      c  d  a  b
+# 0  one  0  0  7
+# 1  one  1  1  6
+# 2  one  2  2  5
+# 3  two  0  3  4
+# 4  two  1  4  3
+# 5  two  2  5  2
+# 6  two  3  6  1
+```
+
+
 
 
 

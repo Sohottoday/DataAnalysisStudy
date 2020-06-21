@@ -530,3 +530,46 @@ df.index.names=['key1', 'key2']
 print(df)
 
 print(df['seoul'])
+
+
+# 색인 위치 바꾸기, 색인 계층의 순서를 바꾸기
+# swaplevel() : 색인 순서를 바꾸는 메서드
+df2 = df.swaplevel('key1', 'key2')
+print(df2)    # key1과 key2를 바꾸겠다는 의미
+
+# sortlevel() : 사전식으로 계층을 바꾸어 정렬하기
+# 라고 강의에선 설명하였으나 더이상 sortlevel을 지원하지 않는다
+# sort_index, sort_values를 활용
+
+#print(df2.sortlevel(0))
+print(df2.sort_index())     # index 상위계층 값이 1 2 1 2 가 아닌 1 1 2 2 로 묶여 출력된다.
+print(df2.sort_index(level=1))  # level값을 1을 줌으로써 2번째 계층을 기준으로 정렬하겠다는 의미
+
+# 활용
+print(df.sum(level='key2')) # key2를 기준으로 묶어서 합산
+
+df3 = DataFrame(np.arange(12).reshape(4, 3), index=[['a', 'a', 'b', 'b'], [1, 2, 1, 2]], columns=[['seoul', 'busan', 'kwangu'], ['red', 'green', 'red']])
+df3.columns.names=['city', 'color']
+df3.index.names=['key1', 'key2']
+
+print(df3)
+
+print(df3.sum(level='color', axis=1))
+
+
+df4 = DataFrame({
+    'a':range(7),
+    'b':range(7, 0, -1),
+    'c':['one', 'one', 'one', 'two', 'two', 'two', 'two'],
+    'd':[0, 1, 2, 0, 1, 2, 3]
+    })
+
+print(df4)
+
+# set_index() : 하나 이상의 컬럼을 색인으로 하는 새로운 DataFrame을 생성
+print(df4.set_index(['c', 'd']))
+
+print(df4.set_index(['c', 'd'], drop=False))    # drop=False를 주면 조건으로 준 c와 d의 내용을 유지하면서 출력
+
+# reset_index() : index가 다시 컬럼으로 되돌아감
+print(df4.set_index(['c', 'd']).reset_index())
