@@ -198,3 +198,9 @@ print(qq)
 print(qq[np.array([1, 3, 5])])
 print(qq[qq>25])    # numpy에 부등호 연산자를 사용할 경우 True False로 값이 나온다.
 print(qq > 25)
+
+print(qq.ndim)  
+print(qq.itemsize)
+
+e = np.random.random((2, 2))
+print(e)
