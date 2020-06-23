@@ -77,3 +77,23 @@ print(square)
 
 odd_square = [x ** 2 for x in number if x % 2 == 1]     # 홀수인 값만 제곱하라는 의미
 print(odd_square)
+
+# dictionary
+d = {'person' : 10, 'cat' : 5, 'monkey' : 3}
+for animal in d:
+    number = d[animal]
+    print(f'{animal}은/는 {number}명/마리 이다')
+
+
+# items() : 키에 해당하는 값에 접근하는 메서드
+for animal, number in d.items():
+    print(f'{animal}은 {number}명(마리)이다.')
+
+# list를 dict로 변환
+numbers = [0, 1, 2, 3, 4]
+even_square = {x: x**2 for x in numbers if x%2==0}
+print(even_square)
+
+from math import sqrt
+# sqrt : 제곱근
+number = {int(sqrt(x)) for x in range(30)}
