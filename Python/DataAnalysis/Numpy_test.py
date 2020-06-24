@@ -202,5 +202,25 @@ print(qq > 25)
 print(qq.ndim)  
 print(qq.itemsize)
 
-e = np.random.random((2, 2))
-print(e)
+a = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]])
+print(a)
+
+# 인덱스를 저장할 배열 생성
+idx = np.array([0, 2, 0, 1])
+print(idx)
+
+print(a[np.arange(4), idx])
+
+print(a[np.arange(4), idx] * 2)
+
+# 벡터의 내적
+x = np.array([[1, 2], [3,4]])
+v = np.array([9, 10])
+w = np.array([11, 12])
+
+print(v.dot(w))     # 또는 np.dot(v, w)
+# v[0] * w[0] + v[1] * w[1]
+
+# 매트릭스와 벡터의 곱
+print(x.dot(v))
+#x[0,0] * v[0] + x[0,1] * v[1] , x[1,0] * v[0] + x[1,1] * v[1]
