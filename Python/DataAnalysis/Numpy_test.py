@@ -257,3 +257,102 @@ print(c)
 k = np.ones_like(c)
 
 cc = np.copy(c)
+
+
+# 차원 축소 연산(dimension reduction 연산)
+## 행렬의 하나의 행에 있는 원소들을 하나의 데이터 집합으로 보고 그 집합의 평균을 구하면
+##각 행에 대해 하나의 숫자가 나오게 되는데 이 경우 차원 축소가 된다. 이러한 연산을 차원 축소 연산이라 한다.
+
+# Numpy에서의 차원 축소 연산 명령 또는 메서드
+# 최대/최소 : min, max, argmin, argmax
+# 통계 : sum, mean, median, std, var
+# boolean : all, any
+
+x = np.array([1,10, 100])
+print(x)
+print(x.min())
+
+# argmin : 최소값의 위치
+# argmax : 최대값의 위치
+print(x.argmin())
+print(x.argmax())
+
+# mean : 평균값
+# median : 중간값, 여러개의 숫자들이 있을 때 크기순으로 정렬한 다음 가장 가운데 위치한 숫자
+# 개수가 짝수개일 경우 중간의 좌우값의 평균값을 반환한다.
+# std : 
+# var : 
+print(x.mean())
+print(np.median(x))
+
+# all : 모든 조건이 들어 맞을때
+# any : 하나의 조건이라도 들어 맞을때
+
+print(np.all([True, True, False]))
+print(np.any([False, False, True, False]))
+
+# axis 속성을 부여하는 메서드들은 대부분 차원 축소 명령에 속한다.
+
+# 정렬
+# sort명령이나 메서드를 사용하여 배열안의 원소를 크기에 따라 정렬하여 새로운 배열을 만들 수 있다.
+# 2차원 이상인 경우에는 행이나 열을 각각 따로 정렬할 수 있는데 이때, axis 속성을 사용하여 행과 열을 결정할 수 있다.
+
+a = np.array([[4, 3, 5, 7],
+            [1, 12, 11, 9],
+            [2, 15, 1, 14]
+            ])
+print(np.sort(a))   # default값이 1이다
+print(np.sort(a, axis=0))
+print(a.argsort())  # 자료를 정렬하는 것이 아닌 순서만 알고싶을 때 사용된다.
+
+# 배열 더하기(합성)
+a = np.array([1, 2, 3])
+b = np.array([3, 2, 3])
+# column_stack() 배열을 열 기준으로 합침, 3개 이상도 사용 가능하다.
+print(np.column_stack((a, b)))
+
+# 배열 나누기(쪼개기)
+# split = array_split
+
+x = np.arange(9.0)
+print(x)
+
+x_1 = np.split(x, 3)
+# x_1 = np.array_split(x, 3)
+print(x_1)
+
+print(x_1[1])
+
+x2 = np.split(x, [3, 4])    # 인덱스 3위치에서 한번 나누고 4위치에서 한번 나누겠다는 의미
+# 이런식으로 자신이 원하는대로 자를 수 있다.
+print(x2)
+
+# dsplit : 3차원 배열 나누기
+y = np.arange(16).reshape(2, 2, 4)
+print(y)
+
+print(np.dsplit(y, 2))
+print('------------')
+
+# hsplit : 3차원 배열 열 기준으로 나누기
+print(np.hsplit(y, 2))
+print("----------")
+
+# vsplit: 수직 기준으로 3차원 배열 나누기
+print(np.vsplit(y, 2))
+
+# 반복 생성
+a = np.array([0, 1, 2])
+print(np.tile(a, 2))
+print(np.tile(a, (2, 2)))
+
+b = np.array([[1, 2], [3, 4]])
+print(np.tile(b, 2))
+print(np.tile(b, (2,2)))
+
+# 배열 반복
+print(np.repeat(3, 4))  # 3을 4번 반복하는 배열 생성
+x = np.array([[1, 2], [3, 4]])
+print(np.repeat(x, 2))
+
+print(np.repeat(x, 3, axis=0))
