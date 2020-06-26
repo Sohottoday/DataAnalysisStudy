@@ -356,3 +356,63 @@ x = np.array([[1, 2], [3, 4]])
 print(np.repeat(x, 2))
 
 print(np.repeat(x, 3, axis=0))
+
+# 배열 요소에 대한 추가 및 삭제
+arr = np.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 11, 12, 13]])
+print(arr)
+
+# delete
+print(np.delete(arr, 1))
+print(np.delete(arr, 1, 0)) # axis값을 줘야 배열의 요소 하나가 아닌 행전체 혹은 열 전체의 삭제가 가능하다.
+print(np.delete(arr, 2, 1))
+
+# insert
+print(np.insert(arr, 1, 100))
+print(np.insert(arr, 1, 100, axis = 1)) # delete와 같은 맥락으로 axis값이 주어져야 한다.
+print(np.insert(arr, 1, 100, 0))
+print(np.insert(arr, 1, [100, 200, 300], axis=1))
+
+# append
+print(np.append(arr, [[100, 101, 102, 103]], axis=0))      # 정확하게 2차원 배열에 추가할 때에는 2차원 형식으로 추가해줘야 한다
+
+# resize
+print(np.resize(arr, (3, 5)))       # resize를 통해 사이즈를 크게 만들면 다시 첫 값부터 들어가게 된다.
+print(np.resize(arr, (2, 3)))       # resize를 통해 사이즈를 작게 만들면 뒤의 값부터 없어진다.
+
+# trim_zeros : 좌우의 0을 제거
+aa = np.array((0, 0, 0, 1, 2, 3, 0, 1, 2, 0, 0))
+print(np.trim_zeros(aa))
+print(np.trim_zeros(aa, 'f'))       # 속성으로 f를 주면 앞부분의 0만 제거되고 b를 주면 뒷부분의 0만 제거된다.
+
+# unique : 중복된 값을 하나로 만들어준다.
+a = np.array([1, 1, 2, 1, 2, 2, 3, 3, 3])
+print(np.unique(a))
+
+aa = np.array([[1, 1, 3, 2], [2, 3, 3, 1]])
+print(np.unique(aa))
+
+a = np.array([[1, 0, 0], [1, 0, 0], [2, 3, 4]])
+print(np.unique(a, axis=0))     # 중복된 행 자체를 병합시킨다.
+
+# 요소의 재정렬
+# flip : 뒤집어 엎다.
+
+b = np.arange(8).reshape((2, 2, 2))
+print(b)
+print(np.flip(b, 0))
+print(np.flip(b, 1))
+print(np.flip(b))       # axis 값을 주지 않으면 완전히 뒤집어진다.
+
+# diag() : 대각선 값 추출
+x = np.arange(9).reshape((3, 3))
+print(np.diag(x))
+print(np.diag(x, k=1))  # k값 설정을 통해 몇번째 대각선을 출력할건지 선택이 가능하다.
+print(np.diag(x, k=-1)) 
+
+# diag()를 활용한 배열 생성
+c = np.diag([1, 2, 3])
+print(c)
+
+# fliplr : 왼쪽 / 오른쪽 방향으로 뒤집기
+print(np.fliplr(c))
+
