@@ -416,3 +416,20 @@ print(c)
 # fliplr : 왼쪽 / 오른쪽 방향으로 뒤집기
 print(np.fliplr(c))
 
+
+# flipud : 배열을 위/아래 방향으로 뒤집기
+print(np.flipud(c))
+
+# rot90 : 배열을 90도만큼 회전시킴
+## k : 몇번 움직일것인지를 선택하는 속성
+## axes : 회전 축 설정(0, 1) 또는 (1, 0)  ,0에서 1방향으로 축 설정
+
+m = np.array([[1, 2], [3, 4]])
+print(m)
+
+print(np.rot90(m, k=1))
+
+print(np.rot90(m, k=1, axes=(1,0)))
+
+print(np.rot90(m, k=1, axes=(0,1)))
+
