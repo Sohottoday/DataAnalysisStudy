@@ -993,3 +993,77 @@ print(np.rot90(m, k=1, axes=(0, 1)))
 
 
 
+- 난수(random) 발생
+- rand() : 0과 1 사이의 숫자르 무작위 추출
+
+``` python
+print(np.random.rand())
+# 0.008257472536423283
+```
+
+
+
+- seed(씨앗값) 설정 : 겉보기에는 무작위 수처럼 보이지만 실제로는 컴퓨터가 처음 만들어질 때 생성된 셋팅값에 의해 일정한 값이 추출된다.
+
+``` python
+np.random.seed(0)
+print(np.random.rand(5))
+# [0.5488135  0.71518937 0.60276338 0.54488318 0.4236548 ]
+
+print(np.random.rand(7))
+#[0.64589411 0.43758721 0.891773   0.96366276 0.38344152 0.79172504 0.52889492]
+
+np.random.seed(0)
+print(np.random.rand(5))
+# [0.5488135  0.71518937 0.60276338 0.54488318 0.4236548 ]
+```
+
+
+
+- 데이터의 순서 바꾸기
+- shuffle : 데이터를 섞음
+
+``` python
+x = np.arange(10)
+print(x)
+# [0 1 2 3 4 5 6 7 8 9]
+
+np.random.shuffle(x)
+print(x)
+# [3 1 8 7 9 0 6 4 2 5]
+```
+
+- shuffle은 배열 자체를 섞는것이기 때문에 print(np.random.shuffle(x))는 None값이 리턴된다.
+
+
+
+- 데이터 샘플링 : 이미 있는 데이터 집합에서 무작위로 선택하는 것
+
+- choice : np.random.choice(a, size, replace, p)
+
+  - a : 원본 데이터, 정수이면 range(a)
+  - size : 샘플 숫자
+
+  - replace : True - 한번 선택한 데이터를 다시 선택할 수 있다. / False - 한번 선택한 데이터는 다시 선택할 수 없다.
+  - p : 배열, 각 데이터가 선택될 수 있는 확률
+
+``` python
+x = np.random.choice(5, 5, replaece=True)
+print(x)
+# [0 1 1 0 1]
+
+x1 = np.random.choice(10, 3, replace=False)
+print(x1)
+# [6 1 9]
+
+x2 = np.random.choice(5, 10, p=[0.2, 0, 0, 0.3, 0.5])
+print(x2)
+# [3 4 0 4 0 4 4 3 3 4]
+```
+
+
+
+
+
+
+

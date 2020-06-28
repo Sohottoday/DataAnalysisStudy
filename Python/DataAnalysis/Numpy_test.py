@@ -450,3 +450,41 @@ print(np.rot90(m, k=1, axes=(0,1)))
 ## np.percentile(x, 75) : 3사분위수
 ## np.percentile(x, 100) : 최대값
 
+
+# 난수(random) 발생
+# rand() : 0과 1 사이의 숫자를 무작위 추출
+print(np.random.rand())
+
+# seed(씨앗값) 설정 : 겉보기에는 무작위 수처럼 보이지만 실제로는 컴퓨터가 처음 만들어질 때 생성된 셋팅값에 의해 일정한 값이 추출된다.
+np.random.seed(0)
+print(np.random.rand(5))
+print(np.random.rand(7))
+
+np.random.seed(0)
+print(np.random.rand(5))
+
+# 데이터의 순서 바꾸기
+# shuffle : 데이터를 섞음
+
+x = np.arange(10)
+print(x)
+np.random.shuffle(x)
+print(x)
+# shuffle은 배열 자체를 섞는것이기 때문에 print(np.random.shuffle(x))는 None값이 리턴된다.
+
+# 데이터 샘플링 : 이미 있는 데이터 집합에서 무작위로 선택하는 것
+# choice : np.random.choice(a, size, replace, p)
+## a : 원본 데이터, 정수이면 range(a)
+## size : 샘플 숫자
+## replace : True : 한번 선택한 데이터를 다시 선택할 수 있다. / False : 한번 선택한 데이터는 다시 선택할 수 없다.
+## p : 배열, 각 데이터가 선택될 수 있는 확률
+
+x = np.random.choice(5, 5, replace=True)
+print(x)
+
+x1 = np.random.choice(10, 3, replace=False)
+print(x1)
+
+x2 = np.random.choice(5, 10, p=[0.2, 0, 0, 0.3, 0.5])
+print(x2)
+
