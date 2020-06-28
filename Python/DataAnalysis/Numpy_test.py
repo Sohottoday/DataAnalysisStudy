@@ -433,3 +433,20 @@ print(np.rot90(m, k=1, axes=(1,0)))
 
 print(np.rot90(m, k=1, axes=(0,1)))
 
+
+
+# Numpy 기술 통계(descriptive statistics)
+# len() : 데이터의 개수(count) => np.mean(x)
+# mean() : 평균(average, mean)  / 통계 용어로는 샘플 평균이라 함 => np.mean(x)
+# var() : 분산(variance) / 통계 용어로 샘플 분산 => np.var(x)
+# std() : 표준편차(standard deviation) / 수학 기호로는 s 라고 표현된다 => np.std(x)
+# max() : 최대값(maximum) => np.max(x)
+# min() : 최소값(minimum) => np.min(x)
+# median() : 중앙값(median) => np.median(x)
+# percentile() : 사분위수(quartile)
+## np.percentile(x, 0) : 최소값
+## np.percentile(x, 24) : 1사분위수
+## np.percentile(x, 50) : 2사분위수
+## np.percentile(x, 75) : 3사분위수
+## np.percentile(x, 100) : 최대값
+
