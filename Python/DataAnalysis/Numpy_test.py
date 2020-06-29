@@ -488,3 +488,29 @@ print(x1)
 x2 = np.random.choice(5, 10, p=[0.2, 0, 0, 0.3, 0.5])
 print(x2)
 
+# randn() : 가우시안 표준 정규 분포
+print(np.random.randn(5))
+
+# randint(low, high, size) : 균일 분포의 정수 난수
+## high 값이 없으면 low와 0 사이의 숫자, high 값이 있으면 low~high 사이의 숫자를 출력한다. size는 난수의 개수를 의미
+print(np.random.randint(10, size=10))
+print(np.random.randint(1, 45, size=7))
+
+
+# 정수 데이터 카운팅
+# unique : 데이터에서 중복된 값을 제거하고 중복되지 않는 값의 리스트를 출력
+## return_counts 속성 : True - 데이터의 갯수도 출력
+a = np.unique([1, 1, 2, 2, 2, 3, 3, 3, 3], return_counts=True)
+print(a)
+
+b = np.array(['a', 'a', 'b', 'b', 'b', 'c', 'c', 'c', 'c', 'c'])
+data, counts = np.unique(b, return_counts=True)     # 이런식으로 변수를 따로 넣으면 각각 넣을 수 있다.
+print(data)
+print(counts)
+
+
+# bincount : minlength 인수를 설정하여 사용하면 편리하다.
+## unique는 실제로 나온 숫자만 카운트하므로 나올 수 있는 수자에 대한 카운트는 하지 않는다.
+## 하지만 bincount는 나올 수 있는 숫자의 카운트를 0으로 한다.
+
+print(np.bincount([1, 1, 2, 2, 3, 4], minlength=6))

@@ -1063,6 +1063,58 @@ print(x2)
 
 
 
+- randn() : 가우시안 표준 정규 분포
+
+``` python 
+print(np.random.randn(5))
+# [ 2.26975462 -1.45436567  0.04575852 -0.18718385  1.53277921]
+```
+
+
+
+- randint(low, high, size) : 균열 분포의 정수 난수
+  - high 값이 없으면 low와 0 사이의 숫자, high 값이 있으면 low~high 사이의 숫자를 출력한다
+  - size는 난수의 개수를 의미
+
+``` python
+print(np.random.randint(10, size = 10))
+# [4 9 8 1 1 7 9 9 3 6]
+
+print(np.random.randint(1, 45, size=7))
+# [12 19 28  1 15 36 13]
+```
+
+
+
+- 정수 데이터 카운팅
+- unique : 데이터에서 중복된 값을 제거하고 중복되지 않는 값의 리스트를 출력
+  - return-counts 속성 : True - 데이터의 갯수도 출력
+
+``` python
+a = np.unique([1, 1, 2, 2, 2, 3, 3, 3, 3], return_counts=True)
+print(a)
+# (array([1, 2, 3]), array([2, 3, 4], dtype=int64))
+
+b = np.array(['a', 'a', 'b', 'b', 'b', 'c' ,'c', 'c', 'c', 'c'])
+data, counts = np.unique(b, return_counts = True)		# 이런식으로 변수를 따로 넣으면 각각 넣을 수 있다.
+print(data)
+# ['a' 'b' 'c']
+
+print(counts)
+# [2 3 5]
+```
+
+
+
+- bincount : minlength 인수를 설정하여 사용하면 편리하다.
+  - unique는 실제로 나온 숫자만 카운트하므로 나올 수 있는 숫자에 대한 카운트는 하지 않는다.
+  - 하지만 bincount는 나올 수 있는 숫자의 카운트를 0으로 출력한다.
+
+``` python
+print(np.bincount([1, 1, 2, 2, 3, 4], minlength=6))
+# [0 2 2 1 1 0]
+```
+
 
 
 
