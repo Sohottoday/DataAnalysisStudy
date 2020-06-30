@@ -13,13 +13,14 @@
 import matplotlib as mpl
 import matplotlib.pylab as plt
 
-plt.plot([1, 5, 8, 15])     # plot 명령은 ndarray 객체를 반환한다.
-plt.grid(True)
-plt.show()
+# plt.plot([1, 5, 8, 15])     # plot 명령은 ndarray 객체를 반환한다.
+# plt.grid(True)
+# plt.show()
 
 
-plt.plot([100, 200, 300, 400], [1, 4, 10, 17], 'rs--')
-plt.show()
+# plt.plot([100, 200, 300, 400], [1, 4, 10, 17], 'rs--')
+# plt.show()
+
 # 차트의 스타일 지정 순서 : 색상(color), 마커(marker), 선 종류(line style)
 # rs-- 의 의미는 앞의 r은 색상(red)를 표현한 것이고 s는 점 모양(square), --는 선 종류를 나타낸 것이다.
 # 선 색상은 r(red), m(magenta), c(cyan) 등 이 존재한다.
@@ -40,10 +41,66 @@ plt.show()
 # subplot(2, 1, 1), subplot(2, 1, 2)
 # tight_layout 명령을 실행하면 플롯(Axes)간의 간격을 자동으로 조절해준다.
 
-# np.linespace : Numpy에 존재하는 함수로 (start, stop, num, endpoint=True, restep=False, dtype)
+# np.linspace : Numpy에 존재하는 함수로 (start, stop, num, endpoint=True, retstep=False, dtype)
 ## start(시작값), stop(endpoint가 False로 설정되지 않은 경우 끝 값이 된다.)), num(생성할 샘플 수, 기본값 50, 음수는 될 수 없다),
 ## endpoint(끝 점), restep(샘플간의 간격을 설정할 수 있는 step을 반환한다.), dtype
 
+import numpy as np
+print(np.linspace(2.0, 3.0, num=5))
 
+print(np.linspace(2.0, 3.0, num=5, endpoint=False))
+
+print(np.linspace(2.0, 3.0, num=5, retstep=True))
+
+# 비교해보기
+N = 8
+y = np.zeros(N)
+print(y)
+x1 = np.linspace(0, 10, N, endpoint=True)
+x2 = np.linspace(0, 10, N, endpoint=False)
+
+plt.plot(x1, y, 'o')        # 칼라 없이 마커만 o로 출력된다.
+plt.plot(x2, y+0.4, 'o')
+
+# xlim : x축의 범위를 지정한다.
+# ylim : y축의 범위를 지정한다.
+plt.ylim([-0.5, 1])      # y축의 값이 -0.5에서 1 사이값으로 축을 지정한다.
+plt.show()
+
+
+X = np.linspace(-np.pi, np.pi, 256)
+C = np.cos(X)
+plt.plot(X, C)
+plt.xticks([-np.pi, -np.pi/2, 0, np.pi/2, np.pi])
+plt.yticks([-1, 0, 1])
+plt.grid(True)
+plt.show()
+# tick : plot이나 chart에서 축상의 위치 표시 지점을 의미한다.
+## tick에 씌어지는 숫자나 글자를 틱 라벨(tick label)이라고 한다.
+## 일반적으로 tick label은 Matplotlib가 자동으로 정해준다.
+## 사용자가 수동으로 설정을 하고싶다면 xticks, yticks 명령을 사용하여 x축과 y축 설정이 가능하다.
+## 틱 라벨 문자열을 수학 기호로 표시하고 싶은 경우 $$사이에 LaTeX 수학문자식을 넣어서 사용한다.
+
+X = np.linspace(-np.pi, np.pi, 256)
+C = np.cos(X)
+plt.plot(X, C)
+plt.xticks([-np.pi, -np.pi/2, 0, np.pi/2, np.pi], ['$-\pi$', '$-\pi/2$', 0, '$\pi/2$', '$\pi$'])
+plt.yticks([-1, 0, 1], ['Low', '0', 'High'])
+plt.show()
+
+
+
+xx1 = np.linspace(0.0, 5.0)
+xx2 = np.linspace(0.0, 2.0)
+
+yy1 = np.cos(2 * np.pi * xx1) * np.exp(-xx1)
+yy2 = np.cos(2 * np.pi * xx2)
+
+ax1 = plt.subplot(2, 1, 1)
+plt.plot(xx1, yy1, 'ro-')
+ax2 = plt.subplot(2, 1, 2)
+plt.plot(xx2, yy2, 'b.-')
+
+plt.show()
 
 
