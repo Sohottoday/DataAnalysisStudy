@@ -166,6 +166,71 @@ plt.show()
 
 
 
+## 다양한 차트
+
+### bar chart
+
+- `bar(x, y)` : x는 x축의 위치, y축의 값
+
+``` python
+y = [2, 1, 3]
+x = np.arange(3)
+xlabel = ['A', 'B', 'C']
+plt.bar(x, y)
+plt.xticks(x, xlabel)
+plt.show()
+```
+
+![Figure_5](https://user-images.githubusercontent.com/58559786/86281735-eecef900-bc18-11ea-8654-07f8b201ead0.png)
+
+``` python
+np.random.seed(0)
+yLabel = ['A', 'B', 'C', 'D']
+yPos = np.arange(4)
+yValue = 2+10*np.random.rand(4)
+
+plt.barh(yPos, yValue, alpha=0.5)		# alpha는 투명도를 의미한다. 0 ~ 1
+plt.yticks(yPos, yLabel)
+plt.show()
+```
+
+![Figure_6](https://user-images.githubusercontent.com/58559786/86281894-35245800-bc19-11ea-8758-38c9994fbec4.png)
+
+
+
+### historam
+
+``` python
+x = np.random.randn(1000)
+bins = plt.hist(x, bins=10)
+print(bins)
+#(array([  9.,  20.,  70., 146., 218., 239., 161.,  86.,  37.,  14.]), array([-3.04614305, -2.46559324, -1.88504342, -1.3044936,  #-0.72394379,
+#       -0.14339397,  0.43715585,  1.01770566,  1.59825548,  2.1788053 ,
+#        2.75935511]), <a list of 10 Patch objects>)
+
+arrays, bins, patchs = plt.hist(x, bins=10)
+print(bins)
+#[-3.04614305 -2.46559324 -1.88504342 -1.3044936  -0.72394379 -0.14339397
+#  0.43715585  1.01770566  1.59825548  2.1788053   2.75935511]
+
+plt.hist(x, bins=10)
+plt.show()
+```
+
+![Figure_7](https://user-images.githubusercontent.com/58559786/86282140-9cdaa300-bc19-11ea-942f-a5b0a2378443.png)
+
+
+
+### pie chart
+
+- 원의 형태를 유지하기 위해서 plt.axis('equal') 명령을 실행한 후 그린다.
+
+``` python
+labels = 'A', 'B', 'C', 'D'
+sizes = [10, 30, 40, 20]
+colors = ['red', 'blue', 'yellogreen', 'pink']
+```
+
 
 
 

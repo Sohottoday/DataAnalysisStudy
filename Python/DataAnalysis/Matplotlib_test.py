@@ -65,7 +65,7 @@ plt.plot(x2, y+0.4, 'o')
 # xlim : x축의 범위를 지정한다.
 # ylim : y축의 범위를 지정한다.
 plt.ylim([-0.5, 1])      # y축의 값이 -0.5에서 1 사이값으로 축을 지정한다.
-plt.show()
+#plt.show()
 
 
 X = np.linspace(-np.pi, np.pi, 256)
@@ -74,7 +74,7 @@ plt.plot(X, C)
 plt.xticks([-np.pi, -np.pi/2, 0, np.pi/2, np.pi])
 plt.yticks([-1, 0, 1])
 plt.grid(True)
-plt.show()
+#plt.show()
 # tick : plot이나 chart에서 축상의 위치 표시 지점을 의미한다.
 ## tick에 씌어지는 숫자나 글자를 틱 라벨(tick label)이라고 한다.
 ## 일반적으로 tick label은 Matplotlib가 자동으로 정해준다.
@@ -86,7 +86,7 @@ C = np.cos(X)
 plt.plot(X, C)
 plt.xticks([-np.pi, -np.pi/2, 0, np.pi/2, np.pi], ['$-\pi$', '$-\pi/2$', 0, '$\pi/2$', '$\pi$'])
 plt.yticks([-1, 0, 1], ['Low', '0', 'High'])
-plt.show()
+#plt.show()
 
 
 
@@ -101,6 +101,48 @@ plt.plot(xx1, yy1, 'ro-')
 ax2 = plt.subplot(2, 1, 2)
 plt.plot(xx2, yy2, 'b.-')
 
+# plt.show()
+
+plt.cla()
+plt.cla()
+
+
+# Matplotlib의 다양한 차트
+
+# bar chart
+# bar(x, y) ; x는 x축의 위치, y축의 값
+
+y = [2, 3, 1]
+x = np.arange(3)
+xlabel = ['A', 'B', 'C']
+plt.bar(x, y)
+plt.xticks(x, xlabel)
 plt.show()
 
+np.random.seed(0)
+yLabel = ['A', 'B', 'C', 'D']
+yPos = np.arange(4)
+yValue = 2+10*np.random.rand(4)
+
+plt.barh(yPos, yValue, alpha=0.5)       # alpha는 투명도를 의미한다. 0 ~ 1
+plt.yticks(yPos, yLabel)
+plt.show()
+plt.cla()
+
+x = np.random.randn(1000)
+bins = plt.hist(x, bins=10)
+print(bins)
+
+arrays, bins, patchs = plt.hist(x, bins=10)
+print(bins)
+
+plt.hist(x, bins=10)
+plt.show()
+
+# pie chart
+# 원의 형태를 유지하기 위해서 plt.axis('equal') 명령을 실행한 후 그린다.
+
+labels = 'A', 'B', 'C', 'D'
+sizes = [10, 30, 40, 20]
+colors = ['red', 'blue', 'yellogreen', 'pink']
 
