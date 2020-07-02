@@ -96,10 +96,10 @@ xx2 = np.linspace(0.0, 2.0)
 yy1 = np.cos(2 * np.pi * xx1) * np.exp(-xx1)
 yy2 = np.cos(2 * np.pi * xx2)
 
-ax1 = plt.subplot(2, 1, 1)
-plt.plot(xx1, yy1, 'ro-')
-ax2 = plt.subplot(2, 1, 2)
-plt.plot(xx2, yy2, 'b.-')
+#ax1 = plt.subplot(2, 1, 1)
+#plt.plot(xx1, yy1, 'ro-')
+#ax2 = plt.subplot(2, 1, 2)
+#plt.plot(xx2, yy2, 'b.-')
 
 # plt.show()
 
@@ -117,7 +117,7 @@ x = np.arange(3)
 xlabel = ['A', 'B', 'C']
 plt.bar(x, y)
 plt.xticks(x, xlabel)
-plt.show()
+#plt.show()
 
 np.random.seed(0)
 yLabel = ['A', 'B', 'C', 'D']
@@ -126,7 +126,7 @@ yValue = 2+10*np.random.rand(4)
 
 plt.barh(yPos, yValue, alpha=0.5)       # alpha는 투명도를 의미한다. 0 ~ 1
 plt.yticks(yPos, yLabel)
-plt.show()
+#plt.show()
 plt.cla()
 
 x = np.random.randn(1000)
@@ -137,12 +137,81 @@ arrays, bins, patchs = plt.hist(x, bins=10)
 print(bins)
 
 plt.hist(x, bins=10)
-plt.show()
+#plt.show()
 
 # pie chart
 # 원의 형태를 유지하기 위해서 plt.axis('equal') 명령을 실행한 후 그린다.
+## ratio : 비율
+## explode : 강조하려는 부분
+## labels : 
+## color : 색
+## autopct : 퍼센트를 나타낼 때 소수점 자리수를 설정해주는 속성
+## shadow : 그림자를 넣어 입체감 있게 표현할것인지
+## startangle : 시작하는 각도, 반시계 방향으로 그려진다.
+
 
 labels = 'A', 'B', 'C', 'D'
-sizes = [10, 30, 40, 20]
-colors = ['red', 'blue', 'yellogreen', 'pink']
+ratio = [10, 30, 40, 20]
+colors = ['red', 'skyblue', 'yellowgreen', 'pink']
+explode = (0, 0.1, 0, 0)
 
+plt.pie(ratio, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True, startangle=90)
+plt.show()
+
+plt.cla()
+
+# scatter plot : 산점도
+## 두개의 실수 데이터 집합의 상관관계를 살펴볼 때 많이 사용하는 차트
+
+# numpy의 np.random.normal(평균, 표준편차, 샘플 수)
+m, sigma = 0, 0.1
+s = np.random.normal(m, sigma, 1000)
+plt.hist(s, 30)
+plt.show()
+
+X = np.random.normal(0, 1, 100)
+Y = np.random.normal(0, 1, 100)
+#print(X)
+plt.scatter(X, Y)
+plt.show()
+
+# 데이터가 2차원이 아닌 3차원 이상인 경우에는 점 하나의 크기 또는 칼라를 이용하여 표현한다.
+# 이러한 차트를 bubble chart라 한다.
+# 크기를 표현할 때 s, 칼라는 c 인수를 사용한다.
+n = 30
+x = np.random.rand(n)
+y1 = np.random.rand(n)
+y2 = np.random.rand(n)
+y3 = np.pi * (15 * np.random.rand(n)) **2
+plt.scatter(x, y1, c=y2, s=y3)
+plt.grid(True)
+plt.show()
+
+
+# triangular grid 사용
+# import matplotlib.tri as mtri
+# 삼각 그리드 지원을 해주는 패키지
+
+# 삼각 그리드 생성
+# 삼각 그리드는 Triangulation 클래스를 이용하여 생성한다.
+## Triangulation(x, y, triangles)   3가지 매개변수를 받는다. triangles는 생략했을 경우 자동으로 생성된다.
+
+import matplotlib.tri as mtri
+
+x = np.array([0, 1, 2])
+y = np.array([0, np.sqrt(3), 0])
+triangles = [[0, 1, 2]]
+triang = mtri.Triangulation(x, y, triangles)
+plt.triplot(triang, 'ro-')
+plt.xlim(-0.1, 2.1)
+plt.ylim(-0.1, 1.8)
+plt.show()
+
+
+x = np.array([0, 1, 2, 3, 4, 2])
+y = np.array([0, np.sqrt(3), 0, np.sqrt(3), 0, 2*np.sqrt(3)])
+triangles = [[0, 1, 2], [2, 3, 4], [1, 2, 3], [1, 3, 5]]
+triang = mtri.Triangulation(x, y, triangles)
+plt.triplot(triang, 'bo-')
+plt.grid()
+plt.show()

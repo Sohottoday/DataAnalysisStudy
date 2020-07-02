@@ -224,14 +224,103 @@ plt.show()
 ### pie chart
 
 - 원의 형태를 유지하기 위해서 plt.axis('equal') 명령을 실행한 후 그린다.
+  - ratio : 비율
+  - explode : 강조하려는 부분
+  - labels
+  - color : 색
+  - autopct : 퍼센트를 나타낼 때 소수점 자리수를 설정해주는 속성
+  - shadow : 그림자를 넣어 입체감 있게 표현할 것인지
+  - startangle : 시작하는 각도, 반시계 반향으로 그려진다.
 
 ``` python
 labels = 'A', 'B', 'C', 'D'
-sizes = [10, 30, 40, 20]
-colors = ['red', 'blue', 'yellogreen', 'pink']
+ratio = [10, 30, 40, 20]
+colors = ['red', 'blue', 'yellowgreen', 'pink']
+explode = (0, 0.1, 0, 0)
+
+plt.pie(ratio, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True, startangle=90)
+plt.show()
 ```
 
+![Figure_1](https://user-images.githubusercontent.com/58559786/86371271-a74d7900-bcbb-11ea-9706-d46b797e71f2.png)
 
+### scatter plot
 
+- 산점도
+- 두개의 실수 데이터 집합의 상관관계를 살펴볼 때 많이 사용하는 차트
 
+``` python
+X = np.random.normal(0, 1, 100)
+Y = np.random.normal(0, 1, 100)
+plt.scatter(X, Y)
+plt.show()
+```
+
+![Figure_3](https://user-images.githubusercontent.com/58559786/86371741-3d819f00-bcbc-11ea-98f5-b6d6cfdf3072.png)
+
+- np.random.normal : 평균과 표준편차를 활용한 랜덤 값 추출
+  - numpy의 np.random.normal(평균, 표준편차, 샘플 수)
+
+``` python
+m, sigma = 0, 0.1
+s = np.random.normal(m, sigma, 1000)
+plt.hist(s, 30)
+plt.show()
+```
+
+![Figure_2](https://user-images.githubusercontent.com/58559786/86371535-f1cef580-bcbb-11ea-98cf-d0c9c7078e8a.png)
+
+- 데이터가 2차원이 아닌 3차원 이상인 경우에는 점 하나의 크기 또는 칼라를 이용하여 표현한다.
+
+  이러한 차트를 bubble chart라 한다.
+
+  - 크기를 표현할 때 s, 칼라는 c 인수를 사용한다.
+
+``` python
+n = 30
+x = np.random.rand(n)
+y1 = np.random.rand(n)
+y2 = np.random.rand(n)
+y3 = np.pi * (15 * np.random.rand(n)) ** 2
+plt.scatter(x, y1, c=y2, s=y3)
+plt.grid(True)
+plt.show()
+```
+
+![Figure_4](https://user-images.githubusercontent.com/58559786/86372074-af59e880-bcbc-11ea-8611-05136dabc5a7.png)
+
+### triangular grid
+
+- 삼각 그리드 지원을 해주는 패키지
+- `import matplotlib.tri as mtri`
+- 삼각 그리드는 Triangulation 클래스를 이용하여 생성한다.
+  - Triangulation(x, y, triangles) -> 3가지 매개변수를 받는다.
+  - triangles는 생략했을 경우 자동으로 생성된다.
+
+``` python
+import matplotlib.tri as mtri
+
+x = np.array([0, 1, 2])
+y = np.array([0, np.sqrt(3), 0])
+triangles = ([0, 1, 2])
+triang = mtri.Triangulation(x, y, triangles)
+plt.triplot(triang, 'ro-')
+plt.xlim(-0.1, 2.1)
+plt.ylim(-0.1, 1.8)
+plt.show()
+```
+
+![Figure_5](https://user-images.githubusercontent.com/58559786/86372503-35762f00-bcbd-11ea-8aba-bec4d1d9ee17.png)
+
+``` python
+x = np.array([0, 1, 2, 3, 4, 2])
+y = np.array([0, np.sqrt(3), 0, np.sqrt(3), 0, 2*np.sqrt(3)])
+triangles = [[0, 1, 2], [2, 3, 4], [1, 2, 3], [1, 3, 5]]
+triang = mtri.Triangulation(x, y, triangles)
+plt.triplot(triang, 'bo-')
+plt.grid()
+plt.show()
+```
+
+![Figure_6](https://user-images.githubusercontent.com/58559786/86372684-7d955180-bcbd-11ea-89ed-e305d79e126f.png)
 
