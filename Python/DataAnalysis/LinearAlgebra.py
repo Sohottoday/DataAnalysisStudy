@@ -91,3 +91,80 @@ a = np.array([1, 3])
 alength = np.linalg.norm(a)
 print(alength)
 
+
+# 스칼라와 벡터의 곱
+# 양수와 벡터를 곱하면 벡터의 방향은 변하지 않고 그 양수의 크기만큼 벡터의 크기가 커진다.
+# 음수를 곱하면 벡터의 방향은 반대방향이 된다.
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+a = np.array([1, 2])
+b = 2 * a
+c = -1 * a
+
+plt.annotate('', xy=b, xytext=(0,0), arrowprops=dict(facecolor='red'))
+plt.text(0.9, 3.2, '$2a$', fontdict={'size':15})
+
+plt.annotate('', xy=a, xytext=(0,0), arrowprops=dict(facecolor='black'))
+plt.text(0.2, 1.2, "$a$", fontdict={"size" : 15})
+
+plt.annotate('', xy=c, xytext=(0,0), arrowprops=dict(facecolor='yellow'))
+plt.text(-0.2, -0.7, '$-a$', fontdict={'size':15})
+plt.plot(c[0], c[1], 'go', ms=15)
+
+plt.plot(0, 0, 'ko', ms=20)
+plt.xticks(np.arange(-4, 6))
+plt.yticks(np.arange(-4, 6))
+plt.xlim(-4.5, 5.5)
+plt.ylim(-3.5, 5.5)
+plt.grid(True)
+plt.show()
+
+# 단위 벡터(unit vector) : 길이가 1인 벡터
+a = np.array([1, 0])
+b = np.array([0, 1])
+c = np.array([1/np.sqrt(2), 1/np.sqrt(2)])
+avalue = np.linalg.norm(a)
+bvalue = np.linalg.norm(b)
+cvalue = np.linalg.norm(c)
+
+print(avalue, '//', bvalue, '//', cvalue)
+
+# 벡터의 합
+## 두 벡터를 이웃하는 변으로 가지는 평행사변형의 다른 쪽 모서리가 두 벡터를 합한 벡터의 위치이다.
+a = np.array([1, 2])
+b = np.array([2, 1])
+c = a + b   # a 벡터와 b벡터를 합한 c도 역시 벡터가 된다
+
+plt.annotate('', xy=a, xytext=(0,0), arrowprops=dict(facecolor='black'))
+plt.annotate('', xy=b, xytext=(0,0), arrowprops=dict(facecolor='black'))
+plt.annotate('', xy=c, xytext=(0,0), arrowprops=dict(facecolor='yellow'))
+
+plt.plot(0, 0, 'bo', ms=15)
+plt.plot(a[0], a[1], 'bo', ms=15)
+plt.plot(b[0], b[1], 'bo', ms=15)
+plt.plot(c[0], c[1], 'bo', ms=15)
+
+plt.plot([a[0],c[0]], [a[1], c[1]], 'r--' )
+plt.show()
+
+# 기하학적인 또다른 벡터의 합 표현
+plt.annotate('', xy=a, xytext=(0, 0), arrowprops=dict(facecolor='blue'))
+plt.annotate('', xy=c, xytext=a, arrowprops=dict(facecolor='blue'))
+plt.annotate('', xy=c, xytext=(0, 0), arrowprops=dict(facecolor='red'))
+
+plt.plot(0, 0, 'go', ms=10)
+plt.plot(a[0], a[1], 'go', ms=10)
+plt.plot(c[0], c[1], 'go', ms=10)
+
+plt.text(0.4, 1.2, "$a$", fontdict={'size':15})
+plt.text(1.4, 2.5, '$b$', fontdict={'size':15})
+plt.text(1.3, 1.5, '$c$', fontdict={'size':15})
+
+plt.xticks(np.arange(-2, 5))
+plt.yticks(np.arange(-1, 4))
+plt.show()
+
+
