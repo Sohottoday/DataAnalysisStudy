@@ -37,6 +37,74 @@ plt.show()
 ## 현재 위치 x에서의 기울기 값 g(x)만을 이용해서 다음에 시도할 위치를 알아내는 방법
 
 
+def f1(x):
+    return (x-2)**2 + 2
+
+def f1d(x):
+    return 2 * (x - 2.0)
+
+
+xx = np.linspace(-1, 6, 100)
+plt.plot(xx, f1(xx), 'b-')
+
+# step size 값 설정
+mu = 0.4
+
+# k 는 위치값, 0부터 시작한다. k = 0 첫번 위치 시도값
+x = 0
+
+plt.plot(x, f1(x), 'mo', ms=10)
+plt.plot(xx, f1d(x) * (xx - x) + f1(x), 'g--')
+print('x = {}, g = {}'.format(x, f1d(x)))
 
 
 
+# k = 1 일 때
+x = x - mu * f1d(x)
+
+plt.plot(x, f1(x), 'co', ms=10)
+plt.plot(xx, f1d(x) * (xx - x) + f1(x), 'g--')
+print('x = {}, g = {}'.format(x, f1d(x)))
+
+plt.ylim(0, 10)
+
+
+# k = 2 세번째 시도
+x = x - mu * f1d(x)
+
+plt.plot(x, f1(x), 'ro', ms=10)
+plt.plot(xx, f1d(x) * (xx - x) + f1(x), 'g--')
+print('x = {}, g = {}'.format(x, f1d(x)))
+
+plt.show()
+
+
+# SciPy를 이용한 최적화
+# import scipy as sp 로 불러온다
+# scipy의 서브 패키지는 optimize에 minimize 메서드를 이용하여 최적화를 할 수 있다.
+# 이 때 사용하는 알고리즘은 BFGS 이다.
+# minimize 메서드는 최적화를 시작하기 위한 초기값을 인수로 사용한다. 목적함수를 인수로 사용한다.
+
+# minimize 명령은 최적화 결과를 OptimizeResult 클래스 객체로 반환한다.
+# OptimizeResult 클래스는 다음과 같은 속성을 갖고 있다.
+# x : 최적화 해
+# success : 최적화를 성공했을 때 True를 반환
+# status : 종료 상태. 최적화에 성공했을 때 0을 반환
+# message : 메세지 문자열
+# fun : x위치에서의 함수 값
+# jac : x 위치에서의 자코비안(그래디언트) 벡터 값
+# hess : x 위치에서 헤시안 행렬 값
+# nfev : 목적 함수를 몇번 호출했는지 횟수
+# njev : 자코비안 계산 횟수
+# nhev : 헤시안 계산 횟수
+# nit : x 이동 횟수
+
+from scipy import optimize
+import scipy as sp
+
+def f0(x):
+    return (x - 2) ** 2 + 2
+
+x0 = 0      # 초기값 설정
+res = sp.optimize.minimize(f0, x0)
+print(res)
