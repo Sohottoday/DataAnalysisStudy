@@ -65,4 +65,10 @@ plt.show()
 rv.rvs(size=(2, 4), random_state=0)
 print(rv.rvs(size=(2, 4), random_state=0))
 
+import seaborn as sns
+sns.distplot(rv.rvs(size=10000, random_state=0))
+plt.xlim(-6, 6)
+plt.show()
+
+
 # 실수 분포 plot (seaborn 패키지 : distplot, kdeplot, rugplot)
