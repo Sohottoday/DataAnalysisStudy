@@ -72,3 +72,90 @@ plt.show()
 
 
 # 실수 분포 plot (seaborn 패키지 : distplot, kdeplot, rugplot)
+
+
+
+# 베르누이 분포
+# 베르누이 시도(Bernoulli trial) : 결과가 성공 또는 실패 두가지 중 하나로만 나오는 것
+# 동전을 던져서 앞이나 뒤가 나오는 경우 베르누이 시도라 한다.
+
+# 베르누이 시도 결과를 확률 변수(random variable) X로 나타낼 때는 일반적으로 성공은 1로 실패는 0으로 표현한다.
+# 가끔 실패를 -1로 정하는 경우도 있다.
+# 베르누이 확률 변수는 0, 1 두 가지 값 중 하나만 가질 수 있으므로 이산 확률 변수이다.
+# 1이 나올 확률을 theta(모수)로 표현하며, 0이 나올 확률은 1-0으로 표현한다.
+
+# scipy를 이용한 베르누이 분포
+import scipy as sp
+from scipy import stats
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+import numpy as np
+
+# scipy에서 베르누이 분포의 모수 설정을 p 속성으로 사용한다.
+theta = 0.6     # 성공할 확률이 0.6이라는 의미, 즉 실패 확률은 0.4
+rv = sp.stats.bernoulli(theta)
+
+# pmf 메서드를 이용하면 확률 질량 함수(pmf : probability mass function)를 계산할 수 있다.
+
+xx = [0, 1]
+plt.bar(xx, rv.pmf(xx))
+
+plt.xticks([0, 1], ['X=0', 'X=1'])
+plt.show()
+
+# 베르누이 분포 시뮬레이션
+x = rv.rvs(100, random_state=0)
+print(x)
+
+sns.countplot(x)
+plt.show()
+
+y = np.bincount(x, minlength=2) / float(len(x))
+df = pd.DataFrame({'theory' : rv.pmf(xx), 'simulation' : y})
+df.index = [0, 1]
+print(df)
+
+df2 = df.stack().reset_index()
+df2.columns = ['sample value', 'type', '%']
+print(df2)
+
+sns.barplot(x='sample value', y='%', hue='type', data=df2)      # 한글 인식 X
+plt.show()
+
+
+# seaborn barplot 메서드는 범주 내에 있는 통계 측정
+
+
+# Scipy를 이용한 이항 분포 시뮬레이션
+## scipy의 서브 모듈 binom 클래스가 이항 분포 클래스이다.
+## n과 p 속성을 사용하여 모수를 설정한다.
+
+N = 10
+theta = 0.6
+rv = sp.stats.binom(N, theta)
+
+xx = np.arange(N+1)
+plt.bar(xx, rv.pmf(xx))
+plt.ylabel('pmf(x)')
+plt.show()
+
+# 시뮬레이션 (rvs 메서드 사용)
+x = rv.rvs(100)
+print(x)
+
+sns.set()
+sns.set_style('darkgrid')
+sns.countplot(x)
+plt.show()
+
+
+y = np.bincount(x, minlength=N+1) / float(len(x))
+df = pd.DataFrame({'theory' : rv.pmf(xx), 'simulation' : y}).stack()
+df = df.reset_index()
+df.columns = ['sample', 'type', '%']
+df.pivot('sample','type','%')
+print(df)
+
+sns.barplot(x='sample', y='%', hue='type', data=df)
+plt.show()

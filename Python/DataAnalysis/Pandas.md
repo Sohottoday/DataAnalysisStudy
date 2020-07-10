@@ -1730,5 +1730,31 @@ print(df4.set_index(['c', 'd']).reset_index())
 
 
 
+- pandas 보조 메서드
+- `stack()` : 열 인덱스를 행 인덱스로 교환
+- `unstack()` : 행 인덱스를 열 인덱스로 교환
+- `reset_index()` : 기존의 행 인덱스를 제거하고 첫 데이터 열로 추가
+- `set_index()` : 기존의 행 인덱스를 제거하고 데이터 열 중 하나를 인덱스로 설정
 
+
+
+``` python
+df = pd.DataFrame([('A', 300.0),
+                    ('B', 24.0),
+                    ('C', 80.0),
+                    ('D', np.nan)], index=['aa', 'bb', 'cc', 'dd'], columns=('type', 'speed'))
+print(df)
+#    type  speed
+# aa    A  300.0
+# bb    B   24.0
+# cc    C   80.0
+# dd    D    NaN
+
+print(df.reset_index())
+#   index type  speed
+# 0    aa    A  300.0
+# 1    bb    B   24.0
+# 2    cc    C   80.0
+# 3    dd    D    NaN
+```
 

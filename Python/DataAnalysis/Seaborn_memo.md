@@ -118,6 +118,21 @@ plt.show()
 
 
 
+- 2차원 실수 데이터
+- 산점도(scatter plot)
+  - seaborn 패키지의 jointplot 명령을 이용하여 표현
+  - 차트의 가장자리에 히스토그램도 표시된다.
+  - jointplot(x = 'x_name', y = 'y_name', data = dataframe)
+  - data 인수의 대상은 dataframe, x 속성은 데이터프레임의 열 이름 문자열, y 속성은 데이터프레임의 열 이름을 넣는다.
+  - kind 속성은 차트의 종류를 지정한다.
+
+``` python
+sns.jointplot(x='sepal_length', y='sepal_width', data=iris)
+plt.show()
+```
+
+![Figure_10](https://user-images.githubusercontent.com/58559786/87148172-e34e9280-c2e8-11ea-969f-dcfae27e523f.png)
+
 
 
 

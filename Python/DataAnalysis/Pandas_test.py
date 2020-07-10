@@ -573,3 +573,17 @@ print(df4.set_index(['c', 'd'], drop=False))    # drop=False를 주면 조건으
 
 # reset_index() : index가 다시 컬럼으로 되돌아감
 print(df4.set_index(['c', 'd']).reset_index())
+
+
+# pandas 보조 메서드
+# stack() : 열 인덱스를 행 인덱스로 교환
+# unstack() : 행 인덱스를 열 인덱스로 교환
+# reset_index() : 기존의 행 인덱스를 제거하고 첫 데이터 열로 추가
+# set_index() : 기존의 행 인덱스를 제거하고 데이터 열 중 하나를 인덱스로 설정
+
+df = pd.DataFrame([('A', 300.0),
+                    ('B', 24.0),
+                    ('C', 80.0),
+                    ('D', np.nan)], index=['aa', 'bb', 'cc', 'dd'], columns=('type', 'speed'))
+print(df)
+print(df.reset_index())
