@@ -225,3 +225,67 @@ df.columns = ['sample', 'type', '%']
 df.pivot('sample', 'type', '%')
 sns.barplot(x='sample', y='%', hue='type', data=df)     # hue : 카테고리 변수 이름을 지정하여 카테고리 값에 따라 색상을 다르게 함.
 plt.show()
+
+
+# 다항 분포(Multinomial distribution)
+# 카테고리 분포의 확장
+
+# scipy를 이용한 다항 분포의 시뮬레이션
+
+# seaborn의 2차원 복합데이터를 표현하는 플롯 소개
+# barplot
+# pointplot
+# boxplot : 중앙값, 표준 편차 등 간략한 특성을 보여주며, 박스는 실수 값 분포에서 1사분위수와 3사분위수를 의미
+## 박스 내부에 있는 가로선은 중앙값을 의미하며 박스 외부의 세로선은 1.5 * IQR(Q3-Q1) 만큼 1사분위수보다 낮은 값과 
+## 1.5 * IQR 만큼 3사분위수보다 높은 값의 구간을 기준으로 그 구간의 내부에 있는 가장 큰 값과 가장 작은 값을 이어준 선분
+## 그 바깥에 있는 점은 아웃라이어(outlier)라고 한다.
+# violinplot : 세로 방향으로 커널 밀도 히스토그램을 표현하며, 좌우가 대칭이 되어 바이올린 모양으로 보여진다.
+# stripplot : scatter plot 처럼 모든 데이터를 점으로 표시한다. (jitter = True) => 데이터의 수가 많을 경우 겹치지 않게 설정
+# swarmplot
+
+tips = sns.load_dataset('tips')
+sns.boxplot(x='day', y='total_bill', data=tips)
+plt.show()
+
+sns.violinplot(x='day', y='total_bill', data=tips)
+plt.show()
+
+sns.stripplot(x='day', y='total_bill', data=tips, jitter=True)
+plt.show()
+
+sns.swarmplot(x='day', y='total_bill', data=tips)
+plt.show()
+
+# 다차원 복합 데이터
+
+sns.boxplot(x='day', y='total_bill', hue='sex', data=tips)
+plt.show()
+
+sns.violinplot(x='day', y='total_bill', hue='sex', data=tips)
+plt.show()
+
+sns.stripplot(x='day', y='total_bill', hue='sex', data=tips, jitter=True)
+plt.show()
+
+sns.swarmplot(x='day', y='total_bill', hue='sex', data=tips)
+plt.show()
+
+sns.violinplot(x='day', y='total_bill', hue='sex', data=tips, split=True)
+plt.show()
+
+sns.stripplot(x='day', y='total_bill', hue='sex', data=tips, dodge=True)
+plt.show()
+
+sns.swarmplot(x='day', y='total_bill', hue='sex', data=tips, dodge=True)
+plt.show()
+
+# scipy는 다항 분포를 위한 multinomial 클래스를 제공한다. 인수로는 시행 횟수 : N, theta
+
+N = 30
+theta = [0, 0, 0.1, 0.2, 0.3, 0.4]
+rv = sp.stats.multinomial(N, theta)
+
+X = rv.rvs(100)     # 샘플을 100개 얻어옴
+
+print(X[:6])
+
