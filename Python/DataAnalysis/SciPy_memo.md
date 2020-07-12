@@ -502,9 +502,137 @@ print(X[:6])
 #  [ 0  0  2  6 13  9] 
 #  [ 0  0  2  6 11 11] 
 #  [ 0  0  7  7 10  6]]
+
+plt.boxplot(X)
+plt.show()
 ```
 
+![1](https://user-images.githubusercontent.com/58559786/87255695-008d8780-c4c8-11ea-9179-9c37cb905836.png)
+
+``` python
+df = pd.DataFrame(X).stack().reset_index()
+df.columns = ['trial', 'class', 'binomial']
+
+sns.boxplot(x='class', y='binomial', data=df)
+sns.stripplot(x='class', y='binomial', data=df, jitter=True, color='.2')
+plt.show()
+```
+
+![2](https://user-images.githubusercontent.com/58559786/87255722-40546f00-c4c8-11ea-958a-5b8268c11db3.png)
+
+``` python
+sns.violinplot(x='class', y='binomial', data=df, innerNone)			# inner = {'box', 'point', 'None', 'quartile'}
+sns.swarmplot(x='class', y='binomial', data=df, color='.2')
+plt.show()
+```
+
+![3](https://user-images.githubusercontent.com/58559786/87255753-7abe0c00-c4c8-11ea-9cc2-c9b77667568d.png)
 
 
 
+### 가우시안 정규 분포
+
+- Gaussian normal distribution
+
+``` python
+mu = 0
+std = 1
+rv = sp.stats.norm(mu, std)
+
+xx = np.linspace(-5, 5, 100)
+plt.plot(xx, rv.pdf(xx))
+plt.show()
+```
+
+![4](https://user-images.githubusercontent.com/58559786/87255773-accf6e00-c4c8-11ea-91eb-25a856f91bdd.png)
+
+
+
+``` python
+x = rvs(100)
+print(x)
+# [ 0.38726212  1.91815484 -0.28385971  0.21820333 -0.30402668  0.37121802
+#  -1.43150859 -0.36980234  1.52094182  1.43369261 -1.38529225  1.0962389
+#   1.05547602 -0.15119519 -0.21753175  0.23977031  1.0607899   0.0120297
+#  -1.29818425  0.34781867  0.25367943 -0.21648219 -0.14212383 -1.34951271
+#   0.85546679  0.86872113  0.2395515  -1.77585508  1.64251373 -0.93350907
+#  -0.27843322  0.24647152  1.46298661  1.6991654  -0.29184369  0.22786743
+#   0.20981107  0.44584008 -0.96197732  0.22101281  0.50708798 -0.07430503
+#  -0.01557177  0.09565545 -0.03166776  0.85739007  0.3048486   0.31275034
+#   0.91158845 -0.38991103 -0.86234348 -1.5846054  -1.14221337 -0.78416233
+#   0.36772907 -1.57385735  0.05431424  0.56482842 -2.61263867 -0.11892728
+#   0.93347068 -0.26288113 -0.50682178 -1.3596659   0.19697874  1.08630899
+#   0.30608819  0.6584044   0.07249789  1.91946119  0.80447696 -0.3819635
+#  -0.30680579  0.24218971 -1.21945611  0.28457087  0.58629713  0.04632043
+#   0.10201811  1.4562753   1.03970041 -0.68309427  0.40509516  0.2356032
+#   0.01967237 -1.62086404 -0.46519715  0.69353546  0.87494673  3.21539583
+#  -1.07287792  0.33551988 -1.20442642 -0.37066348  0.83408832  1.82158887
+#   0.69950957 -0.97687144 -0.74716819  1.29509168]
+
+sns.distplot(x, kde=True, fit=sp.stats.norm)
+plt.show()
+```
+
+![5](https://user-images.githubusercontent.com/58559786/87255804-d8525880-c4c8-11ea-9591-65cf2de9812e.png)
+
+#### Q-Q 플롯
+
+- 통계 분석 중의 하나로 정규분포검정(normality test)을 시각적으로 확인하는 plot
+- Q-Q 플롯 사용 순서
+  - SAMPLE 데이터를 크기순으로 정렬
+  - 각 샘플 데이터의 분위함수(quantile function)값을 구한다.
+  - 분위수(quantile)를 구한다.
+  - 샘플 데이터와 그에 대응한 정규분포값을 하나의 쌍으로 생각하고 2차원 공간에 점으로 그린다.
+  - 모든 샘플에 대해 위의 과정을 반복하여 scatter plot을 완성한다.
+- scipy에서는 Q-Q plot을 그리기 위한 명령 probplot 메서드 사용
+- probplot : 기본적으로 속성을 통해 보낸 데이터 샘플에 대한 Q-Q plot 정보만을 반환하고 실제로 차트를 그리지는 않는다.
+- plot 속성에는 matplotlib.pyplot 모듈 객체를 값으로 한다.
+
+
+
+#### 정규 분포를 따르는 데이터 샘플을 Q-Q plot으로 보여주기
+
+``` python
+x = np.random.randn(100)
+plt.figure(figsize=(5, 5))
+sp.stats.probplot(x, plot=plt)
+plt.axis('equal')
+plt.show()
+```
+
+![6](https://user-images.githubusercontent.com/58559786/87255914-ca510780-c4c9-11ea-81bf-c1e1d676cf99.png)
+
+#### 정규 분포를 따르지 않는 데이터 샘플을 Q-Q plot으로 보여주기
+
+``` python
+x = np.random.rand(100)
+plt.figure(figsize=(5, 5))
+sp.stats.probplot(x, plot=plt)
+plt.ylim(-0.5, 1.5)
+plt.show()
+```
+
+![7](https://user-images.githubusercontent.com/58559786/87255937-f1a7d480-c4c9-11ea-8d81-ddc2a49c92b6.png)
+
+### t 분포
+
+#### scipy를 이용한 t분포
+
+- scipy에서는 t명령을 이용하여 t분포 객체를 생성한다.
+- 사용되는 속성은 표준편차, 기대값, 자유도
+- 자유도(degree of freedom)가 클수록 정규분포에 수렴된다.
+
+``` python
+xx = np.linspace(-4, 4, 100)
+
+for df in [1, 3, 5, 10, 20]:
+    rv = sp.stats.t(df=df)
+    plt.plot(xx, rv.pdf(xx), label=('student-t(dof=%d)' % df))
+    
+plt.plot(xx, sp.stats.norm().pdf(xx), label='Normal', lw=4, alpha=0.5)		# alpha : 투명도
+plt.legend()		# legend : 범례
+plt.show()
+```
+
+![8](https://user-images.githubusercontent.com/58559786/87256009-61b65a80-c4ca-11ea-9523-c467bd183dd3.png)
 

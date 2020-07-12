@@ -289,3 +289,75 @@ X = rv.rvs(100)     # 샘플을 100개 얻어옴
 
 print(X[:6])
 
+plt.boxplot(X)
+plt.show()
+
+df = pd.DataFrame(X).stack().reset_index()
+df.columns = ['trial', 'class', 'binomial']
+
+sns.boxplot(x='class', y='binomial', data=df)
+sns.stripplot(x='class', y='binomial', data=df, jitter=True, color='.2')
+plt.show()
+
+sns.violinplot(x='class', y='binomial', data=df, inner=None)        # inner = {'box', 'point', 'stick', 'None', 'quartile'}
+sns.swarmplot(x='class', y='binomial', data=df, color='.2')
+plt.show()
+
+# 가우시안 정규 분포(Gaussian normal distribution)
+
+mu = 0
+std = 1
+rv = sp.stats.norm(mu, std)
+
+xx = np.linspace(-5, 5, 100)
+plt.plot(xx, rv.pdf(xx))
+plt.show()
+
+x = rv.rvs(100)
+print(x)
+
+sns.distplot(x, kde=True, fit=sp.stats.norm)
+plt.show()
+
+# Q-Q 플롯 : 통계 분석 중의 하나로 정규분포검정(normality test)을 시각적으로 확인하는 plot
+# Q-Q 플롯 사용 순서
+## sample 데이터를 크기순으로 정렬
+## 각 샘플 데이터의 분위함수(quantile function)값을 구한다.
+## 분위수(quantile)를 구한다.
+## 샘플 데이터와 그에 대응한 정규분포값을 하나의 쌍으로 생각하고 2차원 공간에 점으로 그린다.
+## 모든 샘플에 대해 위의 과정을 반복하여 scatter plot을 완성한다.
+
+# scipy에서는 Q-Q plot을 그리기 위한 명령 probplot 메서드 사용
+# probplot : 기본적으로 속성을 통해 보낸 데이터 샘플에 대한 Q-Q plot 정보만을 반환하고 실제로 차트를 그리지는 않는다.
+# plot 속성에는 matplotlib.pyplot 모듈 객체를 값으로 한다.
+
+# 정규 분포를 따르는 데이터 샘플을 Q-Q plot으로 보여주기
+x = np.random.randn(100)
+plt.figure(figsize=(5,5))
+sp.stats.probplot(x, plot=plt)
+plt.axis('equal')
+plt.show()
+
+
+# 정규 분포를 따르지 않는 데이터 샘플을 Q-Q plot으로 보여주기
+x = np.random.rand(100)
+plt.figure(figsize=(5, 5))
+sp.stats.probplot(x, plot=plt)
+plt.ylim(-0.5, 1.5)
+plt.show()
+
+# scipy를 이용한 t분포 알아보기
+
+# scipy에서는 t명령을 이용하여 t분포 객체를 생성한다.
+# 사용되는 속성은 표준편차, 기대값, 자유도
+# 자유도(degree of freedom)가 클수록 정규분포에 수렴된다.
+
+xx = np.linspace(-4, 4, 100)
+
+for df in [1, 3, 5, 10, 20]:
+    rv = sp.stats.t(df=df)
+    plt.plot(xx, rv.pdf(xx), label=('student-t(dof=%d)' % df))
+
+plt.plot(xx, sp.stats.norm().pdf(xx), label='Normal', lw=4, alpha=0.5)     # aplha : 투명도
+plt.legend()      # legend : 범례
+plt.show()
