@@ -98,3 +98,52 @@ x = np.arange(9).reshape(3, 3)
 print(x)
 print(np.diag(x))
 print(np.diag(np.diag(x)))      # diag()함수는 반대로 벡터 요소를 대각 요소로 하는 정방 행렬을 만들 수 있다.
+
+
+# scipy에서 scikit-learn 알고리즘을 구현할 때 가장 중요한 기능은 scipy.sparse 모듈
+# 이때 희소 행렬기능은 주요 기능 중의 하나이다.
+# 희소 행렬(sparse matrix) : 0을 많이 포함한 2차원 배열
+
+from scipy import sparse
+
+b1 = np.eye(4, dtype=int)
+
+print("Numpy 배열 : \n{}".format(b1))
+
+# sparse.csr_matrix() : 0이 아닌 원소만 저장
+# CSR(Compressed Sparse Row) : 행의 인덱스를 압축해서 저장
+
+sparse_matrix = sparse.csr_matrix(b1)
+print("Scipy의 CSR 행렬 : \n{}".format(sparse_matrix))
+
+b2 = np.eye(5, k=-1, dtype=int)
+print(b2)
+
+sparse_matrix = sparse.csr_matrix(b2)
+print("Scipy의 CSR 행렬2 : \n{}".format(sparse_matrix))
+
+b3 = np.arange(16).reshape(4, 4)
+print(b3)
+
+x = np.diag(b3)
+print(x)
+
+y = np.diag(np.diag(b3))
+print(y)
+
+sparse_matrix = sparse.csr_matrix(y)
+print("SciPy의 CSR 행렬3 : \n{}".format(sparse_matrix))
+
+# 희소행렬을 직접 만들 때 사용하는 format
+## COO 포맷(Coordinate 포맷), 메모리 사용량을 많이 줄여준다.
+
+data = np.ones(4)
+print(data)
+
+row_indices = np.arange(4)
+col_indices = np.arange(4)
+
+eye_coo = sparse.coo_matrix((data, (row_indices, col_indices)))
+print("COO 표현 : \n{}".format(eye_coo))
+# 이러한 예제로는 데이터 양이 적기 때문에 체감하지 못하지만 빅데이터를 다룰 때 메모리양이 부족해서 오류가 나는 경우를 방지해 준다.
+
