@@ -147,3 +147,35 @@ eye_coo = sparse.coo_matrix((data, (row_indices, col_indices)))
 print("COO 표현 : \n{}".format(eye_coo))
 # 이러한 예제로는 데이터 양이 적기 때문에 체감하지 못하지만 빅데이터를 다룰 때 메모리양이 부족해서 오류가 나는 경우를 방지해 준다.
 
+
+# 내장 데이터셋 불러오기
+from sklearn.datasets import load_iris
+
+irisData = load_iris()      # Bunch 클래스 객체라고 한다. Python의 딕셔너리 객체 형태와 유사하다.
+print(irisData.keys())
+
+print(irisData['target_names'])
+
+print(irisData['data'].shape)
+
+# 데이터를 훈련용 data와 테스트용 data로 나누는 과정이 필요하다.
+# 보통 7:3 혹은 8:2 비율로 나눠준다.
+# train_test_split 로 수행한다.
+# train_test_split 모듈은 sklearn.model_selection에 존재한다.
+# train_test_split 수행하기 전 데이터의 섞는 과정이 필요하다.
+# scikit-learn 에서 데이터는 보통 대문자 X로 표기하고 label은 소문자 y로 표현한다.
+
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(irisData['data'], irisData['target'], random_state=0)
+
+# train_test_split()의 리턴 타입은 모두 numpy 배열이다.
+print(X_train.shape)
+
+print(X_test.shape)
+
+print(y_train.shape)
+
+print(y_test.shape)
+
+

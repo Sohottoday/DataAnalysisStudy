@@ -295,6 +295,50 @@ print("COO 표현 : \n{}".format(eye_coo))
 
 
 
+- 내장 데이터셋 불러오기
+
+``` python
+from sklearn.datasets import load_iris
+
+irisData = load_iris()		# Bunch 클래스 객체라고 한다. Python의 딕셔너리 객체 형태와 유사하다.
+print(irisData.keys())
+# dict_keys(['data', 'target', 'target_names', 'DESCR', 'feature_names', 'filename'])
+
+print(irisData['target_names'])
+# ['setosa' 'versicolor' 'virginica']
+
+print(irisData['data'].shape)
+# (150, 4)
+```
+
+- 데이터를 훈련용 data와 테스트용 data로 나누는 과정이 필요하다.
+
+  보통 7:3 혹은 8:2 비율로 나눠준다.
+
+  `train_test_split`로 수행한다
+
+  `train_test_split` 모듈은 `sklearn.model_selection`에 존재한다.
+
+  `train_test_split` 수행하기 전 데이터의 섞는 과정이 필요하다.
+
+  scikit-learn에서 데이터는 보통 대문자 X로 표기하고 label은 소문자 y로 표현한다.
+
+``` python
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(irisData['data'], irisData['target'], random_state=0)
+
+# train_test_split()의 리턴 타입은 모두 numpy 배열이다.
+print(X_train.shape)
+# (112, 4)
+print(X_test.shape)
+# (38, 4)
+print(y_train.shape)
+# (112,)
+print(y_test.shape)
+# (38,)
+```
+
 
 
 
