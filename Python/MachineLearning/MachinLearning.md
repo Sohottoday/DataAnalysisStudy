@@ -341,5 +341,66 @@ print(y_test.shape)
 
 
 
+##### KNN
+
+- K-Nearest Neighbors => k-최근접 이웃 알고리즘
+
+- 사용하기 쉬운 분류 알고리즘(분류기) 중의 하나이다.
+
+- 새로운 데이터를 훈련 데이터 중 가장 가까운 데이터를 찾아내는 것
+
+- k의 의미는 가장 가까운 이웃 하나를 의미하는것이 아니라 훈련 데이터에서 새로운 데이터에 가장 가까운 k개의 이웃을 찾는다는 의미
+
+- KNN을 사용하기 위해서는 neighbors 모듈의 KNeighborsClassifier 함수 사용
+
+- KNeighborsClassifier() 함수의 중요한 매개변수는 n_neighbors
+
+  이 매개변수는 이웃의 개수를 지정하는 매개변수
+
+``` python
+from sklearn.neighbors import KNeighborsClassfier
+
+knn = KNeighborsClassifier(n_neighbors=1)
+
+# 훈련 데이터셋을 가지고 모델을 만드려면 fit 메서드를 사용한다.
+# fit 메서드의 리턴값은 knn객체를 리턴한다.
+
+knn.fit(X_train, y_train)
+print(knn.fit(X_train, y_train))
+# KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
+#                      metric_params=None, n_jobs=None, n_neighbors=1, p=2,
+#                      weights='uniform')
+
+# 채집한 붓꽃의 새로운 데이터(샘플)라고 가정하고 Numpy 배열로 특성값을 만든다.
+# scikit-learn에서는 항상 데이터가 2차원 배열일 것으로 예측해야 한다.
+
+X_newData = np.array([[5.1, 2.9, 1, 0.3]])
+
+# knn 객체의 predict() 메서드를 사용하여 예측할 수 있다.
+prediction = knn.predict(X_newData)
+print('예측 : ', prediction)
+예측 :  [0]		# 0번째 위치한 값이라는 의미
+    
+print('예측한 품종의 이름 : ', irisData['target_names'][prediction])
+# 예측한 품종의 이름 :  ['setosa']
+
+y_predict = knn.predict(X_test)
+print(y_predict)
+# [2 1 0 2 0 2 0 1 1 1 2 1 1 1 1 0 1 1 0 0 2 1 0 0 2 0 0 1 1 0 2 1 0 2 2 1 0
+#  2]
+
+x = np.array([1, 2, 3, 2])
+
+# 정확도를 계산하기 위해 numpy의 mean() 메서드 사용
+# knn객체의 score() 메서드를 사용해도 된다.
+print(np.mean(y_predict == y_test))			# 1에 가까울수록 정확도가 높다는 의미
+# 0.9736842105263158
+## 이 의미는 y_predict가 X_test에 대한 예측값과의 비교
+print(knn.score(X_test, y_test))
+# 0.9736842105263158
+```
+
+
+
 
 
