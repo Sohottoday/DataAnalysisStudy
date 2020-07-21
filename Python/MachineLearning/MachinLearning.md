@@ -402,5 +402,116 @@ print(knn.score(X_test, y_test))
 
 
 
+#### 머신 러닝의 용어 정리
+
+- iris 분류 문제에 있어 각 품종을 클래스라 한다
+- 개별 붓꽃의 품종은 레이블이라고 한다.
+- 붓꽃의 데이터셋은 두 개의 Numpy 배열로 이루어져 있다.
+  - 하나의 데이터, 다른 하나는 출력을 가지고 있다.
+- scikit-learn에서는 데이터는 X로 표기하고, 출력은 소문자 y로 표기한다.
+- 이 때 배열 X는 2차원 배열이고 각 행은 데이터포인트(샘플)에 해당한다.
+- 각 컬럼(열)은 특성이라고 한다.
+- 배열 y는 1차원 배열이고, 각 샘플의 클래스 레이블에 해당한다.
+
+``` python
+from sklearn import svm, metrics
+import random, re
+
+csv = []
+
+with open('iris.csv', 'r', encoding='utf-8') as fp:
+    # 한 줄씩 읽어오기 
+    for line in fp:
+        line = line.strip()     # 줄바꿈 제거
+        cols = line.split(',')      # 컴마 기준으로 컬럼을 잘라내겠다는 의미
+        # 문자열 데이터를 숫자로 변환하기
+        fn = lambda n : float(n) if re.match(r'^[0-9\.]+$', n) else n
+        cols = list(map(fn, cols))
+        csv.append(cols)
+
+# 헤더 제거(컬럼명 제거)
+del csv[0]
+
+# 데이터를 섞어주기
+random.shuffle(csv)
+
+# 훈련(학습) 데이터와 테스트 데이터로 분리하기
+total_len = len(csv)
+train_len = int(total_len * 2/3)
+
+train_data = []
+train_label = []
+
+for i range(total_len):
+    data = csv[i][0:4]
+    label = csv[i][4]
+    if i < train_len:
+        train_data.append(data)
+        train_label.append(label)
+    else:
+        test_data.append(data)
+        test_label.append(label)
+
+clf = svm.SVC()
+# 학습
+clf.fit(train_data, train_label)
+
+# 테스트
+predict_label = clf.predict(test_data)
+
+# 정확도 구하기
+ac_score = metrics.accuracy_score(test_label, predict_label)
+
+print('정확도 : ', ac_score)
+
+
+
+################
+# pandas 이용하기
+csv = pd.read_csv('iris.csv')
+
+# 데이터와 레이블 분리하기
+csv_data = csv[['SepalLength', 'SepalWidth', 'PetalLength', 'PetalWidth']]
+csv_label = csv['Name']
+
+# 훈련 데이터와 테스트 데이터로 분리하기
+X_train, X_test, y_train, y_test = train_test_split(csv_data, csv_label)
+
+clf = svm.SVC()
+clf.fit(X_train, y_train)
+y_predict = clf.predict(X_test)
+
+ac_score = metrics.accuracy_score(y_test, y_predict)
+print('정확도 : ', ac_score)
+
+
+####################
+# 2만명 데이터 만들기(csv 파일)
+# Body Mass Index(체질량 지수:bmi) 데이터 만들어보기
+
+def bmi_func(height, weight):
+    bmi = weight/(height/100) ** 2
+    if bmi < 18.5 : return "저체중"
+    if bmi < 25 : return "정상 체중"
+    return "비만"
+
+fp = open('bmi.csv', 'w', encoding='utf-8')
+fp.write('height, weight, label\r\n')
+
+# 데이터 생성하기
+cnt = {'저체중' : 0, '정상': 0, '비만' : 0}
+
+for i in range(10000):
+    h = random.randint(120, 200)
+    w = random.randint(35, 90)
+    label = bmi_func(h, w)
+    cnt[label] += 1
+    fp.write('{0}, {1}, {2}\r\n'.format(h, w, label))
+fp.close()
+print('ok', cnt)
+```
+
+
+
 
 
