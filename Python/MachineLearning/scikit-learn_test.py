@@ -260,7 +260,7 @@ train_len = int(total_len * 2/3)
 train_data = []
 train_label = []
 
-for i range(total_len):
+for i in range(total_len):
     data = csv[i][0:4]
     label = csv[i][4]
     if i < train_len:
@@ -328,4 +328,86 @@ for i in range(10000):
 fp.close()
 print('ok', cnt)
 
+
+# 퍼셉트론 식
+
+# 가중치와 편향을 도입한 퍼셉트론 식
+#       0     w1 * x1 + w2 * x2 <= seta
+# y
+#       1     w1 * x1 + w2 * x2 > seta
+# x1, x2는 입력신호, y는 출력신호, w1, w2는 가중치를 의미
+# (w는 weight를 의미) seta는 임계값
+
+# w1 * x1 + w2 * x2 값이 임계값 이하일 때는 0을 출력, 임계값보다 클때 1을 출력
+# 가중치가 클수록 해당신호가 강해진다 
+
+# AND 게이트 진리표
+# x1        x2          y
+#------------------------
+# 0         0           0
+# 0         1           0
+# 1         0           0
+# 1         1           1
+
+# 입력이 모두 1일때만 1을 출력한다.
+# 퍼셉트론으로 AND게이트 표현하고자 할 때는 w1, w2, 세타 값을 어떤 값으로 설정할 것인지 생각해야 한다.
+
+# AND 게이트를 만족하는 w1, w2, seta의 조합은 무수히 많다.      // 0.5가 가중치이다.
+# ex) (w1, w2, seta) -> (0.5, 0.5, 0.8)   0.8보다 크면 1
+# 1 * 0.5 + 1 * 0.5 는 0.8보다 크기 때문에 1
+
+
+# NAND(Not AND) 게이트 진리표
+# AND 게이트와 반대
+
+# NAND 게이트를 표현하기 위한 매개변수의 값
+# (w1, w2, seta) -> (-0.5, -0.5, -0.7)
+
+# OR게이트 진리표
+# x1        x2          y
+#------------------------
+# 0         0           0
+# 0         1           1
+# 1         0           1
+# 1         1           1
+
+# 입력신호 중 하나 이상이 1이면 출력이 1이되는 논리 회로
+
+# 퍼셉트론 표현할 때는 가중치와 임계값을 설정하여 표현할 수 있다.
+# 이 매개변수(w, seta)의 값을 적절히 조절하면 AND, NAND, OR 게이트를 모두 표현 가능하다.
+
+def AND(x1, x2):
+    w1, w2, theta = 0.5, 0.5, 0.8
+    tmp = w1 * x1 + w2 * x2
+    if tmp <= theta:
+        return 0
+    elif tmp > theta:
+        return 1
+
+print(AND(0, 0))
+print(AND(0, 1))
+print(AND(1, 0))
+print(AND(1, 1))
+
+# 위의 퍼셉트론 식에서 theta를 -b로 치환하면
+# w1 * x1 + w2 * x2 <= -b       ==      b + w1 * x1 + w2 * x2 <=0
+# w1 * x1 + w2 * x2 > -b        ==      b + w1 * x1 + w2 * x2 > 0
+# 이때 b(bias)를 편향이라고 한다.
+# 퍼셉트론은 입력신호에 가중치를 곱한 값과 편향을 합하여, 그 값이 0을 넘으면 1을 출력하고 그렇지 않으면 0을 출력한다.
+
+x = np.array([0, 1])
+w = np.array([0.5, 0.5])
+b = -0.7
+print(w * x)
+print(np.sum(w * x) + b)
+
+def AND1(x1, x2):
+    x = np.array([x1, x2])
+    w = np.array([0.5, 0.5])
+    b = -0.7            # 여기서 0.7은 무슨 의미인가?
+    tmp = np.sum(w*x) + b
+    if tmp <= 0:
+        return 0
+    else:
+        return 1
 
