@@ -682,5 +682,63 @@ def AND(x1, x2):
 
 
 
-- 다층 퍼셉트론
-  - 기존 게이트(AND, OR, NAND) 조합
+- 다층 퍼셉트론(Multi Layer Perceptron)
+  - 단층 퍼셉트론으로는 XOR 게이트를 푷녀할 수 없다.
+  - 즉, 단층 퍼셉트론으로는 비선형 영역을 분리할 수 없다.
+  - 기존 게이트(AND, OR, NAND)를 조합하여 층을 쌓으면 XOR 게이트를 구현할 수 있게 된다.
+  - 게이트를 조합한 XOR 게이트의 진리표
+
+| x1   | x2   | s1   | s2   | y    |
+| ---- | ---- | ---- | ---- | ---- |
+| 0    | 0    | 1    | 0    | 0    |
+| 0    | 1    | 1    | 1    | 1    |
+| 1    | 0    | 1    | 1    | 1    |
+| 1    | 1    | 0    | 1    | 0    |
+
+``` python
+def NAND(x1, x2):
+    x = np.array([x1, x2])
+    w = np.array([-0.5, -0.5])		# 가중치
+    b = 0.7		# 편향
+    tmp = np.sum(w * x) + b
+    if tmp <= 0:
+        return 0
+    else:
+        return 1
+    
+def OR(x1, x2):
+    x = np.array([x1, x2])
+    w = np.array([0.5, 0.5])
+    b = -0.2
+    tmp = np.sum(w * x) + b
+    if tmp <= 0:
+        return 0
+    else:
+        return 1
+    
+def XOR(x1, x2):
+    s1 = NAND(x1, x2)
+    s2 = OR(x1, x2)
+    y = AND(s1, s2)
+    return y
+
+print(NAND(0, 0))
+# 1
+print(NAND(0, 1))
+# 1
+print(NAND(1, 0))
+# 1
+print(NAND(1, 1))
+# 0
+    
+print("--------XOR--------")
+print(XOR(0, 0))
+# 0
+print(XOR(0, 1))
+# 1
+print(XOR(1, 0))
+# 1
+print(XOR(1, 1))
+# 0
+```
+
