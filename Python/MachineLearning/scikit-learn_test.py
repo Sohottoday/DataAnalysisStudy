@@ -1,3 +1,4 @@
+import matplotlib.pylab as plt
 # scikit-learn : 파이썬 머신러닝 라이브러리
 
 # 머신러닝의 응용분야
@@ -486,3 +487,51 @@ print(XOR(0, 1))
 print(XOR(1, 0))
 print(XOR(1, 1))
 
+
+
+# 신경망 : 입력층과 은닉층 출력층으로 이루어져 있다 
+
+# 은닉층(사람 눈에 보이지 않는 층)은 중간층을 말한다.
+
+# 입력층(0층), 은닉층(1층), 출력층(3층)은 퍼셉트론의 신호전달 방식과 공통점이 있다.
+
+# 활성화 함수를 이용한 퍼셉트론 식
+# y = h(b + w1 * x1 + w2 * x2)
+#           0 (x <= 0)  이때 x는 입력신호의 총 합
+# h(x) = 
+#           1 (x > 0)
+
+# 입력신호의 총합을 출력신호로 변환하는 함수를 "활성화 함수"라고 한다.
+# a = b + w1 * x1 + w2 * x2     (입력신호의 총합)
+# y = h(a)
+
+# 위의 식은 가중치가 있는 입력신호와 편향을 계산하고 이를 a라고 하면 a를 함수 h()에 넣어 y를 출력하는 흐름을 보여준다.
+
+# 시그모이드(sigmoid) 함수
+# 신경망에서 자주 이용하는 활성화 함수 중의 하나
+#                 1
+#   h(x) = -----------------
+#            1 + exp(-x)
+
+# 계단 함수
+## 임계값을 경계로 출력이 바뀌는 함수
+
+def step_func(x):
+    return np.array(x>0, dtype=np.int)
+
+x = np.arange(-5.0, 5.0, 0.1)
+y = step_func(x)
+
+plt.plot(x, y)
+plt.ylim(-0.1, 1.1)         
+plt.show()
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+x = np.arange(-5.0, 5.0, 0.1)
+y = sigmoid(x)
+
+plt.plot(x, y)
+plt.ylim(-0.1, 1.1)
+plt.show()
