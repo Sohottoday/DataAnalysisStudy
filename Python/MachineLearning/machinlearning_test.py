@@ -537,6 +537,174 @@ plt.ylim(-0.1, 1.1)
 plt.show()
 
 
+# 신경망의 내적(가중치만 적용)
+
+X = np.array([[1, 2], [3, 4]])          # 입력신호
+W = np.array([[1, 3, 5], [2, 4, 6]])        # 1, 3, 5는 x1의 가중치 / 2, 4, 6은 x2의 가중치
+
+Y = np.dot(X, W)
+
+
+# 신경망 파이썬 구현(sigmoid 함수 사용)
+
+print(Y)
+
+X = np.array([1.0, 0.5])
+W1 = np.array([[0.1, 0.3, 0.5], [0.2, 0.4, 0.6]])
+B1 = np.array([0.1, 0.2, 0.3])
+
+A1 = np.dot(X, W1) + B1
+print(A1)
+
+z1 = sigmoid(A1)
+print(z1)
+
+W2 = np.array([[0.1, 0.4], [0.2, 0.5], [0.3, 0.6]])
+B2 = np.array([0.1, 0.2])
+A2 = np.dot(z1, W2) + B2
+print(A2)
+
+Z2 = sigmoid(A2)
+print(Z2)
+
+
+def identity_function(x):           # 항등 함수(시그마 함수)
+    return x
+
+W3 = np.array([[0.1, 0.3], [0.2, 0.4]])
+B3 = np.array([0.1, 0.2])
+A3 = np.dot(Z2, W3) + B3
+
+Y = identity_function(A3)           # Y = A3
+print(Y)
+print(A3)
+
+
+# 다층 신경망
+
+## 가중치와 편향을 초기화해주는 함수
+
+def init_network():
+    network = {}
+    network['W1'] = np.array([[0.1, 0.3, 0.5], [0.2, 0.4, 0.6]])
+    network['b1'] = np.array([0.1, 0.2, 0.3])
+    network['W2'] = np.array([[0.1, 0.4], [0.2, 0.5], [0.3, 0.6]])
+    network['b2'] = np.array([0.1, 0.2])
+    network['W3'] = np.array([[0.1, 0.3], [0.2, 0.4]])
+    network['b3'] = np.array([0.1, 0.2])
+
+    return network
+
+## 입력 신호를 출력으로 변환하는 처리과정(순방향)
+
+def forward(network, x):
+    W1, W2, W3 = network['W1'], network['W2'], network['W3']
+    b1, b2, b3 = network['b1'], network['b2'], network['b3']
+
+    a1 = np.dot(x, W1) + b1
+    z1 = sigmoid(a1)
+
+    a2 = np.dot(z1, W2) + b2
+    z2 = sigmoid(a2)
+
+    a3 = np.dot(z2, W3) + b3
+    y = identity_function(a3)
+
+    return y
+
+network = init_network()
+x = np.array([1.0, 0.5])
+
+y = forward(network, x)
+print(y)
+
+
+# 기계 학습의 문제
+## 분류(classfication)
+## 회귀(regression)
+
+## 신경망에서는 회귀에 사용하는 활성함수로 항등함수를 사용하며, 분류에 사용하는 활성함수로 소프트맥스 함수를 사용한다.
+## 다중 분류를 할 때 소프트맥스 함수를 사용한다.(기본 분류는 시그모이드 함수 사용)
+
+## 소프트맥스 함수 정의
+def softmax(a):
+    exp_a = np.exp(a)
+    sum_exp_a = np.sum(exp_a)
+    y = exp_a / sum_exp_a
+
+    return y
+
+a = np.array([0.2, 2.9, 4.0])
+
+print(softmax(a))
+
+## 위 같은 경우에는 지나치게 큰 값이 나와 overflow 에러가 뜰 수 있다
+
+## 개선된 소프트맥스 함수 정의
+
+def upgrade_softmax(a):
+    c = np.max(a)
+    exp_a = np.exp(a - c)       # 오버플로우를 막기 위해
+    sum_exp_a = np.sum(exp_a)
+    y = exp_a / sum_exp_a
+
+    return y
+
+print(upgrade_softmax(a))           # 값이 항상 0에서 1 사이의 값이 출력된다.
+print(np.sum(upgrade_softmax(a)))       # 값을 모두 더하면 1이 된다.
+# 즉, 이 출력값은 확률로 해석할 수 있다. 문제를 통계적으로 대응할 수 있다.
+
+# 각 원소의 대소 관계는 소프트맥스 함수의 출력값의 대소관계와 동일하다
+# 신경망을 이용한 분류에서는 출력층의 소프트맥스 함수를 생략해도 무방하다.
+# 소프트맥스 함수를 적용하지 않더라도 결과는 동일하기 때문
+# 현업에서는 실질적으로 지수 함수 계산에 드는 자원 낭비를 줄일 수 있기 때문에 소프트맥스 함수를 생략한다.
+
+# TensorFlow
+## 구글이 오픈소스로 공개한 머신러닝 라이브러리
+## 딥러닝을 비롯한 여러 머신러닝에 사용되는 라이브러리
+## 대규모 숫자 계산을 해주는 라이브러리
+## 일반적인 프로그래밍 방식과는 약간 다른 개념들을 포함한다.
+
+## import tensorflow as tf
+
+# tensorflow의 자료형
+## tensor : 다양한 수학식을 계산하기 위한 가장 기본적이고 중요한 자료형
+## Rank와 Shape라는 개념
+
+## Rank값
+## 0 : 스칼라
+## 1 : 벡터
+## 2 : 행렬
+## 3 이상의 n : n-Tensor 또는 n차원 텐서
+
+## Shape : 각 차원 요소 개수를 의미, 텐서의 구조를 의미
+
+## dtype : 해당 텐서에 담긴 요소들의 자료형, string, float, int 등
+
+import tensorflow as tf
+
+hello = tf.constant('hello tensorflow')
+print(hello)
+
+# tensorflow 프로그램 구조
+## 그래프 생성
+## 그래프 실행
+
+## 그래프 : tensor들의 연산 모음
+## 지연실행(lazy evaluation) : 함수형 프로그래밍에서 많이 사용
+## 텐서와 텐서의 연산들을 미리 정의하여 그래프를 만들고, 필요할 때 연산을 실행하는 코드를 넣어 원하는 시점에 실제 연산을 수행하도록 하는 방식
+
+# tensorflow 프로그래밍의 장점
+## 모델 구성과 실행을 분리하여 프로그램을 깔끔하게 작성할 수 있다.
+
+# tensorflow 프로그래밍 시 반드시 알아야 할 개념 두가지
+## placeholder : 그래프에 사용할 입력값을 나중에 받기 위해 사용하는 매개변수와 같은 개념
+## 변수 : 그래프를 최적화하는 용도로 텐서플로우가 학습한 결과를 갱신하기 위해 사용하는 것
+##       (변수의 값들이 신경망의 성능을 좌우한다.)
+
+
+
+
 
 
 # 시그모이드 함수는 단순하게 생각하면 S형태의 그래프라고 생각하면 된다.
