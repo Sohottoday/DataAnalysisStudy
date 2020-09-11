@@ -1,0 +1,12 @@
+<members>
+	<member a="b" c="d" id="kim">
+		<name>김철수</name>
+		<age>30</age>
+		<address>남자</address>
+	</member>
+	<member a="b" c="d" id="park">
+		<name>박영희</name>
+		<age>40</age>
+		<address>여자</address>
+	</member>
+</members>
