@@ -55,7 +55,7 @@ model.add(Dense(units=1, input_dim=1, activation='linear'))
 # 단계 03 : 컴파일을 수행한다.
 # loss : 비용(손실) 함수를 지정합니다.
 # optimizer : 옵티마이저로써, 경사 하강법을 잘 수행하기 위한 가이드
-model.compile(loss='mean_squared_err', optimizer='adam')
+model.compile(loss='mean_squared_error', optimizer='adam')
 
 # 단계 04 : 훈련/학습을 합니다. 기출 문제 풀기
 # epochs : 반복 횟수
