@@ -60,7 +60,7 @@ for abcd in mytarget:
 
     imgtag = abcd.find('img')
     mytitle = imgtag.attrs['title'].strip()
-    mytitle = mytitle.replace('?', '')
+    mytitle = mytitle.replace('?', '').replace(':',"")
     #print(mytitle)
 
     mysrc = imgtag.attrs['src']
