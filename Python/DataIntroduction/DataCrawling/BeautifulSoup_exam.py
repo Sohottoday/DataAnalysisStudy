@@ -41,3 +41,21 @@ for a in links:
     text = a.string
     print(text, ">", href)
 
+
+import urllib.request as req
+
+url = "https://www.weather.go.kr/weather/forecast/mid-term-rss3.jsp"
+
+# urlopen()으로 데이터 가져오기
+res = req.urlopen(url)
+
+# 웹데이터 분석하기
+soup = BeautifulSoup(res, "html.parser")
+
+wetTitle = soup.find("title").string
+print(wetTitle)
+
+wf = soup.find("wf").string
+print(wf)
+
+
