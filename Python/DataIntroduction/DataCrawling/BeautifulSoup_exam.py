@@ -5,10 +5,16 @@ html = """
     <h1 id="title">스크래핑 연습</h1>
     <p id="subtitle">웹페이지를 분석해보기</p>
     <p>데이터 정제하기</p>
-    <ul>
+    <ul class="site">
         <li><a href="http://www.naver.com">네이버</a></li>
         <li><a href="http://www.daum.net">다음</a></li>
     </ul>
+    <div id="LecList">
+        <h1>데이터 과학</h1>
+    </div>
+    <div id="lecture">
+        <h1>빅데이터 분석 강좌</h1>
+    </div>
 </body>
 </html>
 """
@@ -57,5 +63,22 @@ print(wetTitle)
 
 wf = soup.find("wf").string
 print(wf)
+
+
+# CSS 선택자 사용하기
+# BeautifulSoup.select_one(선택자) : CSS 선택자로 요소 하나를 추출한다.
+# BeautifulSoup.select(선택자) : CSS 선택자로 요소 여러개를 리스트로 추출한다.
+
+# css 쿼리로 데이터 추출하기
+soup = BeautifulSoup(html, "html.parser")
+h1 = soup.select_one("div#lecture > h1").string
+print('h1 = ', h1)
+
+site = soup.select("ul.site > li")          # class는 .으로 표현
+for li in site:
+    print("li = ", li)
+
+
+
 
 
