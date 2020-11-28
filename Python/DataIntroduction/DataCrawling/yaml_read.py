@@ -90,3 +90,27 @@ print("title1=", data["color"]["title1"])
 print("title2=", data["color"]["title2"])
 print("title3=", data["color"]["title3"])
 
+
+
+
+######
+# yaml 데이터 정의
+yaml_data2 = """
+data:2017-01-01
+productList:
+    -
+        id: 100
+        name: banana
+        color: yellow
+        price: 1000
+    -
+        id: 200
+        name: orange
+        color: orange
+        price: 700
+    - 
+        id: 300
+        name: apple
+        color: red
+        price: 1200
+"""
