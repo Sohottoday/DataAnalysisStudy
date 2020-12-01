@@ -1,0 +1,192 @@
+
+
+
+
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    </head>
+
+
+	
+	<br>
+	<table border=1>
+		<caption>소비자물가상승률 [단위 : 전년비,전년동월비, %]</caption>
+			<thead>
+			<tr>
+			<th colspan="1" rowspan="1">&nbsp;</th>
+			<th data-id='t106001_h_0' data-index='0' data-name='td_106001_cc_0' class="tc" data-headers='td_106001_cc_0'  rowspan='1'>2014</th>
+<th data-id='t106001_h_1' data-index='1' data-name='td_106001_cc_1' class="tc" data-headers='td_106001_cc_1'  rowspan='1'>2015</th>
+<th data-id='t106001_h_2' data-index='2' data-name='td_106001_cc_2' class="tc" data-headers='td_106001_cc_2'  rowspan='1'>2016</th>
+<th data-id='t106001_h_3' data-index='3' data-name='td_106001_cc_3' class="tc" data-headers='td_106001_cc_3'  rowspan='1'>2017</th>
+<th data-id='t106001_h_4' data-index='4' data-name='td_106001_cc_4' class="tc" data-headers='td_106001_cc_4'  rowspan='1'>2018</th>
+<th data-id='t106001_h_5' data-index='5' data-name='td_106001_cc_5' class="tc" data-headers='td_106001_cc_5'  rowspan='1'>2019</th>
+<th data-id='t106001_h_6' data-index='6' data-name='td_106001_cc_6' class="tc" data-headers='td_106001_cc_6'  rowspan='1'>2020<br/>05월</th>
+<th data-id='t106001_h_7' data-index='7' data-name='td_106001_cc_7' class="tc" data-headers='td_106001_cc_7'  rowspan='1'>2020<br/>06월</th>
+<th data-id='t106001_h_8' data-index='8' data-name='td_106001_cc_8' class="tc" data-headers='td_106001_cc_8'  rowspan='1'>2020<br/>07월</th>
+<th data-id='t106001_h_9' data-index='9' data-name='td_106001_cc_9' class="tc" data-headers='td_106001_cc_9'  rowspan='1'>2020<br/>08월</th>
+<th data-id='t106001_h_10' data-index='10' data-name='td_106001_cc_10' class="tc" data-headers='td_106001_cc_10'  rowspan='1'>2020<br/>09월</th>
+<th data-id='t106001_h_11' data-index='11' data-name='td_106001_cc_11' class="tc" data-headers='td_106001_cc_11'  rowspan='1'>2020<br/>10월</th>
+</tr>
+			</thead>
+			<tbody>
+	
+				<tr>
+				
+				<th class="tl" data-id='t106001_c1_0' colspan='1' rowspan='1'>소비자물가</th>
+	<td headers='t106001_h_0 t106001_c1_0'>1.3</td>
+<td headers='t106001_h_1 t106001_c1_0'>0.7</td>
+<td headers='t106001_h_2 t106001_c1_0'>1.0</td>
+<td headers='t106001_h_3 t106001_c1_0'>1.9</td>
+<td headers='t106001_h_4 t106001_c1_0'>1.5</td>
+<td headers='t106001_h_5 t106001_c1_0'>0.4</td>
+<td headers='t106001_h_6 t106001_c1_0'>-0.3</td>
+<td headers='t106001_h_7 t106001_c1_0'>0.0</td>
+<td headers='t106001_h_8 t106001_c1_0'>0.3</td>
+<td headers='t106001_h_9 t106001_c1_0'>0.7</td>
+<td headers='t106001_h_10 t106001_c1_0'>1.0</td>
+<td headers='t106001_h_11 t106001_c1_0'>0.1</td>
+
+				</tr>
+	
+				<tr>
+				
+				
+<th class="tl" data-id='t106001_c1_1' colspan='1' rowspan='1'>-&nbsp;농축수산물</th>
+	<td headers='t106001_h_0 t106001_c1_1'>-2.7</td>
+<td headers='t106001_h_1 t106001_c1_1'>2.0</td>
+<td headers='t106001_h_2 t106001_c1_1'>3.8</td>
+<td headers='t106001_h_3 t106001_c1_1'>5.5</td>
+<td headers='t106001_h_4 t106001_c1_1'>3.7</td>
+<td headers='t106001_h_5 t106001_c1_1'>-1.7</td>
+<td headers='t106001_h_6 t106001_c1_1'>3.1</td>
+<td headers='t106001_h_7 t106001_c1_1'>4.6</td>
+<td headers='t106001_h_8 t106001_c1_1'>6.4</td>
+<td headers='t106001_h_9 t106001_c1_1'>10.6</td>
+<td headers='t106001_h_10 t106001_c1_1'>13.5</td>
+<td headers='t106001_h_11 t106001_c1_1'>13.3</td>
+
+				</tr>
+	
+				<tr>
+				
+				
+<th class="tl" data-id='t106001_c1_2' colspan='1' rowspan='1'>-&nbsp;공업제품</th>
+	<td headers='t106001_h_0 t106001_c1_2'>1.3</td>
+<td headers='t106001_h_1 t106001_c1_2'>-0.2</td>
+<td headers='t106001_h_2 t106001_c1_2'>-0.5</td>
+<td headers='t106001_h_3 t106001_c1_2'>1.4</td>
+<td headers='t106001_h_4 t106001_c1_2'>1.3</td>
+<td headers='t106001_h_5 t106001_c1_2'>-0.2</td>
+<td headers='t106001_h_6 t106001_c1_2'>-2.0</td>
+<td headers='t106001_h_7 t106001_c1_2'>-1.4</td>
+<td headers='t106001_h_8 t106001_c1_2'>-0.4</td>
+<td headers='t106001_h_9 t106001_c1_2'>-0.4</td>
+<td headers='t106001_h_10 t106001_c1_2'>-0.7</td>
+<td headers='t106001_h_11 t106001_c1_2'>-1.0</td>
+
+				</tr>
+	
+				<tr>
+				
+				
+<th class="tl" data-id='t106001_c1_3' colspan='1' rowspan='1'>-&nbsp;집세</th>
+	<td headers='t106001_h_0 t106001_c1_3'>2.3</td>
+<td headers='t106001_h_1 t106001_c1_3'>2.5</td>
+<td headers='t106001_h_2 t106001_c1_3'>1.9</td>
+<td headers='t106001_h_3 t106001_c1_3'>1.6</td>
+<td headers='t106001_h_4 t106001_c1_3'>0.6</td>
+<td headers='t106001_h_5 t106001_c1_3'>-0.1</td>
+<td headers='t106001_h_6 t106001_c1_3'>0.1</td>
+<td headers='t106001_h_7 t106001_c1_3'>0.2</td>
+<td headers='t106001_h_8 t106001_c1_3'>0.2</td>
+<td headers='t106001_h_9 t106001_c1_3'>0.3</td>
+<td headers='t106001_h_10 t106001_c1_3'>0.4</td>
+<td headers='t106001_h_11 t106001_c1_3'>0.5</td>
+
+				</tr>
+	
+				<tr>
+				
+				
+<th class="tl" data-id='t106001_c1_4' colspan='1' rowspan='1'>-&nbsp;공공서비스</th>
+	<td headers='t106001_h_0 t106001_c1_4'>0.7</td>
+<td headers='t106001_h_1 t106001_c1_4'>1.2</td>
+<td headers='t106001_h_2 t106001_c1_4'>1.5</td>
+<td headers='t106001_h_3 t106001_c1_4'>1.0</td>
+<td headers='t106001_h_4 t106001_c1_4'>0.2</td>
+<td headers='t106001_h_5 t106001_c1_4'>-0.5</td>
+<td headers='t106001_h_6 t106001_c1_4'>-1.9</td>
+<td headers='t106001_h_7 t106001_c1_4'>-2.0</td>
+<td headers='t106001_h_8 t106001_c1_4'>-1.9</td>
+<td headers='t106001_h_9 t106001_c1_4'>-1.8</td>
+<td headers='t106001_h_10 t106001_c1_4'>-1.3</td>
+<td headers='t106001_h_11 t106001_c1_4'>-6.6</td>
+
+				</tr>
+	
+				<tr>
+				
+				
+<th class="tl" data-id='t106001_c1_5' colspan='1' rowspan='1'>-&nbsp;개인서비스</th>
+	<td headers='t106001_h_0 t106001_c1_5'>1.7</td>
+<td headers='t106001_h_1 t106001_c1_5'>1.9</td>
+<td headers='t106001_h_2 t106001_c1_5'>2.7</td>
+<td headers='t106001_h_3 t106001_c1_5'>2.5</td>
+<td headers='t106001_h_4 t106001_c1_5'>2.5</td>
+<td headers='t106001_h_5 t106001_c1_5'>1.9</td>
+<td headers='t106001_h_6 t106001_c1_5'>0.9</td>
+<td headers='t106001_h_7 t106001_c1_5'>1.0</td>
+<td headers='t106001_h_8 t106001_c1_5'>1.1</td>
+<td headers='t106001_h_9 t106001_c1_5'>1.1</td>
+<td headers='t106001_h_10 t106001_c1_5'>1.3</td>
+<td headers='t106001_h_11 t106001_c1_5'>1.4</td>
+
+				</tr>
+	
+				<tr>
+				
+				
+<th class="tl" data-id='t106001_c1_6' colspan='1' rowspan='1'>근원물가</th>
+	<td headers='t106001_h_0 t106001_c1_6'>2.0</td>
+<td headers='t106001_h_1 t106001_c1_6'>2.2</td>
+<td headers='t106001_h_2 t106001_c1_6'>1.6</td>
+<td headers='t106001_h_3 t106001_c1_6'>1.5</td>
+<td headers='t106001_h_4 t106001_c1_6'>1.2</td>
+<td headers='t106001_h_5 t106001_c1_6'>0.9</td>
+<td headers='t106001_h_6 t106001_c1_6'>0.5</td>
+<td headers='t106001_h_7 t106001_c1_6'>0.6</td>
+<td headers='t106001_h_8 t106001_c1_6'>0.7</td>
+<td headers='t106001_h_9 t106001_c1_6'>0.8</td>
+<td headers='t106001_h_10 t106001_c1_6'>0.9</td>
+<td headers='t106001_h_11 t106001_c1_6'>0.1</td>
+
+				</tr>
+	
+				<tr>
+				
+				
+<th class="tl" data-id='t106001_c1_7' colspan='1' rowspan='1'>생활물가</th>
+	<td headers='t106001_h_0 t106001_c1_7'>0.8</td>
+<td headers='t106001_h_1 t106001_c1_7'>-0.2</td>
+<td headers='t106001_h_2 t106001_c1_7'>0.7</td>
+<td headers='t106001_h_3 t106001_c1_7'>2.5</td>
+<td headers='t106001_h_4 t106001_c1_7'>1.6</td>
+<td headers='t106001_h_5 t106001_c1_7'>0.2</td>
+<td headers='t106001_h_6 t106001_c1_7'>-0.7</td>
+<td headers='t106001_h_7 t106001_c1_7'>-0.3</td>
+<td headers='t106001_h_8 t106001_c1_7'>0.0</td>
+<td headers='t106001_h_9 t106001_c1_7'>0.5</td>
+<td headers='t106001_h_10 t106001_c1_7'>0.9</td>
+<td headers='t106001_h_11 t106001_c1_7'>-0.7</td>
+
+				</tr>
+			
+		</tbody>
+	</table>
+	<br>
+	
+	
+	
+	
+</html>
