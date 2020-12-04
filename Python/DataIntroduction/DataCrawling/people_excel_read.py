@@ -39,3 +39,23 @@ excel_record = sorted(excel_record, key=lambda x: x[1])
 for i, name in enumerate(excel_record):
     
     print(i+1, name[0], name[1])
+
+
+# book.active : 활성화되있는 워크시트를 가져온다.
+sheet2 = book.worksheets[0]
+
+# 서울과 계에 해당하는 값을 제외한 인구수 합산하기
+for i in range(0, 10):
+    totalValue = sheet2[str(chr(i+66))+"4"].value.replace(',', '')
+    total = int(totalValue)
+    seoulValue = sheet2[str(chr(i+66))+"5"].value.replace(',', '')
+    seoul = int(seoulValue)
+
+    result = format(total - seoul, ',')
+    print("서울을 제외한 인구 : ", result)
+
+# 엑셀 파일에 결과를 쓰기
+
+
+
+
