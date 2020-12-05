@@ -46,9 +46,9 @@ sheet2 = book.worksheets[0]
 
 # 서울과 계에 해당하는 값을 제외한 인구수 합산하기
 for i in range(0, 10):
-    totalValue = sheet2[str(chr(i+66))+"4"].value.replace(',', '')
+    totalValue = sheet2[str(chr(i+66))+"3"].value.replace(',', '')
     total = int(totalValue)
-    seoulValue = sheet2[str(chr(i+66))+"5"].value.replace(',', '')
+    seoulValue = sheet2[str(chr(i+66))+"4"].value.replace(',', '')
     seoul = int(seoulValue)
 
     result = format(total - seoul, ',')
