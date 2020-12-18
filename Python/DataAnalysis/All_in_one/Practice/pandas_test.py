@@ -104,4 +104,68 @@ print(df.sort_values(by=['키', '브랜드평판지수']))           # 키가 �
 print(df['name'])
 print(df.키)        # 이 방법은 코드의 가독성 때문에 권장하지 않음
 
+# 단순 index에 대한 범위 선택
+print(df[:3])
+
+# loc       , 기준으로 왼쪽은 행 오른쪽은 열
+print(df.loc[:, 'name'])            
+print('--------------------')
+print(df.loc[:, ['name', '생년월일']])
+print('--------------------')
+print(df.loc[3:8, ['name', '생년월일']])
+print(df.loc[2:5, 'name':'생년월일'])           # loc는 행을 가져올 때 numpy와는 다르게 2:5 일 경우 5 미만이 아닌 5 이하를 불러온다.
+
+# iloc(position으로 색인)
+print(df.iloc[:, [0, 2]])           # 범위를 이름이 아닌 위치로 불러온다.
+print(df.iloc[1:5, [0, 2]])         # loc와 다르게 5 미만이라는 의미를 유의하자
+print(df.iloc[1:4, 3:6])
+
+# boolean indexing
+print(df['키']>180)
+
+print(df[df['키']>180])             # 이 방법은 모든 column을 출력해야 한다는 한계가 있다.
+
+## 해결 방법 1. 맨 뒤에 출력할 column 붙이기
+print(df[df['키']>180][['name', '키']])
+
+## 해결 방법 2. loc를 활용
+print(df.loc[df['키']>180, 'name':'성별'])
+print(df.loc[df['키']>180, ['성별', '혈액형']])
+
+# isin을 활용한 색인
+# isin을 활용한 색인은 내가 조건을 걸고자 하는 값이 내가 정의한 list에 있을 때만 색인하려는 경우에 사용
+my_condition = ['플레디스', 'SM']
+print(df['소속사'].isin(my_condition))
+print(df.loc[df['소속사'].isin(my_condition), ['name', '소속사']])
+
+# Null(결측값) 알아보기 = 비어있는 값이라고도 한다.
+## pandas에서는 NaN(Not a Number) 이라 표시한다.
+
+# info()로 NaN값, 즉 빠진 데이터가 어디에 있는지 쉽게 요약해 볼 수 있다.
+print(df.info())
+
+# NaN값 Boolean 인덱싱 : isna(), isnull()
+print(df.isna())            # Boolean 인덱싱으로 True가 return되는 값이 NaN값
+print(df['그룹'].isnull())
+print('----------------------')
+# 위를 활용해 NaN값만 색출해내기
+print(df['그룹'][df['그룹'].isnull()])
+
+# NaN이 아닌 값에 대해서 Boolean 인덱싱 : notnull()
+# NaN이 아닌 값만 색출
+print(df['그룹'][df['그룹'].notnull()])
+
+# loc와 함께 사용하여 인덱싱
+print(df.loc[df['그룹'].isnull(), ['키', '혈액형']])
+
+# copy
+# new_df = df 이러한 식으로 DataFrame을 복사했을 경우
+# new_df['그룹'] = 0   이런 식으로 새로운 값을 넣었을 때 원본 df까지도 변화한다
+# 그 이유는 같은 메모리 주소를 참조하기 때문이다.
+# 따라서 원본 데이터를 유지하고 새로운 변수에 복사할 때에는 copy()를 사용한다.
+new_df = df.copy()
+print(hex(id(new_df)), hex(id(df)))
+
+
+
 
