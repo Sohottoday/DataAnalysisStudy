@@ -166,6 +166,43 @@ print(df.loc[df['그룹'].isnull(), ['키', '혈액형']])
 new_df = df.copy()
 print(hex(id(new_df)), hex(id(df)))
 
+# row(행) 추가
+## dictionary 형태의 데이터를 만들어 준 다음 append() 함수를 사용하여 데이터를 추가할 수 있다.
+## 반드시 ignore_index=True 옵션을 같이 추가해줘야 에러가 나지 않는다.
+new_df = new_df.append({'name':'테디', '그룹':'테디그룹', '소속사':'끝내주는 소속사', '성별':'남자', '생년월일':'1970-01-01', '키':195.0, '혈액형':'O', '브랜드평판지수':12345647}, ignore_index=True)
+print(new_df.tail())
+
+# column(열) 추가
+new_df['국적'] = '대한민국'
+print(new_df.head())
+# 만약 값을 변경하고 싶다면 loc함수를 활용해서 변경할 수 있다.
+new_df.loc[new_df['name']=='지드래곤', '국적'] = 'korea'
+print(new_df.head())
+
+print('*'*30)
+# 통계값 다루기
+## 통계값은 data type이 float나 int형인 column을 다룬다.
+print(df.describe())
+
+print(f"최대값 = {df['키'].max()} ||| 최소값 = {df['키'].min()}")
+print(f"합계 = {df['키'].sum()} ||| 평균 = {df['키'].mean()}")
+
+## 분산(var, variance), 표준편차(std, standard deviation)
+### numpy를 사용했을 때
+import numpy as np
+data_01 = np.array([1, 3, 5, 7, 9])
+data_02 = np.array([3, 4, 5, 6, 7])
+### 분산
+print(data_01.var(), data_02.var())
+### 표준편차
+print(np.sqrt(data_01.var()), np.sqrt(data_02.var()))
+
+### pandas 사용
+print(f"분산 = {df['키'].var()} ||| 표준편차 = {df['키'].std()}")
+
+## 갯수를 세는 count(), 중앙값 median(), 최빈값 mode()
+print(f"갯수 = {df['키'].count()} ||| 중앙값 = {df['키'].median()} ||| 최빈값 = {df['키'].mode()}")
+
 
 
 
