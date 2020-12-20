@@ -204,5 +204,39 @@ print(f"분산 = {df['키'].var()} ||| 표준편차 = {df['키'].std()}")
 print(f"갯수 = {df['키'].count()} ||| 중앙값 = {df['키'].median()} ||| 최빈값 = {df['키'].mode()}")
 
 
+# 피벗테이블(pivot_table)
+## 데이터 열 중에서 두 개의 열을 각각 행 인덱스, 열 인덱스로 사용하여 데이터를 조회하여 펼쳐놓은 넛을 의미
+## 왼쪽에 나타나는 인덱스를 행 인덱스, 상단에 나타나는 인덱스를 열 인덱스라고 부른다.
+## index는 행 인덱스, columns는 열 인덱스, values는 조회하고 싶은 값(values 값은 기본적으로 평균값으로 표현된다.)
+print(pd.pivot_table(df, index='소속사', columns='혈액형', values='키'))
+
+## 평균이 아닌 다른 값을 주고 싶다면 aggfunc 속성을 통해 표현할 수 있다. ex) 합계 : np.sum , 평균 : np.mean 등등
+print(pd.pivot_table(df, index='그룹', columns='혈액형', values='브랜드평판지수', aggfunc=np.sum))
+
+# 그룹으로 묶어보기(GroupBy)
+## 데이터를 그룹으로 묶어 분석할 때 사용
+## 소속사별 키의 평균, 성별 키의 평균 등 특정 그룹별 통계 및 데이터의 성질을 확인하고자 할 때 활용된다.
+## groupby는 단순하게 groupby로만 사용하는것이 아닌 통계함수를 같이 써줘야한다.
+## count() : 개수, sum() : 합계, mean() : 평균, var() : 분산, std() : 표준편차, min, max : 최대값 최소값
+print(df.groupby('소속사').count())
+print(df.groupby('그룹').mean())
+
+# 복합 인덱스(Multi-Index)
+## 행 인덱스를 복합적으로 구성하고 싶은 경우 인덱스 리스트로 만든다.
+## 순차적으로 넘겨준다(순서 중요!)
+print(df.groupby(['혈액형', '성별']).mean())
+
+## Multi-index 데이터 프레임을 피벗 테이블로 변환
+df3 = df.groupby(['혈액형', '성별']).mean()
+# unstack은 풀어준다, 펴준다 는 의미
+df3.unstack('혈액형')       # 혈액형을 기준으로 펴준다는 의미
+print(df3.unstack('성별'))          # 성별을 기준으로 펴준다는 의미
+
+## 인덱스 초기화(reset_index) : multi-index로 구성된 데이터 프레임의 인덱스를 초기화해 준다.
+print(df3.reset_index())
+## multi-index를 활용해 데이터를 확인한 후 풀어서 볼 때 사용한다.
+## reset_index를 사용한다고 원본 데이터를 변환시키는 것은 아니므로 df4 = df3.reset_index() 이러한 방식으로 변수에 담아서 활용한다.
+
+
 
 
