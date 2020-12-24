@@ -192,3 +192,40 @@ df4 = pd.DataFrame({'통계' : ['good', 'bad', 'ok', 'good', 'ok'], '미술' : [
 
 ## 행의 갯수가 다른 경우
 ### 행이 많은 dataframe 기준으로 출력하되 빈 값은 NaN으로 인지하여 연산한다.
+
+
+# select_dtypes
+## 데이터 전처리 하는 과정에서 자주 사용된다.
+
+## 문자열이 있는 column만 선택
+df.select_dtypes(include='object')          # include는 포함한다는 의미
+df.select_dtypes(exclude='object')          # exclude는 ~를 제외하고 라는 의미
+
+## 문자열이 포함된 DataFrame의 연산으로 발생하는 error를 피하기 위해서
+df.select_dtypes(exclude='object') + 10      # 이러한 방식을 활용해 numeric 타입만 연산할 수 있다.
+
+
+# 원핫인코딩(One-hot-encoding)
+## 원핫인코딩은 한개의 요소는  True 그리고 나머지 요소는 False로 만들어주는 기법
+blood_map = {
+    'A':0,
+    'B':1,
+    'AB':2,
+    'O':3,
+}
+
+test_df['혈액형_code'] = test_df['혈액형'].map(blood_map)
+print(test_df.head())
+print(test_df['혈액형_code'].value_counts())        # 값들의 갯수 반환
+
+## 우리가 만약 df['혈액형_code']를 머신러닝 알고리즘에 그대로 넣어 데이터를 예측하라고 지시한다면, 컴퓨터는 '혈액형_code'안에서
+## 값들간의 관계를 스스로 형성하게 된다.
+## 이 상황에서 만약 B형은 1, AB형은 2라는 값을 가지고 있는데, 컴퓨터는 B형 + AB형 = O형이다 라고 잘못 관계를 맺을 수 있게 된다.
+## -> O형의 값이 3이므로 오해할 수 있기 때문
+## 따라서, 우리는 4개의 별도의 column을 형성해주고 1개의 column에는 True 나머지는 모두 False를 넣어 줌으로써 A, B, AB, O형의 관계는 독립적이라고 표현해 준다.
+## 이를 원핫인코딩이라 한다.
+pd.get_dummies(test_df['혈액형_code'])          # 원핫인코딩을 도와주는 메서드 get_dummies
+print(pd.get_dummies(test_df['혈액형_code']))
+## 여기서 perfix속성을 설정해주면 좀 더 보기 편해진다.
+print(pd.get_dummies(test_df['혈액형_code'], prefix='혈액형'))
+
