@@ -2,6 +2,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+plt.rcParams['axes.unicode_minus'] = False
+plt.rcParams['font.family'] = 'Malgun Gothic'
+
 # colab에서의 한글 폰트 깨짐 현상 해결방법
 """
 !sudo apt-get install -y fonts-nanum
@@ -84,4 +87,101 @@ axes[1, 2].plot(data // 20)
 
 plt.tight_layout()
 plt.show()
+
+
+# 타이틀 설정
+plt.plot(np.arange(10), np.arange(10)*2)
+plt.plot(np.arange(10), np.arange(10)**2)
+plt.plot(np.arange(10), np.log(np.arange(10)))
+
+plt.title('이것은 타이틀 입니다', fontsize=20)
+
+# X축 & Y축 설정
+plt.xlabel('X축', fontsize=20)
+plt.ylabel('Y축', fontsize=20)
+
+# label 각도 설정
+plt.xticks(rotation=90)
+plt.yticks(rotation=30)
+
+# 범례 설정(legend)
+plt.legend(['10*2', '10**2', 'log'], fontsize=15)
+
+# X와 Y의 한계점(limit) 설정 -> xlim(), ylim()
+# plt.xlim(0, 5)
+# plt.ylim(0.5, 10)
+
+plt.show()
+
+"""
+[세부 도큐먼트 확인하기](https://matplotlib.org/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot) 
+
+**marker의 종류**
+* '.'	point marker
+* ','	pixel marker
+* 'o'	circle marker
+* 'v'	triangle_down marker
+* '^'	triangle_up marker
+* '<'	triangle_left marker
+* '>'	triangle_right marker
+* '1'	tri_down marker
+* '2'	tri_up marker
+* '3'	tri_left marker
+* '4'	tri_right marker
+* 's '	square marker
+* 'p'	pentagon marker
+* '*'	star marker
+* 'h'	hexagon1 marker
+* 'H'	hexagon2 marker
+* '+'	plus marker
+* 'x'	x marker
+* 'D'	diamond marker
+* 'd'	thin_diamond marker
+* '|'	vline marker
+* '_'	hline marker
+
+
+**line의 종류**
+* '-' solid line style
+* '--' dashed line style
+* '-.' dash-dot line style
+* ':' dotted line style
+
+
+**color의 종류**
+* 'b'	blue
+* 'g'	green
+* 'r'	red
+* 'c'	cyan
+* 'm'	magenta
+* 'y'	yellow
+* 'k'	black
+* 'w'	white
+
+** alpha**
+투명도 설정
+
+"""
+
+plt.plot(np.arange(10), np.arange(10)*2, marker='o', linestyle='', color='b')
+plt.plot(np.arange(10), np.arange(10)*2 - 10, marker='o', linestyle='-', color='c', alpha=0.3)
+plt.plot(np.arange(10), np.arange(10)*2 - 20, marker='v', linestyle='--', color='y', alpha=0.6)
+plt.plot(np.arange(10), np.arange(10)*2 - 30, marker='+', linestyle='-.', color='y', alpha=1.0)
+plt.plot(np.arange(10), np.arange(10)*2 - 40, marker='*', linestyle=':')
+
+plt.title('다양한 선의 종류 예제',fontsize=20)
+
+plt.xlabel('X축', fontsize=20)
+plt.ylabel('Y축', fontsize=20)
+
+plt.xticks(rotation=90)
+plt.yticks(rotation=30)
+
+# grid 옵션 추가
+plt.grid()
+
+plt.show()
+
+
+
 
