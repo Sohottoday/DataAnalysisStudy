@@ -1,187 +1,110 @@
-import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
 
 plt.rcParams['axes.unicode_minus'] = False
 plt.rcParams['font.family'] = 'Malgun Gothic'
 
-# colab에서의 한글 폰트 깨짐 현상 해결방법
-"""
-!sudo apt-get install -y fonts-nanum
-!sudo fc-cache -fv
-!rm ~/.cache/matplotlib -rf
-그 후 상단 메뉴 - 런타임 - 런타임 다시 시작 클릭
 
-plt.rc('font', family='NanumBarunGothic')
-"""
+# scatter
+x = np.random.rand(50)
+y = np.random.rand(50)
+colors = np.arange(50)
+area = x * y * 1000         # 점의 넓이. 값이 커지면 당연히 넓이도 커진다.
 
-# 단일 그래프
-data = np.arange(1, 100)
-plt.plot(data)
+plt.scatter(x, y, s=area, c=colors)         # s : size라는 의미 / c : color라는 의미
 plt.show()
 
-# 다중 그래프
-data = np.arange(1, 51)
-data2 = np.arange(51, 101)
+## cmap과 alpha 옵션
+## cmap에 컬러를 지정하면, 컬러 값을 모두 같게 가져갈 수 있다.
+## alpha 값은 투명도를 나타내며 0~1의 값. 0에 가까울 수록 투명한 값
+np.random.rand(50)
 
-plt.plot(data)
-plt.plot(data2)
-plt.plot(data2 + 50)
+plt.figure(figsize=(12, 6))
 
-plt.show()
-
-# 2개의 figure로 나누어서 다중 그래프 그리기
-## figure()는 새로운 크래프 canvas를 생성
-plt.plot(data)
-plt.figure()
-plt.plot(data2)
-plt.show()
-
-# 여러개의 plot을 그리는 방법(subplot) : subplot(row, column, index)
-data = np.arange(100, 201)
-plt.subplot(2, 1, 1)
-plt.plot(data)
-
-data2 = np.arange(200, 301)
-plt.subplot(2, 1, 2)
-plt.plot(data2)
+plt.subplot(1, 3, 1)
+plt.scatter(x, y, s=area, cmap='blue', alpha=0.1)       # 즉 cmap은 컬러를 문자열 형식으로 지정하게 해준다.
+plt.title('alpha=0.1')
+plt.subplot(1, 3, 2)
+plt.scatter(x, y, s=area, cmap='blue', alpha=0.5)
+plt.title('alpha=0.5')
+plt.subplot(1, 3, 3)
+plt.scatter(x, y, s=area, cmap='blue', alpha=1.0)
+plt.title('alpha=1.0')
 
 plt.show()
 
-"""
-# 세로로 나열하고자 할 때
-data = np.arange(100, 201)
-plt.subplot(1, 2, 1)
-plt.plot(data)
+#########################
 
-data2 = np.arange(200, 301)
-plt.subplot(1, 2, 2)
-plt.plot(data2)
+# barplot, barhplot
+## bar
+x = ['Math', 'Programming', 'Data Science', 'Art', 'English', 'Physics']
+y = [66, 80, 60, 50, 80, 10]
 
-plt.show()
-"""
-# subplot에서 콤마가 없이도 표현이 가능하다.
-data = np.arange(100, 201)
-plt.subplot(211)
-plt.plot(data)
-
-data2 = np.arange(200, 301)
-plt.subplot(212)
-plt.plot(data2)
+plt.bar(x, y, align = 'center', alpha=0.7, color='red')     # align : ticks이 표시되는 것을 가운데 정렬하라는 의미(center를 줬기 때문)
+plt.xticks(x)
+plt.ylabel('Number of Students')
+plt.title('Subjects')
 
 plt.show()
 
-# 여러개의 plot을 그리는 방법(subplots) -> s가 더 붙는다.
-# plt.subplots(행의 갯수, 열의 갯수)
-data = np.arange(1, 51)
+## barh
+x = ['Math', 'Programming', 'Data Science', 'Art', 'English', 'Physics']
+y = [66, 80, 60, 50, 80, 10]
 
-# 밑 그림
-fig, axes = plt.subplots(2, 3)
-
-axes[0, 0].plot(data)
-axes[0, 1].plot(data * data)
-axes[0, 2].plot(data ** 3)
-axes[1, 0].plot(data % 10)
-axes[1, 1].plot(-data)
-axes[1, 2].plot(data // 20)
-
-plt.tight_layout()
-plt.show()
-
-
-# 타이틀 설정
-plt.plot(np.arange(10), np.arange(10)*2)
-plt.plot(np.arange(10), np.arange(10)**2)
-plt.plot(np.arange(10), np.log(np.arange(10)))
-
-plt.title('이것은 타이틀 입니다', fontsize=20)
-
-# X축 & Y축 설정
-plt.xlabel('X축', fontsize=20)
-plt.ylabel('Y축', fontsize=20)
-
-# label 각도 설정
-plt.xticks(rotation=90)
-plt.yticks(rotation=30)
-
-# 범례 설정(legend)
-plt.legend(['10*2', '10**2', 'log'], fontsize=15)
-
-# X와 Y의 한계점(limit) 설정 -> xlim(), ylim()
-# plt.xlim(0, 5)
-# plt.ylim(0.5, 10)
+plt.barh(x, y, align = 'center', alpha=0.7, color='green')     # align : ticks이 표시되는 것을 가운데 정렬하라는 의미(center를 줬기 때문)
+plt.yticks(x)               # 위와 다르게 yticks라는것을 확인!!
+plt.xlabel('Number of Students')
+plt.title('Subjects')
 
 plt.show()
 
-"""
-[세부 도큐먼트 확인하기](https://matplotlib.org/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot) 
+# barplot에서 비교그래프 그리기
+x_label = ['Math', 'Programming', 'Data Science', 'Art', 'English', 'Physics']
+x = np.arange(len(x_label))
+y_1 = [66, 80, 60, 50, 80, 10]
+y_2 = [55, 90, 40, 60, 70, 20]
 
-**marker의 종류**
-* '.'	point marker
-* ','	pixel marker
-* 'o'	circle marker
-* 'v'	triangle_down marker
-* '^'	triangle_up marker
-* '<'	triangle_left marker
-* '>'	triangle_right marker
-* '1'	tri_down marker
-* '2'	tri_up marker
-* '3'	tri_left marker
-* '4'	tri_right marker
-* 's '	square marker
-* 'p'	pentagon marker
-* '*'	star marker
-* 'h'	hexagon1 marker
-* 'H'	hexagon2 marker
-* '+'	plus marker
-* 'x'	x marker
-* 'D'	diamond marker
-* 'd'	thin_diamond marker
-* '|'	vline marker
-* '_'	hline marker
+## 넓이 지정
+width = 0.35
 
+## subplots 생성
+fig, axes = plt.subplots()
 
-**line의 종류**
-* '-' solid line style
-* '--' dashed line style
-* '-.' dash-dot line style
-* ':' dotted line style
+## 넓이 설정
+axes.bar(x - width/2, y_1, width, align='center', alpha=0.5)
+axes.bar(x + width/2, y_2, width, align='center', alpha=0.8)
 
-
-**color의 종류**
-* 'b'	blue
-* 'g'	green
-* 'r'	red
-* 'c'	cyan
-* 'm'	magenta
-* 'y'	yellow
-* 'k'	black
-* 'w'	white
-
-** alpha**
-투명도 설정
-
-"""
-
-plt.plot(np.arange(10), np.arange(10)*2, marker='o', linestyle='', color='b')
-plt.plot(np.arange(10), np.arange(10)*2 - 10, marker='o', linestyle='-', color='c', alpha=0.3)
-plt.plot(np.arange(10), np.arange(10)*2 - 20, marker='v', linestyle='--', color='y', alpha=0.6)
-plt.plot(np.arange(10), np.arange(10)*2 - 30, marker='+', linestyle='-.', color='y', alpha=1.0)
-plt.plot(np.arange(10), np.arange(10)*2 - 40, marker='*', linestyle=':')
-
-plt.title('다양한 선의 종류 예제',fontsize=20)
-
-plt.xlabel('X축', fontsize=20)
-plt.ylabel('Y축', fontsize=20)
-
-plt.xticks(rotation=90)
-plt.yticks(rotation=30)
-
-# grid 옵션 추가
-plt.grid()
+## xtick 설정
+plt.xticks(x)
+axes.set_xticklabels(x_label)
+plt.ylabel('Number of Students')
+plt.title('Subjects')
+plt.legend(['john', 'peter'])
 
 plt.show()
 
+# barhplot에서 비교그래프 그리기
+x_label = ['Math', 'Programming', 'Data Science', 'Art', 'English', 'Physics']
+x = np.arange(len(x_label))
+y_1 = [66, 80, 60, 50, 80, 10]
+y_2 = [55, 90, 40, 60, 70, 20]
 
+## 넓이 지정
+width = 0.35
 
+## subplots 생성
+fig, axes = plt.subplots()
 
+## 넓이 설정
+axes.bar(x - width/2, y_1, width, align='center', alpha=0.5, color='green')
+axes.bar(x + width/2, y_2, width, align='center', alpha=0.8, color='red')
+
+## xtick 설정
+plt.yticks(x)
+axes.set_xticklabels(x_label)
+plt.xlabel('Number of Students')
+plt.title('Subjects')
+plt.legend(['john', 'peter'])
+
+plt.show()
