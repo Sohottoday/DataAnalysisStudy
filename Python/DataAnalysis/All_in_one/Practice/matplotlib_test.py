@@ -6,7 +6,7 @@ plt.rcParams['axes.unicode_minus'] = False
 plt.rcParams['font.family'] = 'Malgun Gothic'
 
 
-# scatter
+# Scatter
 x = np.random.rand(50)
 y = np.random.rand(50)
 colors = np.arange(50)
@@ -36,7 +36,7 @@ plt.show()
 
 #########################
 
-# barplot, barhplot
+# Barplot, Barhplot
 ## bar
 x = ['Math', 'Programming', 'Data Science', 'Art', 'English', 'Physics']
 y = [66, 80, 60, 50, 80, 10]
@@ -110,7 +110,7 @@ plt.legend(['john', 'peter'])
 plt.show()
 
 
-# lineplot
+# Lineplot
 x = np.arange(0, 10, 0.1)
 y = 1 + np.sin(x)
 
@@ -161,4 +161,121 @@ y_3 = y_1 * y_2 / np.pi
 plt.fill_between(x, y_1, color='green', alpha=0.1)
 plt.fill_between(x, y_2, color='blue', alpha=0.2)
 plt.fill_between(x, y_3, color='red', alpha=0.3)
+plt.show()
+
+
+# Histogram
+
+N = 1000000
+bins = 30       # 나누는 구간 수
+
+x = np.random.randn(N)
+
+plt.hist(x, bins=bins)
+plt.show()
+
+## sharey : y축을 다중 그래프가 share(공유)     -> 비교할 때 자주 사용한다.
+## tight_layout : graph의 패딩을 자동으로 조절해주어 fit한 graph 생성
+
+fig, axs = plt.subplots(1,3, sharey=True, tight_layout=True)
+fig.set_size_inches(12, 5)
+
+axs[0].hist(x, bins=bins)
+axs[1].hist(x, bins=bins*2)
+axs[2].hist(x, bins=bins*4)
+
+plt.show()
+
+## Y축에 Density 표기(몇퍼센트 몰려 있는지)
+fig, axs = plt.subplots(1, 2, tight_layout=True)
+fig.set_size_inches(9, 3)
+axs[0].hist(x, bins=bins, density=True, cumulative=True)
+axs[1].hist(x, bins=bins, density=True)
+plt.show()
+
+
+# Pie chart
+## pie chart 옵션
+### explode : 파이에서 툭 튀어져 나온 비율
+### autopct : 퍼센트 자동으로 표기
+### shadow : 그림자 표시
+### startangle : 파이를 그리기 시작할 각도
+
+## texts, autotexts 인자를 리턴 받는다.
+## texts는 label에 대한 텍스트 효과를
+## autotexts는 파이 위에 그려지는 텍스트 효과를 다룰 때 활용한다.
+
+labels = ['Samsung', 'Huawei', 'Apple', 'Xiaomi', 'Oppo', 'Etc']
+sizes = [20.4, 15.8, 10.5, 9, 7.6, 36.7]
+explode = (0.3, 0, 0, 0, 0, 0)
+
+## texts, autotext인자를 활용하여 텍스트 스타일링을 적용한다.
+patches, texts, autotexts = plt.pie(sizes, 
+                                    explode=explode,            # 한 조각을 띄워두는 설정
+                                    labels=labels, 
+                                    autopct='%1.1f%%',          # 소수점 한자릿수로 퍼센트 표시한다는 의미
+                                    shadow=True, 
+                                    startangle=90)
+
+plt.title('Smartphone pie', fontsize=15)
+
+## label 텍스트에 대한 스타일 적용
+for t in texts:
+    t.set_fontsize(12)
+    t.set_color('gray')
+
+## pie 위의 텍스트에 대한 스타일 적용
+for t in autotexts:
+    t.set_color('white')
+    t.set_fontsize(18)
+
+plt.show()
+
+
+# Box plot
+
+## 샘플 데이터 생성
+spread = np.random.rand(50) * 100
+center = np.ones(25) * 50
+flier_high = np.random.rand(10) * 100 + 100
+flier_low = np.random.rand(10) * -100
+data = np.concatenate((spread, center, flier_high, flier_low))
+
+plt.boxplot(data)
+plt.tight_layout()
+plt.show()
+
+## 다중 box plot 생성
+### 샘플 데이터 생성 코드에 너무 신경쓰지 말고 box plot을 생성하는것을 주요하게 보면 된다.
+spread = np.random.rand(50) * 100
+center = np.ones(25) * 50
+flier_high = np.random.rand(10) * 100 + 100
+flier_low = np.random.rand(10) * -100
+d1 = np.concatenate((spread, center, flier_high, flier_low))
+
+spread = np.random.rand(50) * 100
+center = np.ones(25) * 40
+flier_high = np.random.rand(10) * 100 + 100
+flier_low = np.random.rand(10) * -100
+d2 = np.concatenate((spread, center, flier_high, flier_low))
+
+d1.shape = (-1, 1)
+d2.shape = (-1, 1)
+
+d1 = [d1, d2, d2[::2, 0]]
+
+plt.boxplot(d1)
+plt.show()
+
+## box plot 축 바꾸기 : vert=False
+plt.title('Horizontal box plot', fontsize=15)
+plt.boxplot(d1, vert=False)
+
+plt.show()
+
+## outlier 마커 심볼과 컬러 변경 : flierprops
+outlier_marker = dict(markerfacecolor='r', marker='D')
+
+plt.title('change outlier symbols', fontsize=15)
+plt.boxplot(d1, flierprops=outlier_marker)
 plt.show()
