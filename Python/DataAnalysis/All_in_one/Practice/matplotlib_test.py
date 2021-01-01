@@ -108,3 +108,57 @@ plt.title('Subjects')
 plt.legend(['john', 'peter'])
 
 plt.show()
+
+
+# lineplot
+x = np.arange(0, 10, 0.1)
+y = 1 + np.sin(x)
+
+plt.plot(x, y)
+
+plt.xlabel('x value', fontsize=15)
+plt.ylabel('y value', fontsize=15)
+plt.title('sin graph', fontsize=18)
+
+plt.grid()
+plt.show()
+
+## 2개 이상의 그래프 그리기
+x = np.arange(0, 10, 0.1)
+y_1 = 1 + np.sin(x)
+y_2 = 1 + np.cos(x)
+
+plt.plot(x, y_1, label='1+sin', color='blue', alpha=0.3, marker='o', linestyle=':')
+plt.plot(x, y_2, label='1+cos', color='red', alpha=0.7, marker='+', linestyle='-.')
+
+plt.xlabel('x value', fontsize=15)
+plt.ylabel('y value', fontsize=15)
+plt.title('sin and cos graph', fontsize=18)
+plt.legend()
+plt.grid()
+plt.show()
+
+
+# Areaplot(filled area)
+## matplotlib 에서 area plot을 그리고자 할 때는 fill_between함수를 사용한다.
+x = np.arange(1, 21)
+y = np.random.randint(low=5, high=10, size=20)
+
+plt.fill_between(x, y, color='green', alpha=0.6)
+plt.show()
+
+## 경계선을 굵게 그리고 area는 옅게 그리는 효과 적용
+plt.fill_between(x, y, color='green', alpha=0.3)
+plt.plot(x, y, color='green', alpha=0.8)        # 이런식으로 영역부분은 좀 더 투명한게 한 뒤 라인그래프를 덮어주는 형식
+plt.show()
+
+## 여러 그래프를 겹쳐서 표현
+x = np.arange(0, 10, 0.05)
+y_1 = 1 + np.sin(x)
+y_2 = 1 + np.cos(x)
+y_3 = y_1 * y_2 / np.pi
+
+plt.fill_between(x, y_1, color='green', alpha=0.1)
+plt.fill_between(x, y_2, color='blue', alpha=0.2)
+plt.fill_between(x, y_3, color='red', alpha=0.3)
+plt.show()
