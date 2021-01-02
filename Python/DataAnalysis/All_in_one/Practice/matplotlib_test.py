@@ -279,3 +279,93 @@ outlier_marker = dict(markerfacecolor='r', marker='D')
 plt.title('change outlier symbols', fontsize=15)
 plt.boxplot(d1, flierprops=outlier_marker)
 plt.show()
+
+
+# 3D 그래프 그리기
+## 3d로 그래프를 그리기 위해서는 mplot3d를 추가로 import 해야한다.
+from mpl_toolkits import mplot3d
+
+## 밑그림 그리기(캔버스)
+fig = plt.figure()
+ax = plt.axes(projection='3d')
+
+## 3d plot 그리기
+### project=3d로 설정한다.
+ax = plt.axes(projection='3d')
+
+### x, y, z 데이터를 생성한다.
+z = np.linspace(0, 15, 1000)
+x = np.sin(z)
+y = np.cos(z)
+
+ax.plot(x, y, z, 'gray')
+plt.show()
+
+### 또 다른 예
+ax = plt.axes(projection='3d')
+
+sample_size = 100
+x = np.cumsum(np.random.normal(0, 1, sample_size))
+y = np.cumsum(np.random.normal(0, 1, sample_size))
+z = np.cumsum(np.random.normal(0, 1, sample_size))
+
+ax.plot3D(x, y, z, alpha=0.6, marker='o')
+
+plt.title("ax.plot")
+plt.show()
+
+## 3d scatter 그리기
+fig = plt.figure(figsize=(10, 5))
+ax = fig.add_subplot(111, projection='3d')      # Axe3D object
+
+sample_size2 = 500
+
+x = np.cumsum(np.random.normal(0, 5, sample_size2))
+y = np.cumsum(np.random.normal(0, 5, sample_size2))
+z = np.cumsum(np.random.normal(0, 5, sample_size2))
+
+ax.scatter(x, y, z, c=z, s=20, alpha=0.5, cmap='Greens')
+
+plt.title('ax.scatter')
+plt.show()
+
+## contour3D 그리기(등고선)
+x = np.linspace(-6, 6, 30)
+y = np.linspace(-6, 6, 30)
+x, y = np.meshgrid(x, y)
+
+z = np.sin(np.sqrt(x**2 + y**2))
+
+fig = plt.figure(figsize=(12, 6))
+ax = plt.axes(projection='3d')
+
+ax.contour3D(x, y, z, 20, cmap='Reds')
+
+plt.title('ax.contour3D')
+plt.show()
+
+
+# imshow
+## 이미지 데이터와 유사하게 행과 열을 가진 2차원 데이터를 시각화 할 때 활용하는 그래프
+from sklearn.datasets import load_digits
+
+digits = load_digits()
+X0 = digits.images[:10]
+X0[0]
+print(X0[0])
+## load_digits는 0~16 값을 가지는 array로 이루어져 있다.
+## 1개의 array는 8X8 배열 안에 표현되어 있다.
+## 숫자는 0~9까지 이루어져 있다.
+
+fig, axes = plt.subplot(nrows=2, ncols=5, sharex=True, figsize=(12, 6), sharey=True)
+
+for i in range(10):
+    axes[i//5][i%5].imshow(X0[i], cmap='Blues')
+    axes[i//5][i%5].set_title(str(i), fontsize=20)
+
+plt.tight_layout()
+plt.show()
+
+
+
+
