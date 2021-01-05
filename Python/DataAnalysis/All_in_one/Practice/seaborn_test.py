@@ -90,10 +90,60 @@ sns.barplot(x='sex', y='survived', hue='pclass', data=titanic, palette='muted')
 plt.show()
 
 
+# lineplot
+x = np.arange(0, 10, 0.1)
+y = 1 + np.sin(x)
+
+## grid 스타일도 설정할 수 있다  - whitegrid, darkgrid, white, dark, ticks
+sns.set_style("darkgrid")
+
+sns.lineplot(x, y)
+
+plt.xlabel('x value', fontsize=15)
+plt.ylabel('y value', fontsize=15)
+plt.title('sin graph', fontsize=18)
+
+plt.show()
 
 
+# Area plot
+## seaborn은 지원하지 않음
 
 
+# Histogram - distplot
+N = 100000
+bins = 30
+x = np.random.randn(N)
+
+sns.distplot(x, bins=bins, kde=False, hist=True, color='g')
+plt.show()
+## kde를 False로 설정하면 데이터의 갯수가 Y축에 표기된다.
+## kde를 True로 설정해주면, Density가 Y축에 표기 된다.(밀도라고 생각하면 된다.)
+sns.distplot(x, bins=bins, kde=True, hist=True, color='g')
+plt.show()
+
+## vertical 옵션을 True로 주면 그래프를 수직으로 꺽는다.
+sns.distplot(x, bins=bins, kde=True, hist=True, vertical=True, color='g')
+plt.show()
 
 
+# pie chart
+## Seaborn에서는 pie chart를 지원하지 않음
+
+
+# Box plot
+spread = np.random.rand(50) * 100
+center = np.ones(25) * 50
+flier_high = np.random.rand(10) * 100 + 100
+flier_low = np.random.rand(10) * -100
+data = np.concatenate((spread, center, flier_high, flier_low))
+
+## orient : 박스플롯을 어떻게 볼 것인지 -> 아무 속성을 주지 않으면 가로로, 'v' 속성을 주면 세로로 보여준다.
+## width : 각 박스 플롯의 너비를 설정해 준다.
+sns.boxplot(data, orient='v', width=0.2)
+plt.show()
+
+## 다중 box plot
+sns.boxplot(x='pclass', y='age', hue='survived', data=titanic)
+plt.show()
 
