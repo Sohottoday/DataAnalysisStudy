@@ -148,3 +148,34 @@ print(one_hot)
 ## 위와 같이 column을 분리시켜 카테고리형->수치형으로 변환하면서 생기는 수치형 값의 관계를 끊어주면서 독립적인 형태로 바꾸어 준다.
 ## 원핫인코딩은 카테고리(계절, 항구, 성별, 종류, 한식/일식/중식...)의 특성을 가지는 column에 대해서 적용한다.
 
+
+# 전처리 : 정규화(Normalize)
+## column간에 다른 min, max값을 가지는 경우, 정규화를 통해 최소치/최대값의 척도를 맞추어 주는 것
+## ex) 네이버 영화평점(0~10점), 넷플릭스 영화평점(0~5점)
+movie = {'naver' : [2, 4, 6, 8, 10],
+         'netflix' : [1, 2, 3, 4, 5]}
+
+movie = pd.DataFrame(data=movie)
+
+from sklearn.preprocessing import MinMaxScaler
+min_max_scaler = MinMaxScaler()
+min_max_movie = min_max_scaler.fit_transform(movie)
+
+print(pd.DataFrame(min_max_movie, columns=['naver', 'netflix']))
+
+
+# 전처리 : 표준화(Standard Scaling)
+## 평균이 0과 표준편차가 1이 되도록 변환
+## 데이터 분석할 때 가장 많이 사용됨
+from sklearn.preprocessing import StandardScaler
+
+standard_scaler = StandardScaler()
+
+x = np.arange(10)
+# outlier 추가
+x[9] = 1000
+print("표준화 전 값 : ", x.mean(), x.std())        # std : 표준편차
+
+scaled = standard_scaler.fit_transform(x.reshape(-1, 1))            # 왜 reshape를 하는지..?
+print("표준화 한 값 : ", round(scaled.mean(), 2), scaled.std())
+
