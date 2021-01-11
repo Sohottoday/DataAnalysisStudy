@@ -36,4 +36,9 @@ print(prediction)
     모델이 예측하기 위한 데이터
     feature만 존재
 
+- 검증 데이터(적합도 검사 - 과대적합, 과소적합을 대바하기 위해)
+- 학습을 위한 데이터 8 : 검증을 위한 데이터 2 => 보통 8:2 비율로 많이 진행한다.
+    train data로 학습 / validation data로 모니터
+- 절대 학습할 때 Validation Set가 관여되면 안된다. **
+
 """
