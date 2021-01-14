@@ -124,3 +124,100 @@ knc.fit(x_train, y_train)
 knc_pred = knc.predict(x_valid)
 print("KNeightborsClassifier 9개 예측 값 : ", (knc_pred == y_valid).mean())
 
+
+# 서포트 벡터 머신(SVC)
+"""
+- 딥러닝이 나오기 전까지 굉장히 성능이 좋았던 알고리즘
+- 새로운 데이터가 어느 카테고리에 속할지 판단하는 비확률적 이진 선형 분류 모델을 만듦
+- 경계로 표현되는 데이터들 중 가장 큰 폭을 가진 경계를 찾는 알고리즘
+- LogisticRegression과 같이 이진 분류만 가능하다(2개의 클래스 판별만 가능)
+  OvR 전략 사용
+"""
+from sklearn.svm import SVC
+
+svc = SVC()
+svc.fit(x_train, y_train)
+svc_pred = svc.predict(x_valid)
+
+print("SVC 예측값 : ", (svc_pred == y_valid).mean())
+
+## 각 클래스 별 확률값을 RETURN 해주는 decision_function()
+print(svc_pred[:5])       # 선택된 클래스의 값
+print(svc.decision_function(x_valid)[:5])     # 클래스가 선택된 이유(가장 높은 확률이 선택되므로)
+
+
+# 의사 결정 나무(Decision Tree) : 스무고개처럼 나무 가지치기를 통해 소그룹으로 나누어 판별하는 것
+from sklearn.tree import DecisionTreeClassifier
+
+dtc = DecisionTreeClassifier()
+dtc.fit(x_train, y_train)
+dtc_pred = dtc.predict(x_valid)
+
+print("의사결정트리 예측 값 : ", (dtc_pred==y_valid).mean())
+
+# 트리 알고리즘의 시각화
+"""
+from sklearn.tree import export_graphviz
+from subprocess import call
+from IPython.display import Image 
+
+def graph_tree(model):
+    # .dot 파일로 export 해준다.(내보내 준다.)
+    export_graphviz(model, out_file='tree.dot')
+
+    # 생성된 .dot 파일을 .png로 변환
+    call(['dot', '-Tpng', 'tree.dot', '-o', 'decistion-tree.png', '-Gdpi=600'])
+
+    # .png 출력
+    return Image(filename = 'decistion-tree.png', width=500)
+
+graph_tree(dtc)
+
+- gini 계수 : 불순도를 의미하며, 계수가 높을수록 엔트로피가 크다는 의미이며 
+엔트로피가 크다는 의미는 쉽게 말해 클래스가 혼잡하게 섞여 있다는 뜻이다.
+
+det = DecisionTreeClassifier(max_depth=2)
+와 같이 max_depth를 통해 트리구조의 깊이를 제한할 수 있다.
+데이터가 많을 경우 트리구조가 지나치게 깊어져 과적합 현상이 나타날 수 있기 때문
+"""
+
+
+# 오차(Error)
+## 정확도의 함정
+from sklearn.datasets import load_breast_cancer   # 유방암 환자 데이터셋
+
+cancer = load_breast_cancer()
+print(cancer['DESCR'])
+
+data = cancer['data']
+target = cancer['target']
+feature_names = cancer['feature_names']
+
+df = pd.DataFrame(data = data, columns = feature_names)
+df['target'] = cancer['target']     # target -> 0 : 악성종양, 1 : 양성종양
+print(df.head())
+
+pos = df.loc[df['target']==1]
+neg = df.loc[df['target']==0]
+
+## 실습을 위해 양성환자 357개, 악성환자 5개가 되도록 설정해준다.
+sample = pd.concat([pos, neg[:5]], sort=True)
+
+x_train, x_test, y_train, y_test = train_test_split(sample.drop('target', 1), sample['target'], random_state=42)
+
+model = LogisticRegression()
+model.fit(x_train, y_train)
+pred = model.predict(x_test)
+
+print("유방암 환자 예측 : ", (pred==y_test).mean())
+
+## 여기서 우스운 가정
+## 돌팔이 의사가 자신의 진단률이 높다는 것을 뻥치기 위해 무조건 양성이라고 우긴다음 확률을 나타냄
+my_prediction = np.ones(shape=y_test.shape)
+print("가짜 유방암 환자 예측 : ", (my_prediction==y_test).mean())   # 실제 데이터 예측보다 확률이 높다.
+## 정확도(accuracy)만 보고 분류기의 성능을 판별하는 것은 위와 같은 오류에 빠질 수 있다.
+## 이를 보완하려 생격난 지표들이 있다.
+
+# 오차 행렬(confusion matrix)
+
+
