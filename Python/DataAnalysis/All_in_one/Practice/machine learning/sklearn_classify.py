@@ -219,5 +219,34 @@ print("가짜 유방암 환자 예측 : ", (my_prediction==y_test).mean())   # �
 ## 이를 보완하려 생격난 지표들이 있다.
 
 # 오차 행렬(confusion matrix)
+from sklearn.metrics import confusion_matrix
+
+print(confusion_matrix(y_test, pred))
+
+sns.heatmap(confusion_matrix(y_test, pred), annot=True, cmap='Reds')
+plt.xlabel('Predict')
+plt.ylabel('Actual')
+plt.show()
+
+
+# 정밀도 (precision)
+from sklearn.metrics import precision_score, recall_score
+
+## 양성 예측 정확도 : TP / (TP + FP)
+precision_score(y_test, pred)     # 무조건 양성으로 판단했을 경우 좋은 정밀도를 얻기 때문에 유용하지는 않다.
+print("양성 예측 정확도 : ",precision_score(y_test, pred))
+
+## 재현율 (recall) : TP / (TP + FN)
+recall_score(y_test, pred)      # 정확하게 감지한 양성 샘플의 비율 -> 민감도(sensitivity) 혹은 True Positive Rate(TPR)이라고도 불린다.
+print("재현율 정확도 : ", recall_score(y_test, pred))
+
+
+# f1 score
+## 정밀도와 재현율의 조화 평균을 나타내는 지표
+## https://miro.medium.com/max/918/1*jCu9fNZSOhSRHVJ2cBTegg.png
+
+from sklearn.metrics import f1_score
+f1_score(y_test, pred)
+print("f1 score 정확도 : ", f1_score(y_test, pred))
 
 
