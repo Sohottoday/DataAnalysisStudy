@@ -149,3 +149,119 @@ model.fit(x_train, y_train)
 pred = model.predict(x_test)
 mse_eval('LinearRegression', pred, y_test)
 
+
+# 규제(Regularization)
+## 학습이 과대적합 되는 것을 방지하고자 일종의 패널티(penalty를 부여하는 것)
+"""
+L2 규제(L2 Regularization)
+    각 가중치 제곱의 합에 규제 강도(Regularization Strength) λ를 곱한다.
+    λ를 크게 하면 가중치가 더 많이 감소되고(규제를 중요시함), λ를 작게 하면 가중치가 증가한다(규제를 중요시하지 않음).
+L1 규제(L1 Regularization)
+    가중치의 제곱의 합이 아닌 가중치의 합을 더한 값에 규제 강도(Regularization Strength) λ를 곱하여 오차에 더한다.
+    어떤 가중치(w)는 실제로 0이 된다. 즉, 모델에서 완전히 제외되는 특성이 생기는 것이다.
+L2 규제가 L1규제에 비해 더 안정적이라 일반적으로는 L2 규제가 더 많이 사용된다.
+
+릿지(Ridge) - L2 규제
+Error = MSE + aw^2
+
+라쏘(Lasso) - L1 규제
+Error = MSE + a|w|
+"""
+
+## Ridge(릿지)
+from sklearn.linear_model import Ridge
+
+# 값이 커질수록 큰 규제
+alphas = [100, 10, 1, 0.1, 0.01, 0.001, 0.0001]     # 규제 강도 설정
+
+for alpha in alphas:            # 각 규제 강도별로 모델 성능이 어떻게 나오는지
+    ridge = Ridge(alpha=alpha)
+    ridge.fit(x_train, y_train)
+    pred = ridge.predict(x_test)
+    mse_eval('Ridge(alpha={})'.format(alpha), pred, y_test)         # 이번 값은 규제가 낮을수록 성능이 좋아졌지만 가장 성능이 좋은값은 의외로 100
+
+print(ridge.coef_)      # 각각의 가중치들을 볼 수 있다.
+
+## alpha값에 따른 coef의 차이를 확인해보기 위한 함수 생성
+def plot_coef(columns, coef):
+    coef_df = pd.DataFrame(list(zip(columns, coef)))
+    coef_df.columns=['feature', 'coef']
+    coef_df = coef_df.sort_values('coef', ascending=False).reset_index(drop=True)
+
+    fig, ax = plt.subplots(figsize=(9, 7))
+    ax.barh(np.arange(len(coef_df)), coef_df['coef'])
+    idx = np.arange(len(coef_df))
+    ax.set_yticks(idx)
+    ax.set_yticklabels(coef_df['feature'])
+    fig.tight_layout()
+    plt.show()
+
+plot_coef(x_train.columns, ridge.coef_)
+
+ridge_100 = Ridge(alpha=100)
+ridge_100.fit(x_train, y_train)
+ridge_pred_100 = ridge_100.predict(x_test)
+
+ridge_001 = Ridge(alpha=0.001)
+ridge_001.fit(x_train, y_train)
+ridge_pred_001 = ridge_001.predict(x_test)
+
+plot_coef(x_train.columns, ridge_100.coef_)
+plot_coef(x_train.columns, ridge_001.coef_)
+## 어떤 하이퍼파라미터값을 주느냐에 따라 웨이트(w : 가중치)값이 다르게 나온다.
+"""
+학습데이터가 방대하여 실서비스를 내놓으려 할 때
+모든 케이스를 커버할 수 있다면 규제를 많이 주지 않아도 된다.
+그러나, 데이터분석 대회나 기업에서 고객 데이터, 매출액 데이터를 많이 보유하고 있지 않을 때
+일반화를 시키려 한다면 규제를 많이 주는것이 좋다.
+우리가 가진 데이터가 일반적인 사례를 모두 커버하지 못하기 때문에 우리 사례에만 과대적합된다면
+실제로 출시했을 때 제대로 된 퍼포먼스가 나오지 못한다.
+"""
+
+## Lasso(라쏘)
+from sklearn.linear_model import Lasso
+
+for alpha in alphas:            # 각 규제 강도별로 모델 성능이 어떻게 나오는지
+    lasso = Lasso(alpha=alpha)
+    lasso.fit(x_train, y_train)
+    pred = lasso.predict(x_test)
+    mse_eval('Lasso(alpha={})'.format(alpha), pred, y_test)         # 규제를 많이 줬을 때 퍼포먼스가 엄청나게 안좋게 나타난다.
+
+lasso_100 = Lasso(alpha=100)
+lasso_100.fit(x_train, y_train)
+lasso_pred_100 = lasso_100.predict(x_test)
+
+lasso_001 = Lasso(alpha=0.001)
+lasso_001.fit(x_train, y_train)
+lasso_pred_001 = lasso_001.predict(x_test)
+
+plot_coef(x_train.columns, lasso_100.coef_)
+plot_coef(x_train.columns, lasso_001.coef_)
+
+
+# ElasticNet
+"""
+l1_ratio(default=0.5)
+    l1_ratio = 0(L2 규제만 사용한다는 의미)
+    l1_ratio = 1(L1 규제만 사용한다는 의미)
+    0 < l1_ratio < 1 (L1 과 L2 규제의 혼합 사용)
+"""
+from sklearn.linear_model import ElasticNet
+ratios = [0.2, 0.5, 0.8]
+
+for ratio in ratios:
+    elasticnet = ElasticNet(alpha=0.5, l1_ratio=ratio)
+    elasticnet.fit(x_train, y_train)
+    pred = elasticnet.predict(x_test)
+    mse_eval('ElasticNet(l1_ratio={})'.format(ratio), pred, y_test)
+
+elasticnet_20 = ElasticNet(alpha=5, l1_ratio=0.2)
+elasticnet_20.fit(x_train, y_train)
+elasticnet_pred_20 = elasticnet_20.predict(x_test)
+
+elasticnet_80 = ElasticNet(alpha=5, l1_ratio=0.8)
+elasticnet_80.fit(x_train, y_train)
+elasticnet_pred_80 = elasticnet_80.predict(x_test)
+
+plot_coef(x_train.columns, elasticnet_20.coef_)
+plot_coef(x_train.columns, elasticnet_80.coef_)
