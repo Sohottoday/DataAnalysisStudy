@@ -265,3 +265,52 @@ elasticnet_pred_80 = elasticnet_80.predict(x_test)
 
 plot_coef(x_train.columns, elasticnet_20.coef_)
 plot_coef(x_train.columns, elasticnet_80.coef_)
+
+
+# Scaler
+## 스케일링을 해주느냐 안해주느냐, 어떤 스케일러로 해주느냐에 따라 모델 성능의 차이가 난다.
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
+
+## StandardScaler : 평균(mean)을 0, 표준편차(std)를 1로 만들어주는 스케일러
+std_scaler = StandardScaler()
+std_scaler = std_scaler.fit_transform(x_train)
+print(round(pd.DataFrame(std_scaler).describe(), 2))
+
+## MinMaxScaler : min값과 max값을 0~1 사이로 정규화
+minmax_scaler = MinMaxScaler()
+minmax_scaler = minmax_scaler.fit_transform(x_train)
+print(round(pd.DataFrame(minmax_scaler).describe(), 2))
+
+## RobustScaler : 중앙값(median)이 0, IQR(interquartile range)이 1이 되도록 변환
+## outlier 값 처리에 유용
+robust_scaler = RobustScaler()
+robust_scaler = robust_scaler.fit_transform(x_train)
+print(round(pd.DataFrame(robust_scaler).describe(), 2))
+
+
+# 파이프라인
+## 매번 스케일링하고 다시 넣어주고 하는 과정이 복잡한데 그 과정을 빠르게 처리할 수 있게 하는 방법
+from sklearn.pipeline import make_pipeline
+
+elasticnet_pipeline = make_pipeline(StandardScaler(), ElasticNet(alpha=0.1, l1_ratio=0.2))      # standardscaler이나 ElasticNet뿐만 아니라 다른 값들도 사용 가능하다.
+
+elasticnet_pred = elasticnet_pipeline.fit(x_train, y_train).predict(x_test)
+mse_eval('Standard ElasticNet', elasticnet_pred, y_test)
+
+
+# Polynomial Features
+"""
+다항식의 계수간 상호작용을 통해 새로운 feature르 생성한다.
+예를들면, [a, b] 2개의 feature가 존재한다고 가정하고
+degree=2 로 설정한다면, polynomial features는 [1, a, b, a^2, ab, b^2]가 된다.
+"""
+from sklearn.preprocessing import PolynomialFeatures
+
+poly = PolynomialFeatures(degree=2, include_bias=False)
+poly_features = poly.fit_transform(x_train)[0]
+
+print(poly_features[0])
+print(x_train.iloc[0])
+
+poly_pipeline = make_pipeline(PolynomialFeatures(degree=2, include_bias=False), StandardScaler(), ElasticNet(alpha=0.1, l1_ratio=0.2))
+poly_pred = poly_pipeline.fit(x_train, y_train).predict(x_test)
