@@ -314,3 +314,101 @@ print(x_train.iloc[0])
 
 poly_pipeline = make_pipeline(PolynomialFeatures(degree=2, include_bias=False), StandardScaler(), ElasticNet(alpha=0.1, l1_ratio=0.2))
 poly_pred = poly_pipeline.fit(x_train, y_train).predict(x_test)
+
+
+
+# 앙상블(Ensemble)
+"""
+# 머신러닝 앙상블이란 여러개의 머신러닝 모델을 이용해 최적의 답을 찾아내는 기법
+    여러 모델을 이용하여 데이터를 학습하고, 모든 모델의 예측결과를 평균하여 예측
+# 앙상블 기법의 종류
+    - 보팅(Voting) : 투표를 통해 결과 도출
+    - 배깅(Bagging) : 샘플 중복 생성을 통해 결과 도출
+    - 부스팅(Boosting) : 이전 오차를 보완하면서 가중치 부여
+    - 스태킹(Stacking) : 여러 모델을 기반으로 예측된 결과를 통해 meta 모델이 다시 한번 예측
+"""
+
+# 보팅(Voting)
+## 보팅(Voting) - 회귀(Regression)
+"""
+# Voting은 말 그대로 투표를 통해 결정하는 방식
+# Voting은 Bagging과 투표방식이라는 점에서 유사하지만, 다음고 같은 큰 차이점이 있다.
+    Voting은 다른 알고리즘 model을 조합해서 사용한다.
+    Bagging은 같은 알고리즘 내에서 다른 sample 조합을 사용한다.
+"""
+from sklearn.ensemble import VotingRegressor, VotingClassifier
+
+## 반드시, Tuple 형태로 모델을 정의해야 한다.
+single_models = [
+    # ('linear_reg', linear_reg),
+    ('ridge', ridge),
+    ('lasso', lasso),
+    ('elasticnet_pipeline', elasticnet_pipeline),
+    ('poly_pipeline', poly_pipeline)
+]
+
+voting_regressor = VotingRegressor(single_models, n_jobs=-1)
+voting_regressor.fit(x_train, y_train)
+voting_pred = voting_regressor.predict(x_test)
+mse_eval('Voting Ensemble', voting_pred, y_test)
+
+## 보팅(Voting) - 분류(Classification)
+"""
+분류기 모델을 만들때, Voting 앙상블은 1가지의 중요한 parameter가 있다.
+voting = {'hard', 'soft'}
+VotingClassifier(voting='soft')
+
+# hard로 설정한 경우
+    class를 0, 1로 분류 예측을 하는 이진 분류를 예로 들어
+    Hard Voting 방식에서는 결과 값에 대한 다수 class를 차용한다.
+    classification을 예로 들어 보자면, 분류를 예측한 값이 1, 0, 0, 1, 1 이었다고 가정한다면 1이 3표, 0이 2표를 받았기 때문에
+    Hard Voting 방식에서는 1이 최종 값으로 예측하게 된다.
+
+# soft로 설정한 경우
+    soft vote 방식은 각각의 확률의 평균 값을 계산한 다음에 가장 확률이 높은 값으로 확정짓게 된다.
+    가령 class 0이 나올 확률이 (0.4, 0.9, 0.9, 0.4, 0.4)이었고, class 1이 나올 확률이 (0.6, 0.1, 0.1, 0.6, 0.6) 이었따면
+    class 0이 나올 최종 확률은 (0.4, 0.9, 0.9, 0.4, 0.4)/5 = 0.44
+    class 1이 나올 최종 확률은 (0.6, 0.1, 0.1, 0.6, 0.6)/5 = 0.4
+    가 되기 때문에 앞선 Hard Vote의 결과와는 다른 결과 값이 최종으로 선출되게 된다.
+
+# 보통 soft 방식을 조금 더 선호한다.
+"""
+
+
+# 배깅(Bagging)
+"""
+Bagging은 Bootstrap Aggregating 의 줄임말
+    Bootstrap = Sample(샘플) + Aggregating = 합산
+    즉, 여러개의 dataset을 중첩을 허용하게 하여 샘플링하여 분할하는 방식
+
+    데이터 셋의 구성이 [1, 2, 3, 4, 5]로 되어 있다면
+    1. group 1 = [1, 2, 3]
+    2. group 2 = [1, 3, 4]
+    3. group 3 = [2, 3, 5]
+
+# 대표적인 Bagging 앙상블
+    RandomForest
+    Bagging
+"""
+
+## RandomForest
+"""
+DecisionTree(트리) 기반 Bagging 앙상블
+굉장히 인기있는 앙상블 모델
+사용성이 쉽고, 성능도 우수
+
+# 주요 Hyperparameter
+    - random_state : 랜덤 시드 고정 값. 고정해두고 튜닝할 것
+    - n_jobs : CPU 사용 갯수
+    - max_depth : 깊어질 수 있는 최대 깊이. 과대적합 방지용
+    - n_estimators : 앙상블하는 트리의 갯수, default값은 100개
+    - max_features : 최대로 사용할 feature의 갯수. 과대적합 방지용
+    - min_sample_split : 트리가 분할할 때 최소 샘플의 갯수. default=2. 과대적합 방지용
+"""
+from sklearn.ensemble import RandomForestRegressor
+
+rfr = RandomForestRegressor(random_state=42, n_estimators=1000, max_depth=7, max_features=0.8)
+rfr.fit(x_train, y_train)
+
+rfr_pred = rfr.predict(x_test)
+mse_eval('RandomForest', rfr_pred, y_test)
