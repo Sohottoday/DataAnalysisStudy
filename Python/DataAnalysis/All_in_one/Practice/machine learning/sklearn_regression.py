@@ -412,3 +412,94 @@ rfr.fit(x_train, y_train)
 
 rfr_pred = rfr.predict(x_test)
 mse_eval('RandomForest', rfr_pred, y_test)
+
+
+# 부스팅(Boosting)
+"""
+# 약한 학습기를 순차적으로 학습을 하되, 이전 학습에 대해 잘못 예측된 데이터에 가중치를 부여해 오차를 보완해나가는 방식
+    장점 : 성능이 우수하다(Lgbm, XGBoost)
+    단점 : 부스팅 알고리즘의 특성상 계속 약점(오분류/잔차)을 보완하려고 하기 때문에 잘못된 레이블링이나 아웃라이어에 필요 이상으로 민감할 수 있다.
+        다른 앙상블 대비 학습 시간이 오래 걸린다
+
+# 대표적인 Boosting 앙상블
+1. AdaBoost
+2. GradientBoost
+3. LightGBM(LGBM)
+4. XGBoost
+"""
+
+## GradientBoost
+### 성능이 우수하다
+### 학습시간이 해도해도 너무 느리다.
+from sklearn.ensemble import GradientBoostingRegressor, GradientBoostingClassifier
+
+gbr = GradientBoostingRegressor(random_state=42, learning_rate=0.01, n_estimators=1000, subsample=0.8)
+gbr.fit(x_train, y_train)
+gbr_pred = gbr.predict(x_test)
+mse_eval('GradientBoost Ensemble', gbr_pred, y_test)
+
+"""
+# 주요 Hyperparameter
+    - random_state : 랜덤 시드 고정 값. 고정해두고 튜닝할 것
+    - n_jobs : CPU 사용 갯수
+    - learning_rate : 학습율. 너무 큰 학습율은 성능을 떨어뜨리고, 너무 작은 학습율은 학습이 느리다. 적절한 값을 찾아야 함. default = 0.1
+    - n_estimators : 부스팅 스테이지 수, default값은 100개
+    - subsample : 샘플 사용 비율(max_features와 비슷한 개념). 과대적합 방지용
+    - min_sample_split : 노드 분할시 최소 샘플의 갯수. default=2. 과대적합 방지용
+
+보통 learning_rate와 n_estimators는 같이 움직인다.
+"""
+
+## XGBoost : eXtreme Gradient Boosting
+"""
+주요 특징
+    scikit-learn 패키지가 아니다.
+    성능이 우수하다
+    GBM보다 빠르고 성능도 향상되었다.
+    여전히 학습시간이 매우 느리다.
+"""
+from xgboost import XGBRegressor
+
+xgb = XGBRegressor(random_state=42, learning_rate=0.01, n_estimators=1000, subsample=0.8, max_features=0.8, max_depth=7)
+xgb.fit(x_train, y_train)
+xgb_pred = xgb.predict(x_test)
+mse_eval('XGB Ensemble', xgb_pred, y_test)
+"""
+# 주요 Hyperparameter
+    - random_state : 랜덤 시드 고정 값. 고정해두고 튜닝할 것
+    - n_jobs : CPU 사용 갯수
+    - learning_rate : 학습율. 너무 큰 학습율은 성능을 떨어뜨리고, 너무 작은 학습율은 학습이 느리다. 적절한 값을 찾아야 함. default = 0.1
+    - n_estimators : 부스팅 스테이지 수, default값은 100개
+    - max_depth : 트리의 깊이. 과대적합 방지용. default = 3
+    - subsample : 샘플 사용 비율(max_features와 비슷한 개념). 과대적합 방지용
+    - max_features : 최대로 사용할 feature의 비율. 과대적합 방지용. default=1.0
+
+보통 learning_rate와 n_estimators는 같이 움직인다.
+scikit-learn 패키지가 아니므로 GPU버전으로 설치한다면 GPU 사용도 가능하다.
+"""
+
+## LightGBM
+"""
+주요 특징
+    scikit-learn 패키지가 아니다.
+    성능이 우수하다
+    속도도 매우 빠르다.
+"""
+from lightgbm import LGBMRegressor, LGBMClassifier
+
+lgbm = LGBMRegressor(random_state=42, learning_rate=0.01, n_estimators=2000, colsample_bytree=0.8, subsample=0.8, max_depth=7)
+lgbm.fit(x_train, y_train)
+lgbm_pred = lgbm.predict(x_test)
+mse_eval('LGBM Ensemble', lgbm_pred, y_test)
+"""
+# 주요 Hyperparameter
+    - random_state : 랜덤 시드 고정 값. 고정해두고 튜닝할 것
+    - n_jobs : CPU 사용 갯수
+    - learning_rate : 학습율. 너무 큰 학습율은 성능을 떨어뜨리고, 너무 작은 학습율은 학습이 느리다. 적절한 값을 찾아야 함. default = 0.1
+    - n_estimators : 부스팅 스테이지 수, default값은 100개
+    - max_depth : 트리의 깊이. 과대적합 방지용. default = 3
+    - colsample_bytree : 샘플 사용 비율(max_features와 비슷한 개념). 과대적합 방지용. default=1.0
+
+보통 learning_rate와 n_estimators는 같이 움직인다.
+scikit-learn 패키지가 아니므로 GPU버전으로 설치한다면 GPU 사용도 가능하다.
+"""
