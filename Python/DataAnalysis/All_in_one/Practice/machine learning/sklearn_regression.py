@@ -503,3 +503,100 @@ mse_eval('LGBM Ensemble', lgbm_pred, y_test)
 보통 learning_rate와 n_estimators는 같이 움직인다.
 scikit-learn 패키지가 아니므로 GPU버전으로 설치한다면 GPU 사용도 가능하다.
 """
+
+
+# Stacking
+"""
+# 개별 모델이 예측한 데이터를 기반으로 final_estimator 종합하여 예측을 수행한다.
+    성능을 극으로 끌어올릴 때 활용한다.
+    과대적합을 유발할 수 있다.(특히 데이터셋이 적은 경우)
+    시간이 많이 소요된다.
+"""
+from sklearn.ensemble import StackingRegressor
+
+stack_models = [
+    ('elasticnet', poly_pipeline),
+    ('randomforest', rfr),
+    ('gbr', gbr),
+    ('lgbm', lgbm),
+]
+
+stack_reg = StackingRegressor(stack_models, final_estimator=xgb, n_jobs=-1)
+stack_reg.fit(x_train, y_train)
+stack_pred = stack_reg.predict(x_test)
+mse_eval('Stacking Ensemble', stack_pred, y_test)
+
+
+## Weighted Blending
+"""
+각 모델의 예측값에 대하여 weight(가중치)를 곱하여 최종 output 계산
+    모델에 대한 가중치를 조절하여, 최종 output을 산출한다.
+    가중치의 합은 1.0이 되도록 한다.
+"""
+
+final_outputs = {
+    'elasticnet' : poly_pred,
+    'randomforest' : rfr_pred,
+    'gbr' : gbr_pred,
+    'xgb' : xgb_pred,
+    'lgbm' : lgbm_pred,
+    'stacking' : stack_pred,
+}
+
+final_prediction=\
+final_outputs['elasticnet'] * 0.1\
++final_outputs['randomforest'] * 0.1\
++final_outputs['gbr'] * 0.2\
++final_outputs['xgb'] * 0.25\
++final_outputs['lgbm'] * 0.15\
++final_outputs['stacking'] * 0.2\
+# 만약 이전의 결과에서 XGBoost가 결과가 좋았다면 xgboost에 가중치를 더 주는 방식과 같이 진행하면 된다.
+
+
+# 앙상블 모델을 정리하며
+"""
+1. 앙상블은 대체적으로 단일 모델 대비 성능이 좋다.
+2. 앙상블을 앙상블하는 기법인 Stacking과 Weighted Blending도 참고해 볼 만 하다.
+3. 앙상블 모델은 적절한 Hyperparameter 튜닝이 중요하다.
+4. 앙상블 모델은 대체적으로 학습시간이 더 오래 걸린다.
+5. 따라서, 모델 튜닝을 하는 데에 걸리는 시간이 오래 소요된다.
+"""
+
+
+# Cross Validation
+"""
+Cross Validation 이란 모델을 평가하는 하나의 방법
+K-겹 교차검증(K-fold Cross Validation)을 많이 활용한다.
+
+# K-겹 교차검증
+    K-겹 교차 검증은 모든 데이터가 최소 한 번은 테스트셋으로 쓰이도록 한다.
+    ex) Estimation 이 1일때,
+    학습데이터 : [B, C, D, E] / 검증데이터 : [A]
+    Estimation 2일때,
+    학습데이터 : [A, C, D, E] / 검증데이터 : [B]
+    https://static.packt-cdn.com/products/9781789617740/graphics/b04c27c5-7e3f-428a-9aa6-bb3ebcd3584c.png
+
+'CV 한다' 라는 의미는 교차검증 한다는 의미
+"""
+from sklearn.model_selection import KFold
+
+n_splits = 5
+kfold = KFold(n_splits=n_splits, random_state=42)
+
+X = np.array(df.drop('MEDV', 1))
+Y = np.array(df['MEDV'])
+
+lgbm_fold = LGBMRegressor(random_state=42)
+
+i = 1
+total_error = 0
+for train_index, test_index in kfold.split(X):          # 5개로 split했기 때문에 5번 반복된다.
+    x_train_fold, x_test_fold = X[train_index], X[test_index]
+    y_train_fold, y_test_fold = Y[train_index], Y[test_index]
+    lgbm_pred_fold = lgbm_fold.fit(x_train_fold, y_train_fold).predict(x_test_fold)
+    error = mean_squared_error(lgbm_pred_fold, y_test_fold)
+    print('Fold = {}, prediction score = {:.2f'.format(i, error))
+    total_error += error
+    i+=1
+print('---' * 10)
+print('Average Error : %s' % (total_error / n_splits))
