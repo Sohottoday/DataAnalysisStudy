@@ -600,3 +600,71 @@ for train_index, test_index in kfold.split(X):          # 5개로 split했기 �
     i+=1
 print('---' * 10)
 print('Average Error : %s' % (total_error / n_splits))
+
+
+# Hyperparameter 튜닝
+"""
+    hyperparameter 튜닝시 경우의 수가 너무 많다.
+    따라서, 우리는 자동화할 필요가 있다.
+
+# sklearn 패키지에서 자주 사용되는 hyperparameter 튜닝을 돕는 클래스는 다음 2가지가 있다.
+    1. RandomizedSearchCV
+    2. GridSearchCV
+
+# 적용하는 방법
+    1. 사용할 Search 방법을 선택한다.
+    2. hyperparameter 도메인을 설정한다.(max_depth, n_estimators 등등)
+    3. 학습을 시킨 후 기다린다.
+    4. 도출된 결과 값을 모델에 적용하고 성능을 비교한다.
+"""
+
+## RandomizedSearchCV
+### 적절한 하이퍼파라미터를 찾기 위한 과정
+"""
+모든 매개 변수 값이 시도되는 것이 아니라 지정된 분포에서 고정 된 수의 매개 변수 설정이 샘플링된다.
+시도 된 매개 변수 설정의 수는 n_iter(시도횟수)에 의해 제공된다.
+
+# 주요 Hyperparameter(LGBM)
+    - random_state : 랜덤 시드 고정 값. 고정해두고 튜닝할 것
+    - n_jobs : CPU 사용 갯수
+    - learning_rate : 학습율. 너무 큰 학습율은 성능을 떨어뜨리고, 너무 작은 학습율은 학습이 느리다. 적절한 값을 찾아야 함. default = 0.1. n_estimators와 같이 튜닝
+    - n_estimators : 부스팅 스테이지 수, default값은 100개
+    - max_depth : 트리의 깊이. 과대적합 방지용. default = 3
+    - colsample_bytree : 샘플 사용 비율(max_features와 비슷한 개념). 과대적합 방지용. default=1.0
+"""
+
+params = {
+    'n_estimators' : [200, 500, 1000, 2000],
+    'learning_rate' : [0.1, 0.05, 0.01],
+    'max_depth' : [6, 7, 8],
+    'colsample_bytree' : [0.8, 0.9, 1.0],
+    'subsample' : [0.8, 0.9, 1.0],
+}
+
+from sklearn.model_selection import RandomizedSearchCV
+# n_iter 값을 조절하여, 총 몇 회의 시도를 진행할 것인지 정의(횟수가 늘어나면, 더 좋은 parameter를 찾을 확률이 올라가지만 그만큼 시간이 오래걸린다.)
+
+clf = RandomizedSearchCV(LGBMRegressor(), params, random_state=42, cv=3, n_iter=25, scoring='neg_mean_squared_error')
+# cv : cross validation(위 참고),    scoring : ???
+clf.fit(x_train, y_train)
+clf.best_score_             # RandomizedSearchCV가 찾은 최적의 parameter들을 넣고 진행했을 때의 값
+clf.best_params_            # RandomizedSearchCV가 찾은 각 parameter들의 최적의 값들을 출력해준다.
+
+
+## GridSearchCV
+### 모든 매개 변수값에 대하여 완전 탐색을 시도한다.
+### 따라서, 최적화할 parameter가 많다면, 시간이 매우 오래 걸린다.
+params = {
+    'n_estimators' : [500, 1000],
+    'learning_rate' : [0.1, 0.05, 0.01],
+    'max_depth' : [7, 8],
+    'colsample_bytree' : [0.8, 0.9],
+    'subsample' : [0.8, 0.9],
+}
+
+from sklearn.model_selection import GridSearchCV
+
+grid_search = GridSearchCV(LGBMRegressor(), params, cv=3, n_jobs=-1, scoring='neg_mean_squared_error')
+grid_search.fit(x_train, y_train)
+grid_search.best_score_
+grid_search.best_params_
