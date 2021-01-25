@@ -39,6 +39,53 @@ print(df.info())
 ### 'CMEDV' 피처 탐색
 print(df['CMEDV'].describe())
 df['CMEDV'].hist(bins=50)
+plt.show()
 df.boxplot(column=['CMEDV'])
+plt.show()
 
+## 회귀 분석 설명 변수 탐색
+### 설명 변수들의 분포 탐색
+numerical_columns = ['CRIM', 'ZN', 'INDUS', 'CHAS', 'NOX', 'RM', 'AGE', 'DIS', 'RAD', 'TAX', 'PTRATIO', 'B', 'LSTAT']
+fig = plt.figure(figsize=(16, 20))
+ax = fig.gca()
 
+df[numerical_columns].hist(ax=ax)
+plt.show()
+
+### 설명 변수들의 상관관계 탐색
+cols = ['CMEDV', 'CRIM', 'ZN', 'INDUS', 'CHAS', 'NOX', 'RM', 'AGE', 'DIS', 'RAD', 'TAX', 'PTRATIO', 'B', 'LSTAT']
+corr = df[cols].corr(method='pearson')      # 피어슨 상관관계로 탐색
+print(corr)
+fig = plt.figure(figsize = (16, 20))
+ax = fig.gca()
+# 상관관계를 히트맵으로 표현
+sns.set(font_scale=1.5)         # 스케일을 설정해주는 이유는 히트맵을 사용할 때 변수들의 폰트가 매우 작게 보일수도 있기 때문
+hm = sns.heatmap(corr.values, annot=True, fmt='.2f', annot_kws={'size':15}, yticklabels=cols, xticklabels=cols, ax=ax)        # fmt는 소수점 2번째 자리까지 출력해달라는 의미
+plt.tight_layout()
+plt.show()
+
+### 설명 변수와 종속 변수의 관계 탐색 (상관관계 세부 탐색)
+plt.plot('RM', 'CMEDV', data=df, linestyle='none', marker='o', markersize=5, color='blue', alpha=0.5)
+plt.title('Scatter plot')
+plt.xlabel("RM")
+plt.ylabel("CM")
+plt.show()      # 이를 통해 방이 클수록 집값이 비싸다는 것을 알 수 있다.
+
+plt.plot('RM', 'LSTAT', data=df, linestyle='none', marker='o', markersize=5, color='blue', alpha=0.5)
+plt.title('Scatter plot')
+plt.xlabel("RM")
+plt.ylabel("LSTAT")
+plt.show()      # 이번 관계는 반비례 관계인것을 확인할 수 있다.
+
+### 지역별 차이 탐색
+fig = plt.figure(figsize=(12, 20))
+ax = fig.gca()
+sns.boxplot(x='CMEDV', y='TOWN', data=df, ax=ax)
+plt.show()
+
+### 범죄율 알아보기
+fig = plt.figure(figsize=(12, 20))
+ax = fig.gca()
+sns.boxplot(x='CRIM', y='TOWN', data=df, ax=ax)
+plt.show()
+# 위와같은 탐색을 통해 인사이트를 찾아낼 수 있다.
