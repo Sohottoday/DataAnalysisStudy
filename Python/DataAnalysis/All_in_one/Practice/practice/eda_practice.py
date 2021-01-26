@@ -89,3 +89,71 @@ ax = fig.gca()
 sns.boxplot(x='CRIM', y='TOWN', data=df, ax=ax)
 plt.show()
 # 위와같은 탐색을 통해 인사이트를 찾아낼 수 있다.
+
+
+## 집값 예측 분석 : 회귀분석
+### 데이터 전처리
+# 피처 표준화
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+scale_columns = ['CRIM', 'ZN', 'INDUS', 'CHAS', 'NOX', 'RM', 'AGE', 'DIS', 'RAD', 'TAX', 'PTRATIO', 'B', 'LSTAT']
+df[scale_columns] = scaler.fit_transform(df[scale_columns])
+
+# 데이터셋 분리
+from sklearn.model_selection import train_test_split
+
+x = df[scale_columns]
+y = df['CMEDV']
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=33)
+
+### 회귀 분석 모델 학습
+from sklearn import linear_model
+from sklearn.metrics import mean_squared_error
+from math import sqrt
+
+lr = linear_model.LinearRegression()
+model = lr.fit(x_train, y_train)
+print(lr.coef_)     # 학습이 잘 되었는지 확인
+
+plt.rcParams['figure.figsize'] = [12, 16]
+coefs = lr.coef_.tolist()       # 리스트 형태로 변환
+coefs_series = pd.Series(coefs)     # 시리즈 형태로 변환
+
+x_labels = scale_columns
+ax = coefs_series.plot.barh()       # 객체 선언
+ax.set_title('feature coef graph')
+ax.set_xlabel('coef')
+ax.set_ylabel('x_features')
+plt.show()
+
+### 학습 결과 해석
+# R2 score, RMSE score 계산
+# R2
+print(model.score(x_train, y_train))
+# 0.7490284664199387        이란 값이 출력되는데, 이는 저 수치만큼 문제를 잘 설명하고 있다는 의미(75점 정도가 나왔다는 의미)
+print(model.score(x_test, y_test))
+# 0.700934213532155         실제 테스트를 했을 때 70점 정도가 출력되었다는 의미(즉, 모의고사는 75점정도가 나왔고 실제 수능은 70점이 나왔다는 표현)
+
+# RMSE
+y_predictions = lr.predict(x_train)
+print("train에 대한 정보 : ", sqrt(mean_squared_error(y_train, y_predictions)))
+
+y_predictions = lr.predict(x_test)
+print("test에 대한 정보 : ", sqrt(mean_squared_error(y_test, y_predictions)))
+
+# 피처 유의성 검정
+import statsmodels.api as sm            # ols모델로 했을때 더 디테일하게 결과를 알아볼 수 있다.
+
+x_train = sm.add_constant(x_train)
+model = sm.OLS(y_train, x_train).fit()
+print(model.summary())
+
+# 다중 공선성
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+
+vif = pd.DataFrame()
+# 10을 기준점으로 하여 10보다 크면 해당 컬럼은 다른 피쳐와 굉장히 상관관계가 높아 다중 공선성을 발생시킨다는 의미
+vif["VIF Factor"] = [variance_inflation_factor(x_train.values, i) for i in range(x_train.shape[1])]
+vif["feature"] = x_train.columns
+print(vif.round(1))
