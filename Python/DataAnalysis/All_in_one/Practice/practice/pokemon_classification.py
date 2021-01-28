@@ -87,3 +87,48 @@ fig = plt.figure(figsize=(12, 12))
 ax = fig.gca()
 sns.boxplot(x = "Type 1", y='Total', data=df, ax=ax)
 plt.show()
+
+
+# 지도학습 기반 분류 분석
+## 데이터 전처리
+df['Legendary'] = df['Legendary'].astype(int)           # 타입 변경
+df['Generation'] = df['Generation'].astype(int)         # 타입 변경
+preprocessed_df = df[['Type 1', 'Type 2', 'Total', 'HP', 'Attack', 'Defense', 'Sp. Atk', 'Sp. Def', 'Speed', 'Generation', 'Legendary']]
+
+## one-hot encoding
+encoded_df = pd.get_dummies(preprocessed_df['Type 1'])
+
+def make_list(x1, x2):
+    type_list = []
+    type_list.append(x1)
+    if x2 is not np.nan:
+        type_list.append(x2)
+    return type_list
+
+preprocessed_df['Type'] = preprocessed_df.apply(lambda x : make_list(x['Type 1'], x['Type 2']), axis=1)
+print(preprocessed_df.head())
+
+from sklearn.preprocessing import MultiLabelBinarizer
+
+mlb = MultiLabelBinarizer()
+preprocessed_df = preprocessed_df.join(pd.DataFrame(mlb.fit_transform(preprocessed_df.pop('Type')), columns=mlb.classes_))
+# join을 통해 인코딩이 된 데이터들은 원래의 데이터프레임에 붙여준다.
+# MultiLabelBinarizer을 활용하면 원핫 인코딩을 멀티로 적용시켜 준다.
+
+preprocessed_df = pd.get_dummies(preprocessed_df['Generation'])
+
+## 피처 표준화
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+scale_columns = ['Total', 'HP', 'Attack', 'Defense', 'Sp. Atk', 'Sp. Def', 'Speed']
+preprocessed_df[scale_columns] = scaler.fit_transform(preprocessed_df[scale_columns])
+# 위의 스케일링은 Z스케일링으로 음의값도 나온다. 만약 0~1의 값으로만 표준화시키는 MinMax 스케일러를 활용한다면 더 좋은 결과를 나타낼 수 있다고 생각할 수 있다.
+
+## 데이터셋 분리
+from sklearn.model_selection import train_test_split
+
+x = preprocessed_df.loc[:, preprocessed_df.columns != 'Legendary']
+y = preprocessed_df['Legandary']
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.25, random_state=33)
+
