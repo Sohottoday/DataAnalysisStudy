@@ -190,3 +190,92 @@ print(confmat)
 # 컨퓨전 매트릭스에도 큰 문제가 없다.
 
 # 데이터 수가 적어졌는데도 더 제대로 된 값이 나오는 이유는 클래스간의 뷸균형을 해소했기 때문이다.
+
+
+# 비지도 학습 기반 군집 분류 분석
+## Kmeans 군집 분류
+
+### 2차원 군집 분석
+from sklearn.cluster import KMeans
+
+x = preprocessed_df[['Attack', 'Defense']]
+
+k_list = []
+cost_list = []      # kmans를 돌리면서 에러값을 저장할 리스트
+
+for k in range(1, 6):
+    kmeans = KMeans(n_clusters=k).fit(x)        # 비지도 학습이므로 y값이 존재하지 않는다는 것을 명심해야 한다.
+    inertia = kmeans.inertia_
+    print("k : ", k, "| cost : ", inertia)
+    k_list.append(k)
+    cost_list.append(inertia)
+
+plt.plot(k_list, cost_list)
+plt.show()
+# 그래프를 출력했을 때 그래프가 확 꺽이는 점(elbow method)이 최적의 K값이라 보면 된다.
+## 해당 그래프에서는 2와 4
+
+# 알아낸 최적의 k값으로 다시 한번 더 모델을 훈련시켜준다.
+kmeans = KMeans(n_clusters=4).fit(x)
+cluster_num = kmeans.predict(x)
+cluster = pd.Series(cluster_num)
+preprocessed_df['cluster_num'] = cluster.values
+print(preprocessed_df.head())
+print(preprocessed_df['cluster_num'].value_counts())        # value counts를 통해 적당히 잘 분배되었는지 확인해보았다.
+
+## 군집 시각화
+plt.scatter(preprocessed_df[preprocessed_df['cluster_num']==0]['Attack'], 
+            preprocessed_df[preprocessed_df['cluster_num']==0]['Defense'], s=50, c='red', label="Pokemon Group 1")
+plt.scatter(preprocessed_df[preprocessed_df['cluster_num']==1]['Attack'],
+            preprocessed_df[preprocessed_df['cluster_num']==1]['Defense'], s=50, c='green', label="Pokemon Group 2")
+plt.scatter(preprocessed_df[preprocessed_df['cluster_num']==2]['Attack'],
+            preprocessed_df[preprocessed_df['cluster_num']==2]['Defense'], s=50, c='blue', label="Pokemon Group 3")
+plt.scatter(preprocessed_df[preprocessed_df['cluster_num']==3]['Attack'],
+            preprocessed_df[preprocessed_df['cluster_num']==3]['Defense'], s=50, c='yellow', label="Pokemon Group 4")
+plt.title("pokemon cluster")
+plt.xlabel("Attack")
+plt.ylabel("Defense")
+plt.legend()
+plt.show()
+
+## 다차원 군집 분석
+x = preprocessed_df[['HP', 'Attack', 'Defense', 'Sp. Atk', 'Sp. Def', 'Speed']]
+
+for k in range(1, 6):
+    kmeans = KMeans(n_clusters=k).fit(x)        # 비지도 학습이므로 y값이 존재하지 않는다는 것을 명심해야 한다.
+    inertia = kmeans.inertia_
+    print("k : ", k, "| cost : ", inertia)
+    k_list.append(k)
+    cost_list.append(inertia)
+
+plt.plot(k_list, cost_list)
+plt.show()
+
+kmeans = KMeans(n_clusters=5).fit(x)
+cluster_num = kmeans.predict(x)
+cluster = pd.Series(cluster_num)
+preprocessed_df['cluster_num'] = cluster.values
+print(preprocessed_df.head())
+print(preprocessed_df['cluster_num'].value_counts())
+
+## 이러한 경우 차원이 여러개이므로 시각화 하기가 어렵다.
+## 탐색적 데이터 분석을 통해 데이터가 잘 군집화 되어있구나를 확인해야 한다.
+
+## 군집별 특성 시각화
+fig = plt.figure(figsize=(12, 12))
+ax = fig.gca()
+sns.boxplot(x = "cluster_num", y='HP', data=preprocessed_df, ax=ax)
+plt.show()
+
+fig = plt.figure(figsize=(12, 12))
+ax = fig.gca()
+sns.boxplot(x = "cluster_num", y='Attack', data=preprocessed_df, ax=ax)
+plt.show()
+
+fig = plt.figure(figsize=(12, 12))
+ax = fig.gca()
+sns.boxplot(x = "cluster_num", y='Speed', data=preprocessed_df, ax=ax)
+plt.show()
+# 위와 같은 방식으로 각각의 컬럼을 확인할 수 있다.
+# 이런 분집분석 결과가 의미하는 것은 어떤 기준으로 군집이 나눠졌는지 눈으로 볼 수는 없지만 여러가지 요소들이 유클리디안 거리로 군집을 나눠봤을 때
+# 군집들을 출력해보니 각 군집마다 특성을 가지고 있다. 라 해석이 가능하다. 즉, 분류가 잘 되었다 라고 볼 수 있다.
