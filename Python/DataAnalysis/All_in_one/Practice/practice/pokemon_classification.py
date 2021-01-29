@@ -132,3 +132,61 @@ x = preprocessed_df.loc[:, preprocessed_df.columns != 'Legendary']
 y = preprocessed_df['Legandary']
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.25, random_state=33)
 
+
+# Logistic Regression 모델 학습
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
+## 모델 학습
+# train LR
+lr = LogisticRegression(random_state=0)
+lr.fit(x_train, y_train)
+y_pred = lr.predict(x_test)
+
+## 모델 평가
+print(accuracy_score(y_test, y_pred))
+print(precision_score(y_test, y_pred))
+print(recall_score(y_test, y_pred))
+print(f1_score(y_test, y_pred))
+## 위의 결과를 출력해보면 accuracy 즉, 정확도만 높게 나오게 된다.
+## 이를 좀 더 자세하게 확인하기 위해 confusion matrix로 알아본다.
+from sklearn.metrics import confusion_matrix
+
+confmat = confusion_matrix(y_true=y_test, y_pred=y_pred)
+print(confmat)
+## 위를 통해 알아본 결과 클래스의 불균형이 이뤄졌다는 것을 알 수 있다.
+## 즉, TP에만 몰려있기 때문에 무조건 의사가 암이 아니라고 우겨도 대부분 맞는다는 앞의 예시처럼 표현된다.
+## 따라서 조금 더 까다롭게 학습해야 제대로 된 결과가 나오는 모델을 학습해야 한다.
+
+##################################### 중요 ###################################
+# 클래스 불균형 조정
+print(preprocessed_df['Legendary'].value_counts())      # 이 결과 레전더리가 아닌 클래스가 압도적으로 많다는 것을 알 수 있다.
+
+## 1:1 샘플링
+positive_random_idx = preprocessed_df[preprocessed_df['Legendary']==1].sample(65, random_state=33).index.tolist()
+negative_random_idx = preprocessed_df[preprocessed_df['Legendary']==0].sample(65, random_state=33).index.tolist()
+# 이 과정은 레전더리인 값 65개, 레전더리가 아닌 값 65개를 똑같이 리스트로 출력한다는 의미(전체가 아닌 인덱스를 가져옴)
+
+## 데이터셋 분리
+random_idx = positive_random_idx + negative_random_idx
+x = preprocessed_df.loc[random_idx, preprocessed_df.columns != 'Legandary']
+y = preprocessed_df['Legandary'][random_idx]
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.25, random_state=33)
+
+## 모델 재학습
+lr = LogisticRegression(random_state=0)
+lr.fit(x_train, y_train)
+y_pred = lr.predict(x_test)
+
+## 모델 재평가
+print(accuracy_score(y_test, y_pred))
+print(precision_score(y_test, y_pred))
+print(recall_score(y_test, y_pred))
+print(f1_score(y_test, y_pred))
+# 이번엔 모든 수치가 1에 가깝게 나왔다.
+
+confmat = confusion_matrix(y_true=y_test, y_pred=y_pred)
+print(confmat)
+# 컨퓨전 매트릭스에도 큰 문제가 없다.
+
+# 데이터 수가 적어졌는데도 더 제대로 된 값이 나오는 이유는 클래스간의 뷸균형을 해소했기 때문이다.
