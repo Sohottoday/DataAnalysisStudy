@@ -85,8 +85,103 @@ from sklearn.feature_extraction.text import TfidfTransformer
 
 tfidf_vectorizer = TfidfTransformer()
 tf_idf_vect = tfidf_vectorizer.fit_transform(bow_vect)
-print(tf_idf_vect[0])
+print("tf_idf_vect[0] : ", tf_idf_vect[0])
 
 ### 벡터 : 단어 맵핑
 invert_index_vectorizer = {v : k for k,v in vect.vocabulary_.items()}
-print(str(invert_index_vectorizer)[:100])
+print("str(invert_index_vectorizer)[:100] : ", str(invert_index_vectorizer)[:100])
+
+
+# Logistic Regression 분류
+## 데이터셋 생성
+print(df.sample(10).head())
+
+def rating_to_label(rating):        # 평점이 3 이상인 값과 그렇지 않은값 분류
+    if rating > 3:
+        return 1
+    else:
+        return 0
+
+df['y'] = df['rating'].apply(lambda x : rating_to_label(x))
+
+print(df.y.value_counts())
+
+## 데이터셋 분리
+from sklearn.model_selection import train_test_split
+
+y = df['y']
+x_train, x_test, y_train, y_test = train_test_split(tf_idf_vect, y, test_size=0.3)
+
+## 모델 학습
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
+lr = LogisticRegression(random_state=0)
+lr.fit(x_train, y_train)
+
+y_pred = lr.predict(x_test)
+
+print(accuracy_score(y_test, y_pred))
+print(precision_score(y_test, y_pred))
+print(recall_score(y_test, y_pred))
+print(f1_score(y_test, y_pred))
+
+# score들을 출력해보면 수치가 뭔가 이상하다는 것을 알 수 있다.
+
+from sklearn.metrics import confusion_matrix
+
+confmat = confusion_matrix(y_test, y_pred)
+print(confmat)
+"""
+[[  4  85]
+ [  0 212]]
+샘플링의 비율이 달라 confusion matrix값이 이상하다는 것을 알 수 있다.
+1:1로 샘플링을 재조정 해준다.
+"""
+
+## 샘플링 재조정
+positive_random_idx = df[df['y']==1].sample(275, random_state=33).index.tolist()
+negative_random_idx = df[df['y']==0].sample(275, random_state=33).index.tolist()
+
+random_idx = positive_random_idx + negative_random_idx
+x = tf_idf_vect[random_idx]
+y = df['y'][random_idx]
+
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3)
+
+lr = LogisticRegression(random_state=0)
+lr.fit(x_train, y_train)
+
+y_pred = lr.predict(x_test)
+
+print(accuracy_score(y_test, y_pred))
+print(precision_score(y_test, y_pred))
+print(recall_score(y_test, y_pred))
+print(f1_score(y_test, y_pred))
+
+confmat = confusion_matrix(y_test, y_pred)
+print(confmat)
+
+
+## 긍정/부정 키워드 분석
+### LogisticRegression 모델의 coef 분석
+plt.rcParams['figure.figsize'] = [10, 8]
+plt.bar(range(len(lr.coef_[0])), lr.coef_[0])
+plt.show()
+
+### 긍정/부정 키워드 출력
+print(sorted(((value, index) for index, value in enumerate(lr.coef_[0])), reverse=True)[:5])
+print(sorted(((value, index) for index, value in enumerate(lr.coef_[0])), reverse=True)[-5:])
+
+coef_pos_index = sorted(((value, index) for index, value in enumerate(lr.coef_[0])), reverse=True)      # 상위 n개의 긍정적 키워드
+coef_neg_index = sorted(((value, index) for index, value in enumerate(lr.coef_[0])), reverse=False)      # 상위 n개의 긍정적 키워드
+
+invert_index_vectorizer = {v:k for k, v in vect.vocabulary_.items()}
+
+for coef in coef_pos_index[:15]:        # 긍정적 단어 15개 출력
+    print(invert_index_vectorizer[coef[1]], coef[0])
+
+print("------------------------------------------")
+for coef in coef_neg_index[:15]:        # 부정적 단어 15개 출력
+    print(invert_index_vectorizer[coef[1]], coef[0])
+
