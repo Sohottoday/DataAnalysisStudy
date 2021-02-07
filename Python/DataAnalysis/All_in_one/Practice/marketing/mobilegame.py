@@ -42,3 +42,19 @@ df = df[df['sum_gamerounds'] < 45000]
 # percentile을 살펴보자(분위수)
 print(df['sum_gamerounds'].describe())
 ## 상위 50%의 유저들은 첫 14일 동안 게임을 16회 플레이했다.
+
+
+# 데이터 분석
+## 각 게임실행횟수 별 유저의 수를 카운트 해본다.
+print(df.groupby('sum_gamerounds')['userid'].count())
+plot_df = df.groupby('sum_gamerounds')['userid'].count()
+
+plot_df[:100].plot(figsize=(10,6))
+plt.show()
+
+"""
+게임을 설치하고 한 번도 실행하지 않은 유저들의 수가 상당하다는 것을 알 수 있다.
+몇몇 유저들은 설치 첫 주에 충분히 실행해보고 게임에 어느정도 중독되었다는 것을 알 수 있다.
+비디오 게임산업에서 1-day retention은 게임이 얼마나 재미있고 중독적인지 평가하는 주유 메트릭
+1-day retention이 높을 경우 손쉽게 가입자 기반을 늘려갈 수 있다.
+"""
