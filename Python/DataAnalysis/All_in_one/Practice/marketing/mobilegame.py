@@ -152,3 +152,41 @@ print('게이트가 레벨30에 있을 때 7-day retention이 클 확률:',(boot
     부트 스트랩 결과는 게이트가 레벨 40에 있을 때보다 레벨 30에 있을 때 7일 retention이 더 높다는 강력한 증거가 있음을 나타낸다.
     결론은 retention을 늘리기 위해서 게이트를 레벨 30에서 40으로 이동해서는 안된다.
 """
+
+# T-test
+## 통계적인 기준으로 판단하는 방법을 알아보자
+df_30 = df[df['version'] == 'gate_30']
+print(df_30.shape)
+print(df_30.tail())
+
+df_40 = df[df['version'] == 'gate_40']
+print(df_40.shape)
+print(df_40.tail())
+
+from scipy import stats         # scipy는 수학적인 계산을 해주는 파이썬의 패키지
+# 독립표본 T-검정 (2 sample T-test)
+
+tTestResult = stats.ttest_ind(df_30['retention_1'], df_40['retention_1'])
+tTestResultDiffVar = stats.ttest_ind(df_30['retention_1'], df_40['retention_1'], equal_var=False)
+
+print(tTestResult)      # Ttest_indResult(statistic=1.7871153372992439, pvalue=0.07392220630182521)
+
+tTestResult = stats.ttest_ind(df_30['retention_7'], df_40['retention_7'])
+tTestResultDiffVar = stats.ttest_ind(df_30['retention_7'], df_40['retention_7'], equal_var=False)
+
+print(tTestResult)      # Ttest_indResult(statistic=3.1575495965685936, pvalue=0.0015915357297854773)
+"""
+# T Score
+    - t-score가 크면 두 그룹이 다르다는 것을 의미한다.
+    - t-score가 작으면 두 그룹이 비슷하다는 것을 의미한다.
+# P-values
+    - p-value는 5% 수준에서 0.05이다.
+    - p-values는 작은 것이 좋다. 이것은 데이터가 우연히 발생한 것이 아니라는 것을 의미한다.
+    - 예를 들어 p-value가 0.01이라는 것은 결과가 우연히 나올 확률이 1%에 불과하다는 것을 의미한다.
+    - 대부분의 경우 0.05(5%) 수준의 p-value를 기준으로 삼는다. 이 경우 통계적으로 유의하다고 한다.
+    - 따라서 retention_7을 t-test했을 때 pvalue가 0.001이 나왔으므로 0.05보다 한참 작기에 통계적으로 유의미한 차이가 있다고 해석할 수 있다.
+
+위 분석결과를 보면, 두 그룹에서 retention_1에 있어서는 유의하지 않고, retention_7에서는 유의미한 차이가 있다는 것을 알 수 있다.
+다시말해, retention_7이 gate_30이 gate40보다 높은 것은 우연히 발생한 일이 아니다.
+즉, gate는 30에 있는 것이 40에 있는 것보다 retention_7 차원에서 더 좋은 선택지이다.
+"""
