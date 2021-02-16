@@ -31,3 +31,45 @@ print(df.tail())
 print(df.info())
 print(df.describe())
 print(df.corr())
+corr = df.corr()
+sns.heatmap(corr, annot=True)
+plt.show()
+
+sns.pairplot(df[['CustomerID', 'Age', 'Annual Income (k$)', 'Spending Score (1-100)']])
+plt.show()
+"""
+샘플데이터라 그런지 scatter plot을 보는 것만으로도 세그먼트가 눈에 보이는 것 같다.
+특히 Spending Score와 Annual Income 사이의 관계에 따라 5개의 세그먼트가 나눠지는 것 처럼 보인다.
+각 세그먼트는 해석이 가능하다.
+실제 데이터는 이렇게 예쁘게 나눠떨어지기 어렵다는 점을 감안하고 분석을 해야한다.
+"""
+
+# 각 변수의 분포 확인
+## Age
+sns.distplot(df['Age'])
+plt.show()
+
+## Annual Income (k$)
+sns.distplot(df['Annual Income (k$)'])
+plt.show()
+
+## Spending Score (1-100)
+sns.distplot(df['Spending Score (1-100)'])
+plt.show()
+
+## Gender
+sns.countplot(data=df, x='Gender')
+plt.show()
+
+## 성별에 따른 분포도 확인
+sns.lmplot(data=df, x='Age', y='Annual Income (k$)', hue='Gender', fit_reg=False)          # lmplot은 보통 수치형 데이터끼리의 관계를 비교할 때 사용된다.
+plt.show()
+### 이 결과 남녀에 따른 결과는 큰 의미가 없다는 것을 알 수 있다.
+
+# 남녀에 따른 전체적인 비교
+sns.pairplot(df[['CustomerID', 'Gender', 'Age', 'Annual Income (k$)', 'Spending Score (1-100)']], hue='Gender')
+plt.show()
+
+# 성별에 따른 boxplot
+sns.boxenplot(x='Gender', y='Age', hue='Gender', palette=['m', 'g'], data=df)
+plt.show()
