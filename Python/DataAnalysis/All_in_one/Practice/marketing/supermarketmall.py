@@ -23,6 +23,7 @@ Spending Score(1-100) : 고객의 구매행위와 구매 특성을 바탕으로 
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 import seaborn as sns
 from sklearn.cluster import KMeans
 
@@ -203,3 +204,110 @@ plt.scatter( x = 'Annual Income (k$)' ,y = 'Spending Score (1-100)' , data = df 
 plt.scatter(x = centroids2[: , 0] , y =  centroids2[: , 1] , s = 300 , c = 'red' , alpha = 0.5)
 plt.ylabel('Spending Score (1-100)') , plt.xlabel('Annual Income (k$)')
 plt.show()
+
+# 이런식으로 군집화를 통한 분류 이후 A/B test나 여타 방식을 통해 군집별 최상의 전략을 구축하는 것이 중요하다.
+
+
+# 실루엣 스코어를 사용한 k 선택
+"""
+# 실루엣 스코어
+    Silhouette Coefficient는 각 샘플의 클러스터 내부 거리의 평균 (a)와 인접 클러스터와의 거리 평균 (b)를 사용하여 계산한다.
+    한 샘플의 Silhouette Coefficient는 (b-a) / max(a, b)
+    가장 좋은 값은 1이고 가장 최악의 값은 -1 이다.
+    0 근처의 값은 클러스터가 오버랩되었다는 것을 의미한다.(겹친다는 의미)
+    음수 값은 샘플이 잘못된 클러스터에 배정되었다는 것을 의미한다. 다른 클러스터가 더 유사한 군집이라는 의미
+"""
+from sklearn.metrics import silhouette_samples, silhouette_score
+
+## ** 아래의 코드 대부분은 sklearn 공식 홈페이지에서 구현되어 있는 코드를 가져올 수 있다.
+
+# 클러스터의 갯수 리스트를 만들어줍니다. 
+range_n_clusters = [2, 3, 4, 5, 6, 7, 8]
+
+# 사용할 컬럼 값을 지정해줍니다. 
+X = df[['Age', 'Annual Income (k$)', 'Spending Score (1-100)']].values
+
+
+for n_clusters in range_n_clusters:
+    # 1 X 2 의 서브플롯을 만듭니다. 
+    fig, (ax1, ax2) = plt.subplots(1, 2)
+    fig.set_size_inches(18, 7)
+
+    # 첫 번째 서브플롯은 실루엣 플롯입니다. 
+    # silhouette coefficient는 -1에서 1 사이의 값을 가집니다.
+    # 하지만 시각화에서는 -0.1에서 1사이로 지정해줍니다. 
+    ax1.set_xlim([-0.1, 1])
+
+    # clusterer를 n_clusters 값으로 초기화 해줍니다.  
+    # 재현성을 위해 random seed를 10으로 지정 합니다.
+    clusterer = KMeans(n_clusters=n_clusters, random_state=10)
+    cluster_labels = clusterer.fit_predict(X)
+
+    # silhouette_score는 모든 샘플에 대한 평균값을 제공합니다. 
+    # 실루엣 스코어는 형성된 군집에 대해 밀도(density)와 분리(seperation)에 대해 견해를 제공합니다. 
+    silhouette_avg = silhouette_score(X, cluster_labels)
+    print("For n_clusters =", n_clusters,
+          "The average silhouette_score is :", silhouette_avg)
+
+    # 각 샘플에 대한 실루엣 스코어를 계산합니다. 
+    sample_silhouette_values = silhouette_samples(X, cluster_labels)
+
+    y_lower = 10
+    for i in range(n_clusters):
+        # 클러스터 i에 속한 샘플들의 실루엣 스코어를 취합하여 정렬합니다. 
+        ith_cluster_silhouette_values = \
+            sample_silhouette_values[cluster_labels == i]
+
+        ith_cluster_silhouette_values.sort()
+
+        size_cluster_i = ith_cluster_silhouette_values.shape[0]
+        y_upper = y_lower + size_cluster_i
+
+        color = cm.nipy_spectral(float(i) / n_clusters)
+        ax1.fill_betweenx(np.arange(y_lower, y_upper),
+                          0, ith_cluster_silhouette_values,
+                          facecolor=color, edgecolor=color, alpha=0.7)
+
+        # 각 클러스터의 이름을 달아서 실루엣 플롯의 Label을 지정해줍니다. 
+        ax1.text(-0.05, y_lower + 0.5 * size_cluster_i, str(i))
+
+        # 다음 플롯을 위한 새로운 y_lower를 계산합니다.
+        y_lower = y_upper + 10  # 10 for the 0 samples
+
+
+    ax1.set_title("The silhouette plot for the various clusters.")
+    ax1.set_xlabel("The silhouette coefficient values")
+    ax1.set_ylabel("Cluster label")
+
+    # 모든 값에 대한 실루엣 스코어의 평균을 수직선으로 그려줍니다. 
+    ax1.axvline(x=silhouette_avg, color="red", linestyle="--")
+
+    ax1.set_yticks([])  # yaxis labels / ticks 를 지워줍니다. 
+    ax1.set_xticks([-0.1, 0, 0.2, 0.4, 0.6, 0.8, 1])
+
+    # 두 번째 플롯이 실제 클러스터가 어떻게 형성되었는지 시각화 합니다. 
+    colors = cm.nipy_spectral(cluster_labels.astype(float) / n_clusters)
+    ax2.scatter(X[:, 0], X[:, 1], marker='.', s=30, lw=0, alpha=0.7,
+                c=colors, edgecolor='k')
+
+    # 클러스터의 이름을 지어줍니다. 
+    centers = clusterer.cluster_centers_
+    # 클러스터의 중앙에 하얀 동그라미를 그려줍니다. 
+    ax2.scatter(centers[:, 0], centers[:, 1], marker='o',
+                c="white", alpha=1, s=200, edgecolor='k')
+
+    for i, c in enumerate(centers):
+        ax2.scatter(c[0], c[1], marker='$%d$' % i, alpha=1,
+                    s=50, edgecolor='k')
+
+    ax2.set_title("The visualization of the clustered data.")
+    ax2.set_xlabel("Feature space for the 1st feature")
+    ax2.set_ylabel("Feature space for the 2nd feature")
+
+    plt.suptitle(("Silhouette analysis for KMeans clustering on sample data "
+                  "with n_clusters = %d" % n_clusters),
+                 fontsize=14, fontweight='bold')
+
+plt.show()
+
+# 클러스터 개수는 6개가 가장 적당하다는 것을 알 수 있다.
