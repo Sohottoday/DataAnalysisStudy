@@ -310,4 +310,35 @@ for n_clusters in range_n_clusters:
 
 plt.show()
 
+
+"""
+For n_clusters = 2 The average silhouette_score is : 0.293166070535953
+For n_clusters = 3 The average silhouette_score is : 0.3839349967742105
+For n_clusters = 4 The average silhouette_score is : 0.40546302077733304
+For n_clusters = 5 The average silhouette_score is : 0.44428597560893024
+For n_clusters = 6 The average silhouette_score is : 0.4523443947724053
+For n_clusters = 7 The average silhouette_score is : 0.43978902692261157
+For n_clusters = 8 The average silhouette_score is : 0.43360130415308396
+"""
 # 클러스터 개수는 6개가 가장 적당하다는 것을 알 수 있다.
+
+
+# 분석 결과 : 해석 및 적용방안
+print(cluster_labels)
+print(cluster_labels.shape)     # 200개의 데이터에 각각의 값이 할당되어 있다.
+
+# 기존 데이터셋에 각 고객이 속한 클러스터 값을 넣어준다.
+df['cluster'] = cluster_labels
+
+# 각 그룹의 특성을 확인한다.
+print('클러스터별 연령대 : ', df.groupby('cluster')['Age'].mean())
+
+# 클러스터별 시각화
+sns.boxplot(x='cluster', y='Age', hue='Gender', palette=['c', 'm'], data=df)
+plt.show()
+
+"""
+- 각 카테고리 값에 따른 분포의 실제 데이터와 형상을 보고 싶다면 violinplot, stripplot, swarmplot 등으로 시각화 해본다.
+- violinplot은 세로 방향으로 커널 밀도 히스토그램을 그려준다. 양쪽이 왼쪽, 오른쪽 대칭이 되도록 하여 바이올린처럼 보인다.
+- swarmplot은 stripplot과 유사하며 데이터를 나타내는 점이 겹치지 않도록 옆으로 이동해서 그려준다.
+"""
