@@ -342,3 +342,123 @@ plt.show()
 - violinplot은 세로 방향으로 커널 밀도 히스토그램을 그려준다. 양쪽이 왼쪽, 오른쪽 대칭이 되도록 하여 바이올린처럼 보인다.
 - swarmplot은 stripplot과 유사하며 데이터를 나타내는 점이 겹치지 않도록 옆으로 이동해서 그려준다.
 """
+
+# swarmplot으로 cluster별 'Annual Income (k$)' 시각화
+sns.violinplot(x='cluster', y='Annual Income (k$)', data=df, inner=None)
+sns.swarmplot(x='cluster', y='Annual Income (k$)', data=df, color='white', edgecolor='gray')
+plt.show()
+
+# swarmplot으로 cluster별 'Spending Score (1-100)' 을 시각화
+sns.violinplot(x='cluster', y='Spending Score (1-100)', data=df, inner=None)
+sns.swarmplot(x='cluster', y='Spending Score (1-100)', data=df, color='white', edgecolor='gray')
+plt.show()
+
+# swarmplot으로 cluster별 'Age' 시각화
+sns.violinplot(x='cluster', y='Age', data=df, inner=None)
+sns.swarmplot(x='cluster', y='Age', data=df, color='white', edgecolor='gray')
+plt.show()
+
+# 3차원으로 시각화
+## 해당 부분 코드도 공식 document 에서 찾아보면 예시 코드를 가져올 수 있다.
+## 단, 시각적으로 쉽게 알아보는 것은 쉽지 않다.
+"""
+import plotly.graph_objs as go
+import plotly as py
+
+df['label3'] =  cluster_labels
+trace1 = go.Scatter3d(
+    x= df['Age'],
+    y= df['Spending Score (1-100)'],
+    z= df['Annual Income (k$)'],
+    mode='markers',
+     marker=dict(
+        color = df['label3'], 
+        size= 20,
+        line=dict(
+            color= df['label3'],
+            width= 20
+        ),
+        opacity=0.8
+     )
+)
+data = [trace1]
+layout = go.Layout(
+#     margin=dict(
+#         l=0,
+#         r=0,
+#         b=0,
+#         t=0
+#     )
+    title= 'Clusters',
+    scene = dict(
+            xaxis = dict(title  = 'Age'),
+            yaxis = dict(title  = 'Spending Score'),
+            zaxis = dict(title  = 'Annual Income')
+        )
+)
+fig = go.Figure(data=data, layout=layout)
+py.offline.iplot(fig)
+"""
+
+# 3개의 시각화를 한 화면에 배치합니다. 
+figure, ((ax1, ax2, ax3)) = plt.subplots(nrows=1, ncols=3)
+
+# 시각화의 사이즈를 설정해줍니다. 
+figure.set_size_inches(20, 6)
+
+# 클러스터별로 swarmplot을 시각화해봅니다. 
+ax1 = sns.violinplot(x="cluster", y='Annual Income (k$)', data=df, inner=None, ax=ax1)
+ax1 = sns.swarmplot(x="cluster", y='Annual Income (k$)', data=df,
+                   color="white", edgecolor="gray", ax=ax1)
+
+ax2 = sns.violinplot(x="cluster", y='Spending Score (1-100)', data=df, inner=None, ax=ax2)
+ax2 = sns.swarmplot(x="cluster", y='Spending Score (1-100)', data=df,
+                   color="white", edgecolor="gray", ax=ax2)
+
+ax3 = sns.violinplot(x="cluster", y='Age', data=df, inner=None, ax=ax3)
+ax3 = sns.swarmplot(x="cluster", y='Age', data=df,
+                   color="white", edgecolor="gray", ax=ax3, hue="Gender")
+
+
+"""
+# 적용 방안
+- 각 클러스터 별 특성을 정리해서 각 클러스터별 접근방안을 고민해본다.
+         0  1  2  3  4  5
+연간 소득 중 상  상 하  하 중
+소비 점수 중 상  하 하  상 중
+연    령 하 중  o  o  하  상
+
+- VIP 고객 : 군집 1, 군집 4
+    소비 점수가 높은 군집은 1, 4
+    군집 1
+        그 중에서도 1의 연간소득은 높은 편
+        잘 유도할 경우 더 많은 지출을 하게 될지도 모른다.
+        1의 연령대는 20대 후반에서 40대 초반으로 젊은편
+        1의 세부 고객 정보를 더 분석하여 타겟 마케팅을 기획해 본다.
+        고소득 젊은층이 선호할 이벤트를 기획하거나 사은품을 기획해 볼 수 있다.
+    군집 4
+        연간 소득은 낮은편이지만 우리 mall에서의 소비점수는 높은편
+        특히 우리 mall에 대한 충성도가 높고 구매 비율이 높은 고객군으로 추정된다.
+        가격적인 혜택을 추가 제공하는 것을 고려해본다(할인쿠폰, 멤버십 등)
+- 잠재 VIP 고객 : 군집 2
+    연간 소득은 높지만 소비 점수는 낮은 편
+    우리 mall에서 구매를 더 할 수 있는 여력이 있는 고객군
+    연령은 ㅈ너 연령대에 걸쳐 있다.
+    다른 변수를 더 확보하여 잠재 VIP 고객이 될 수 있는 cluster 2 고객의 방문과 구매를 유도해본다.
+    재방문시 사은품 증정, 특정 금액 이상 구매시 혜택 제공 등 재방문과 구매를 유도해본다.
+
+# 추가 분석
+- 'Gender' 변수 활용
+    K-means는 기본적으로 numerical variable을 사용하는 알고리즘. 유클리디안 거리를 계산해야 하기 때문
+    Gender 변수를 one-hot-encoding하여 숫자로 바꿔준 뒤 변수로 추가하여 활용해본다.
+
+# 카테고리 변수가 대부분인 경우의 군집화
+    k-modes 알고리즘을 사용
+    https://pypi.org/project/kmodes/
+
+# Next Step
+    각 세그먼트별 활용전략 도출
+    전략에 따른 가설과 실험 설계
+    AB Test
+    Loop
+"""
