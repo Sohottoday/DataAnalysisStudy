@@ -219,7 +219,7 @@ plt.show()
 """
 from sklearn.metrics import silhouette_samples, silhouette_score
 
-## ** 아래의 코드 대부분은 sklearn 공식 홈페이지에서 구현되어 있는 코드를 가져올 수 있다.
+##  아래의 코드 대부분은 sklearn 공식 홈페이지에서 구현되어 있는 코드를 가져올 수 있다.
 
 # 클러스터의 갯수 리스트를 만들어줍니다. 
 range_n_clusters = [2, 3, 4, 5, 6, 7, 8]
