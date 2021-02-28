@@ -104,3 +104,84 @@ print(df.info())
     numeric variable이 많지 않기 때문
     categorical variable을 처리해준다.
 """
+
+# 다음 컬럼들에 대해 'No internet service'를 간단하게 'No'로 변환하여 통합해준다.
+replace_cols = ['MultipleLines', 'OnlineSecurity', 'OnlineBackup', 'DeviceProtection', 'TechSupport', 'StreamingTV', 'StreamingMovies']
+for i in replace_cols:
+    df[i] = df[i].replace({'No internet service' : 'No'})
+
+print(df.tail())
+
+# https://www.kaggle.com/jsaguiar/exploratory-analysis-with-seaborn
+# barplot을 %으로 표현한 함수
+def barplot_percentages(feature, orient='v', axis_name="percentage of customers"):
+    ratios = pd.DataFrame()
+    g = df.groupby(feature)["Churn"].value_counts().to_frame()
+    g = g.rename({"Churn": axis_name}, axis=1).reset_index()
+    g[axis_name] = g[axis_name]/len(df)
+    if orient == 'v':
+        ax = sns.barplot(x=feature, y= axis_name, hue='Churn', data=g, orient=orient)
+        ax.set_yticklabels(['{:,.0%}'.format(y) for y in ax.get_yticks()])
+    else:
+        ax = sns.barplot(x= axis_name, y=feature, hue='Churn', data=g, orient=orient)
+        ax.set_xticklabels(['{:,.0%}'.format(x) for x in ax.get_xticks()])
+    ax.plot()
+
+# SeniorCitizen
+barplot_percentages('SeniorCitizen')
+## SeniorCitizen은 전체 고객의 16% 정도에 불과하지만 churn 비율은 훨씬 높다.(42% vs 23%)
+
+# Dependents
+barplot_percentages('Dependents')
+## Dependent가 없는 경오 churn을 더 많이 한다.
+
+# Partner
+barplot_percentages('Partner')
+## Partner가 없는 경우 churn을 더 많이 한다.
+
+# MultipleLines'
+barplot_percentages('MultipleLines')
+## phone service를 사용하지 않는 고객의 비율은 적다.
+## MultipleLines를 사용중인 고객의 churn 비율이 아주 약간 높다.
+
+# InternetService
+barplot_percentages('InternetService')
+## 인터넷서비스가 없는 경우의 churn 비율은 매우 낮다.
+## Fiber opptic을 사용중인 고객이 DSL 사용중인 고객들보다 churn 비율이 높다.
+
+# 6개의 부가 서비스관련 시각화
+cols = ['OnlineSecurity', 'OnlineBackup', 'DeviceProtection', 'TechSupport', 'StreamingTV', 'StreamingMovies']
+df1 = pd.melt(df[df['InternetService'] != 'No'][cols]).rename({'value' : 'Has service'}, axis=1)            # melt : 데이터 재구조화(replace와 비슷함.)
+plt.figure(figsize=(10, 4.5))
+ax = sns.countplot(data=df1, x='variable', hue='Has service')
+ax.set(xlabel='Additional service', ylabel='Num of customers')
+plt.show()
+## 'OnlineSecurity', 'OnlineBackup', 'DeviceProtection', 'TechSupport' 부가서비스 사용자는 churn 하는 경우가 적다.
+## 스트리밍 서비스 이용 고객 중 churn이 많은 것으로 보인다('StreamingTV', 'StreamingMovies')
+
+# Contract 유형에 따른 월청구 요금과 해지여부 시각화
+ax = sns.boxplot(x='Contract', y='MonthlyCharges', hue='Churn', data=df)
+plt.show()
+## 장기계약이고 월청구요금이 높을수록 해지율이 높은 것 같다.
+## 전반적으로 월청구요금이 높을 때 해지가능성이 높아보인다.
+
+# PaymentMethod 유형에 따른 월청구요금과 해지여부를 시각화
+ax = sns.boxplot(x='PaymentMethod', y='MonthlyCharges', hue='Churn', data=df)
+ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+plt.show()
+## Mailed check는 상대적으로 월청구요금이 낮다.
+## Mailed check
+
+# tenure에 따른 고객수 계산
+print(df['tenure'].value_counts().sort_index())
+a = df['tenure'].value_counts().sort_index()
+print(a.shape)      # 해당 값은 몇개월 사용중인 고객이 몇명인지 보여주는 값이다.
+
+# tenure에 따른 고객수 시각화
+plt.figure(1, figsize=(16, 5))
+plt.plot(np.arange(1, 73), a, 'p')
+plt.plot(np.arange(1, 73), a, '-', alpha=0.8)
+plt.xlabel('tenure'), plt.ylabel('Number of customer')
+plt.show()
+## 6개월 이후 retention이 상당히 낮아진다는 것을 알 수 있다.(retention : 잔존율)
+## 반면 장기 충성고객들은 70개월 이상 유지되고 있다. 소중한 고객들이다.
