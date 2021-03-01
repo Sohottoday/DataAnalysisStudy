@@ -185,3 +185,86 @@ plt.xlabel('tenure'), plt.ylabel('Number of customer')
 plt.show()
 ## 6개월 이후 retention이 상당히 낮아진다는 것을 알 수 있다.(retention : 잔존율)
 ## 반면 장기 충성고객들은 70개월 이상 유지되고 있다. 소중한 고객들이다.
+
+# CLV(Customer Lifetime Value; LTV)를 계산한다.
+"""
+CLV는 고객생애 가치를 말한다.
+고객이 확보된 이후 유지되는 기간동안의 가치
+CAC와 LTV는 반드시 트래킹해야 할 주요 지표라고 할 수 있다.
+    CAC보다 LTV가 최소 3배 이상 높은 것이 이상적
+
+- LTV(Lifetime value)
+    고객당 월 평균 이익(Avg monthly revenue per customer) x 평균 고객 유지개월 수(months customer lifetime)
+    고객당 월 평균 이익(Avg monthly revenue per customer) / 월 평균 해지율(Monthly churn)
+    (Average Value of a Slae) x (Number of Repeat Transactions) x (Average Retention Time in Months or Years for a Typical Customer)
+    PLC(제품수명주기 : Product Life Cycle) x ARPU(고객평균매출 : Average Revenue Per User)
+    (고객당 월 평균 이익(Avg Monthly Revenue per Customer) x 고객당 매출 총 이익(Gross Margin per Customer)) / 월 평균 해지율(Monthly Churn Rate)
+- CAC(Customer Acquisition Cost)
+    전체 세일즈 마케팅 비용(Total sales and marketing expense) / 신규확보 고객 수(New customers acquired)
+- LTC : CAC Ratio
+    LTV/CAC
+        1:1 더 많이 팔수록 더 많이 잃게 된다(손해)
+        3:1 이상적인 비율(도메인마다 다를 수 있다.)
+        4:1 좋은 비즈니스 모델
+        5:1 충분한 이익을 볼 수 있는데 마케팅에 투자를 덜 하고 있는것으로 보인다.
+"""
+
+# LTV(Lifetime Value)
+## 고객당 월 평균 이익(Avg monthly revenue per customer) x 평균 고객 유지개월 수(months customer lifetime)
+print(df['MonthlyCharges'].mean() * df['tenure'].mean())        # 2100.873646970263
+
+# 2100 / 3   -> 700   이상적인 LTV/CAC 값이 3:1 이므로 3으로 나눠본다.
+"""
+LTV는 2100달러이다.
+CAC는 700달러 정도인 것이 이상적이다.
+통신사의 CAC는 기기 보조금, 멤버십 혜택 등이 있다.
+"""
+
+
+# Churn 해지할 고객을 예측해보자
+
+# customerID는 분석에 사용되면 안되기 때문에 제거한다.
+df2 = df.iloc[:, 1:]
+
+# binary 형태의 카테고리 변수를 numeric variable로 변경해준다. -> 우리의 목표는 churn이다.
+## replace를 통해 Yes는 1로, No는 0으로 변경시킨다. (머신러닝 코드를 돌리기 위해)
+df2['Churn'].replace(to_replace='Yes', value=1, inplace=True)
+df2['Churn'].replace(to_replace='No', value=0, inplace=True)
+
+# 모든 categorical 변수를 더미 변수화 시킨다.
+df_dummies = pd.get_dummies(df2)
+print(df_dummies.tail())
+
+# dummy 변수화한 데이터를 사용한다.
+y = df_dummies['Churn'].values
+
+X = df_dummies.drop(columns=['Churn'])
+
+# 변수 값을 0과 1 사이 값으로 스케일링 해준다.
+from sklearn.preprocessing import MinMaxScaler
+
+features = X.columns.values
+scaler = MinMaxScaler(feature_range = (0, 1))
+scaler.fit(X)
+X = pd.DataFrame(scaler.transform(X))
+X.columns = features
+print(X.shape)
+print(X.tail())
+
+# Train Test data 생성
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=101)
+
+# 고객이 해지하였는지 해지하지 않았는지를 알아보기 위함이므로 logistic regression 알고리즘을 사용한다.
+## logistic regression은 시그모이드 함수를 활용해 0과 1을 찾아내는 대표적인 알고리즘
+from sklearn.linear_model import LogisticRegression
+
+model = LogisticRegression(max_iter=1000)
+result = model.fit(X_train, y_train)
+
+from sklearn import metrics
+prediction_test = model.predict(X_test)
+
+print(metrics.accuracy_score(y_test, prediction_test))      # 정확도 확인
+## 0.8075829383886256    -> 해지 할 고객을 80% 확률로 예측하였다는 의미
