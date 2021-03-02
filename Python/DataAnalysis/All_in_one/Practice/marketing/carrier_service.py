@@ -268,3 +268,59 @@ prediction_test = model.predict(X_test)
 
 print(metrics.accuracy_score(y_test, prediction_test))      # 정확도 확인
 ## 0.8075829383886256    -> 해지 할 고객을 80% 확률로 예측하였다는 의미
+
+
+# 결과 해석
+## 모든 변수의 weights 값을 가져와서 시각화 해본다.
+weights = pd.Series(model.coef_[0], index=X.columns.values)
+plt.rcParams['figure.figsize'] = (20, 4)
+weights.sort_values(ascending = False).plot(kind='bar')
+plt.show()
+
+"""
+데이터 탐색과정에서 주요한 변수일 것으로 보였던 변수들의 weight가 실제로 높다.
+예측변수(Churn)와 음의 관계를 가지는 변수들 : 해지 가능성이 그 변수에 따라 줄어든다는 의미
+    - Contract_Two year은 해지가능성을 낮춥니다.
+    - trnure가 길수록 충성고객의 churn은 낮아진다. tenure가 아주 긴 유저들의 churn이 낮은 것이 이렇게 나타난 것으로 보인다.
+    - 인터넷 서비스를 사용하지 않는 것은 고객의 churn을 줄인다.
+예측변수(Churn)와 양의 관계를 가지는 변수들 : 해지가능성이 그 변수에 따라 증가한다는 의미
+    - TotalCharges, Fiber optic 인터넷 서비스 사용과 월단위 계약, Electronic Check를 사용하는 고객일수록 churn이 높아진다.
+통신사 관계자나 통신요금관련 도메인 지식이 풍부한 사람은 더 깊이있는 이해와 해석이 가능할 것이다.
+"""
+
+## 다른 알고리즘을 사용하여 예측해보기(RandomForest)
+from sklearn.ensemble import RandomForestClassifier
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=101)
+model_rf = RandomForestClassifier(n_estimators=1000, oob_score=True, n_jobs=-1, random_state=50, max_features='auto', max_leaf_nodes=30)
+model_rf.fit(X_train, y_train)
+
+# 예측해보기
+prediction_test = model_rf.predict(X_test)
+print(metrics.accuracy_score(y_test, prediction_test))      # 정확도 : 0.8159203980099502 로 LogisticRegression 보다 더 정확하다고 볼 수 있다.
+
+importances = model_rf.feature_importances_
+weights = pd.Series(importances, index=X.columns.values)
+plt.rcParams['figure.figsize'] = (18, 4)
+weights.sort_values(ascending=False).plot(kind='bar')
+plt.show()
+"""
+random forest 알고리즘에서 monthly contract, tenure, total charges가 churn을 예측하는 가장 주요한 변수로 보인다.
+logistic regression의 결과와 EDA 결과와 매우 유사하다.
+"""
+
+# 적용 방안 예시
+"""
+- 중요도가 높은 변수를 활용한 마케팅 전략을 수립
+    계약 조건을 변경 : 2년 장기계약을 최대한 유도하되 요금제가 과다하지 않도록
+    폰 보조금을 많이 지급해서 CAC가 높아지더라도 장기적으로 유지하여 LTV를 높인다면 통신사에게 더 유리함
+    Fiber optic을 사용할수록 해지확률이 높아지는데, 그 이유 탐색.
+    그 외
+- 매달 고객별 churn을 예측하여 churn할 것으로 예측되는 고객들을 대상으로 선행적 조치
+    - 예 : 새 기기로 교체해주고 보조금을 지급한 뒤 2년 계약하는 쪽으로 유도하는 마케팅 전화
+
+이 이후 다른 모델을 적용하여 정확도를 더 높여본다.
+ex) SVM, ADA Boost(AdaBoost Algorithm), XG Boost 등
+Confusion matrix, AUC, ROC 등도 함께 봐야 한다.
+"""
+
+
