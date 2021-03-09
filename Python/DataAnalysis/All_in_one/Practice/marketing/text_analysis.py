@@ -80,21 +80,40 @@ noun_doc = noun_doc.strip()
 # 워드클라우드 시각화
 from wordcloud import WordCloud, ImageColorGenerator
 import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
 
 from matplotlib import rc       # 왜 한글이 깨지는가?
-rc('font', family = 'Malgun Gothic')
+
+# 설치된 나눔글꼴 중 원하는 글꼴의 전체 경로를 가져온다.
+path = 'C:\\Users\\user\\AppData\\Local\\Microsoft\\Windows\\Fonts\\NanumSquareRoundEB.ttf'
+font_name = fm.FontProperties(fname=path, size=14).get_name()
+print(font_name)
+plt.rc('font', family=font_name)
+
+# fm._rebuild() 를 해주어야 적용된다.
+fm._rebuild()
+
+# 코드 전체 폰트 설정
+plt.rcParams['font.family'] = 'NanumSquareRound'
+plt.rcParams['font.size'] = 14
+plt.rcParams['figure.figsize'] = (12, 8)
+
+
+#plt.rcParams['font.family'] = 'Malgun Gothic'
+
+# rc('font', family = 'Malgun Gothic')
 
 #워드클라우드 파라미터 설정
-# font_path="Malgun Gothic"  #폰트
+font_path="NanumSquareRound"  #폰트
 background_color="white"      #배경색
 margin=3                     #모서리 여백 넓이
 min_font_size=7              #최소 글자 크기
 max_font_size=150             #최대 글자 크기
 width=500                     #이미지 가로 크기
 height=500                    #이미지 세로 크기
-wc = WordCloud( background_color=background_color, margin=margin, \
+wc = WordCloud(font_path=font_path, background_color=background_color, margin=margin, \
                min_font_size=min_font_size, max_font_size=max_font_size, width=width, height=height)        # font_path=font_path,
-wc.generate(noun_doc)
+wc.generate(noun_doc)           # cannot open resource
 
 plt.figure(figsize=(10, 10))
 plt.imshow(wc, interpolation="bilinear")
