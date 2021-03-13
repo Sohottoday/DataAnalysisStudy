@@ -49,7 +49,7 @@ import numpy as np
 
 # read_csv()    parse_dates 에 날짜 형식의 column 을 넣어주면 자동적으로 datetime 형태로 변환시켜준다.
 
-df_order = pd.read_csv('olist_orders_dataset.csv', parse_dates=['order_approved_at', 'order_delivered_carrier_date', 'order_delivered_customer_date', 'order_estimated_delivery_date'])
+df_order = pd.read_csv('olist_orders_dataset.csv', parse_dates=['order_purchase_timestamp', 'order_approved_at', 'order_delivered_carrier_date', 'order_delivered_customer_date', 'order_estimated_delivery_date'])
 
 
 df_order_item = pd.read_csv('olist_order_items_dataset.csv', parse_dates=['shipping_limit_date'])
@@ -158,3 +158,134 @@ plt.show()
 
 # 요약 정보
 print(df_order_clean.describe(exclude=[np.object]))
+
+
+# olist_orders_dataset 테이블에 새로운 정보 추가
+"""
+    - order_purchase_timestamp : 구매 시작 날짜/시간
+    - order_approved_at : 결제 완료 날짜/시간
+    - order_delivered_customer_date : 실제 고객한테 배달완료된 날짜/시간
+    - order_estimated_delivery_date : 시스템에서 고객에게 표시되는 예상배달날짜
+    - order_approved_at - order_purchase_timestamp : pay_read_time(단위: 분)
+    - order_delivered_customer_date - order_approved_at : delivery_lead_time(단위: 일)
+    - order_estimated_delivery_date - order_delivered_customer_date : estimated_date_miss(단위: 일)
+"""
+print('-' * 30)
+print(df_order_clean.info())
+
+# 결제리드타임
+df_order_clean['pay_lead_time'] = df_order_clean['order_approved_at'] - df_order_clean['order_purchase_timestamp']
+print(df_order_clean['pay_lead_time'])
+
+# 추후 계산을 용이하게 하기 위해 분 단위로 변경(pandas의 timedelta)
+df_order_clean['pay_lead_time_m'] = df_order_clean['pay_lead_time'].astype('timedelta64[m]')
+print(df_order_clean['pay_lead_time_m'])
+
+# 배달 리드타임 - 일 단위
+df_order_clean['delivery_lead_time'] = df_order_clean['order_delivered_customer_date'] - df_order_clean['order_approved_at']
+df_order_clean['delivery_lead_time_D'] = df_order_clean['delivery_lead_time'].astype('timedelta64[D]')
+df_order_clean['delivery_lead_time_D']
+
+# 예상날짜 틀린정도 - 일 단위
+df_order_clean['estimated_date_miss'] = df_order_clean['order_estimated_delivery_date'] - df_order_clean['order_delivered_customer_date']
+df_order_clean['estimated_date_miss_D'] = df_order_clean['estimated_date_miss'].astype('timedelta64[D]')
+df_order_clean['estimated_date_miss_D']
+
+# 세 컬럼 모두 정수로 바꿔준다.
+df_order_clean['pay_lead_time_m'] = df_order_clean['pay_lead_time_m'].astype(int)
+df_order_clean['delivery_lead_time_D'] = df_order_clean['delivery_lead_time_D'].astype(int)
+df_order_clean['estimated_date_miss_D'] = df_order_clean['estimated_date_miss_D'].astype(int)
+
+# 히스토그램 출력
+
+plt.subplot(1, 3, 1)
+#plt.figure(figsize=(12, 6))
+sns.distplot(df_order_clean['pay_lead_time_m'])
+plt.title('pay_lead_time(분)')
+
+plt.subplot(1, 3, 2)
+sns.distplot(df_order_clean['delivery_lead_time_D'])
+plt.title('delivery_lead_time_D')
+
+plt.subplot(1, 3, 3)
+sns.distplot(df_order_clean['estimated_date_miss'])
+plt.title('estimated_date_miss_D')
+
+plt.show()
+
+"""
+- pay_lead_time의 경우, 오른쪽으로 치우친 형태를 띄고 있는 것으로 볼 때, 다소 큰 양(+)의 값들이 포진해있다고 생각해 볼 수 있다.
+- delivery_lead_time의 경우, 오른쪽으로 치우친 형태를 띄고 있는 것으로 볼 때, 다소 큰 양(+)의 값들이 포진해있다고 생각해볼 수 있다.
+- estimated_date_miss의 경우, 양(+)의 값들과 음(-)의 값들이 모두 포진해 있다.
+"""
+
+# 새로 추가한 컬럼들의 요약 정보
+print(df_order_clean[['pay_lead_time_m', 'delivery_lead_time_D', 'estimated_date_miss_D']].describe())
+## pay_lead_time의 경우, 중앙값은 20인데, 평균값을 616이므로 매우 큰 수치의 값들이 함께 있다고 생각할 수 있다.
+## 이 외에도 수치를 보면 잘못된 정보들이 있다는 것을 알 수 있다.
+
+# 이상한 데이터 확인
+# print(df_order_clean[df_order_clean['pay_lead_time_m']==44486])
+# print(df_order_clean[df_order_clean['delivery_lead_time_D']==208])
+# print(df_order_clean[df_order_clean['destimated_date_miss_D']==146])
+print(df_order_clean[df_order_clean['delivery_lead_time_D']==-7])
+
+# 이러한 이상한 정보들을 더 살펴보기 위한 boxplot을 그려본다.
+
+# boxplot을 위한 input format
+df_order_time = df_order_clean[['pay_lead_time_m', 'delivery_lead_time_D', 'estimated_date_miss_D']]
+
+# boxplot 출력
+## 분단위, 일단위 등으로 다르게 설정되어 있기 때문에 하나씩 봐야한다.
+
+plt.subplot(1, 3, 1)
+sns.boxplot(data=df_order_time['pay_lead_time_m'], color='red')
+
+plt.subplot(1, 3, 2)
+sns.boxplot(data=df_order_time['delivery_lead_time_D'], color='blue')
+
+plt.subplot(1, 3, 3)
+sns.boxplot(data=df_order_time['estimated_date_miss_D'], color='green')
+
+plt.show()
+
+# 이상치(outlier) 검출
+def outliers_iqr(data):
+    q1, q3 = np.percentile(data, [25, 75])      # percentile : 값을 퍼센트로 표시해 주는 함수.
+    iqr = q3 - q1
+    lower_bound = q1 - (iqr * 1.5)
+    upper_bound = q3 + (iqr * 1.5)
+
+    return np.where((data > upper_bound) | (data < lower_bound))        # where : 배열의 요소값이 특정 조건에 만족하는 값을 반환하는 함수, 인덱스(위치) 값을 반환한다.
+
+# 이상치 수
+print(outliers_iqr(df_order_time['pay_lead_time_m']))
+print(outliers_iqr(df_order_time['pay_lead_time_m'])[0].shape[0])
+print(outliers_iqr(df_order_time['delivery_lead_time_D'])[0].shape[0])
+print(outliers_iqr(df_order_time['estimated_date_miss_D'])[0].shape[0])
+
+# 세 컬럼의 이상치 row 인덱스 출력
+pay_lead_outlier_index = outliers_iqr(df_order_time['pay_lead_time_m'])[0]
+del_lead_outlier_index = outliers_iqr(df_order_time['delivery_lead_time_D'])[0]
+est_lead_outlier_index = outliers_iqr(df_order_time['estimated_date_miss_D'])[0]
+
+# 이상치에 해당되는 값 출력
+print(df_order_time.loc[pay_lead_outlier_index, 'pay_lead_time_m'])
+
+# 이상치 제거
+# numpy concat을 통한 array 배열 합치기
+lead_outlier_index = np.concatenate((pay_lead_outlier_index, del_lead_outlier_index, est_lead_outlier_index), axis=None)
+
+# for문을 이용해 이상치가 아닌 리드타임 값의 인덱스를 추려준다.
+lead_not_outlier_index = []
+
+for i in df_order_time.index:
+    # lead_outlier_index에 포함되지 않는다면 추가
+    if i not in lead_outlier_index:
+        lead_not_outlier_index.append(i)
+
+df_order_time_clean = df_order_time.loc[lead_not_outlier_index]
+df_order_time_clean = df_order_time_clean.reset_index(drop=True)
+
+# 클렌징한 df의 요약정보
+print(df_order_time_clean.describe())
