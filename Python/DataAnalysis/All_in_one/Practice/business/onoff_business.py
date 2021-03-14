@@ -289,3 +289,58 @@ df_order_time_clean = df_order_time_clean.reset_index(drop=True)
 
 # 클렌징한 df의 요약정보
 print(df_order_time_clean.describe())
+
+
+# olist_customer_dataset 데이터 살펴보기(상품을 주문한 고객들은 어떤 고객들인지)
+print(df_cust.info())
+
+# states별 고객 수
+cust_stat = pd.DataFrame(df_cust['customer_state'].value_counts()).reset_index()
+cust_stat.columns = ['states', 'people_lives']
+
+# states별 고객 수 시각화
+sns.barplot(x='states', y='people_lives', data=cust_stat)
+plt.show()
+
+# 도시 별 고객 비율(퍼센트)
+df_cust['customer_city'].value_counts(normalize=True) * 100       # normalize 를 True로 주면 비율로 나타내준다. 100을 곱해주는 이유는 퍼센트로 나타내기 위함.
+
+# 상위 10개 출력
+df_customer_city = pd.DataFrame(df_cust['customer_city'].value_counts(normalize=True) * 100).reset_index()
+df_customer_city.columns = ['city', 'people_lives_perc']
+
+print(df_customer_city.loc[:10, :])
+
+# pie chart로 나타내보기
+labels = df_customer_city['city'].values[:10]
+sizes = df_customer_city['people_lives_perc'].values[:10]
+
+explode = (0.1, 0.1, 0, 0, 0, 0, 0, 0, 0, 0)
+
+fig1, ax1 = plt.subplots()
+ax1.pie(sizes, labels=labels, explode=explode, autopct='%1.1f%%', shadow=True, startangle=30, textprops={'fontsize':16})
+ax1.axis('equal')
+
+plt.tight_layout()
+plt.title('도시별 고객이 살고 있는 비율', fontsize=20)
+plt.show()
+
+
+# olist_order_items_dataset : 실제 주문한 상품들 데이터 확인
+print(df_order_item.info())
+
+# 결측치 존재 확인
+print(df_order_item.isnull().sum())
+
+# item_id를 제일 많이 갖고 있는 order_id 출력
+temp = pd.DataFrame(df_order_item.groupby(by=['order_id'])['order_item_id'].count().reset_index())
+temp.columns = ['order_id', 'order_item 수']
+temp[temp['order_item 수'] == temp['order_item 수'].max()]
+
+"""
+# 위 결과로 알 수 있는 점
+- order_item_id 컬럼의 뜻은 하나의 주문(order_id)에서 구매한 상품들의 수르 뜻한다.(종류 상관 x)
+- 위 결과의 order_item_id 1번인 상품과 2번, 12번 상품의 price는 1.2로 같지만, 21번 상품은 7.8로 다른 것을 볼 때, price 컬럼은 '상품 단가'를 의미한다고 생각해 볼 수 있다.(위 결과에서 총 삼품 종류는 3가지)
+- 하나의 주문번호에서 '상품별 매출액'을 산출해내기 위해서는 각 상품들의 '구매수량' 컬럼을 추가해줘야 한다.(상품단가 * 구매수량 = 상품별 매출액)
+
+"""
