@@ -342,5 +342,28 @@ temp[temp['order_item 수'] == temp['order_item 수'].max()]
 - order_item_id 컬럼의 뜻은 하나의 주문(order_id)에서 구매한 상품들의 수르 뜻한다.(종류 상관 x)
 - 위 결과의 order_item_id 1번인 상품과 2번, 12번 상품의 price는 1.2로 같지만, 21번 상품은 7.8로 다른 것을 볼 때, price 컬럼은 '상품 단가'를 의미한다고 생각해 볼 수 있다.(위 결과에서 총 삼품 종류는 3가지)
 - 하나의 주문번호에서 '상품별 매출액'을 산출해내기 위해서는 각 상품들의 '구매수량' 컬럼을 추가해줘야 한다.(상품단가 * 구매수량 = 상품별 매출액)
-
 """
+
+# 주문한 상품 수량 : order_prod_quantity 컬럼을 만든다.
+df_qt = pd.DataFrame(df_order_item.groupby(by=['order_id', 'product_id'])['order_item_id'].count().reset_index())
+
+# 컬럼 명 변경
+df_qt.columns = ['order_id', 'product_id', 'order_prod_quantity']
+
+
+# 상품 별 주문수량을 추가해주기 위한 merge
+
+df_order_item_col = ['order_id', 'product_id', 'seller_id', 'shipping_limit_date', 'price', 'freight_value']
+
+# merge
+df_order_item = pd.merge(df_order_item[df_order_item_col], df_qt, how='inner', on=['order_id', 'product_id'])
+
+# 컬럼 순서 재배치
+df_order_item = df_order_item[['order_id', 'product_id', 'price', 'freight_value', 'order_prod_quantity', 'shipping_limit_date', 'seller_id']]
+# 이럴 경우 조인할 때 데이터프레임의 shape를 그대로 가져오기 때문에 row 중복이 발생한다.
+## 발생됨 row 중복 제거 방법 : drop_duplicates
+
+df_order_item.drop_duplicates(inplace=True)
+df_order_item.reset_index(drop=True, inplace=True)
+
+
