@@ -367,3 +367,32 @@ df_order_item.drop_duplicates(inplace=True)
 df_order_item.reset_index(drop=True, inplace=True)
 
 
+# 주문(order_id)내 상품 별 매출액 계산
+df_order_item['order_amount'] = df_order_item['price'] * df_order_item['order_prod_quantity']
+df_order_item.reset_index(drop=True, inplace=True)
+
+# 실제 어떤 상품들이 구매되었는지 확인
+"""
+# 실제 주문 내역 테이블을 기준으로 상품 정보 매칭
+- olist_order_items_dataset
+- olist_products_dataset
+- product_category_name_translation
+"""
+
+# columns 확인
+print(df_product.columns)
+
+print(df_product.isnull().sum())
+## product_category_name이 포르투갈 어로 적혀있기 때문에 영어 명칭 테이블과 매칭시켜 준다.
+## merge를 활용하여 병합
+
+df_product_cat = pd.merge(df_product, df_category, how='left', on=['product_category_name'])
+
+# 컬럼 순서 재배치
+df_product_cat = df_product_cat[['product_id', 'product_category_name', 'product_category_name_english', 'product_name_lenght', 'product_description_lenght',
+'product_photos_qty', 'product_weight_g', 'product_length_cm', 'product_height_cm', 'product_width_cm']]
+
+# 다시 결측치 확인
+print(df_product_cat.isnull().sum())
+
+
