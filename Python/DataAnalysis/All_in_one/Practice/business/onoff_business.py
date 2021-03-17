@@ -396,3 +396,55 @@ df_product_cat = df_product_cat[['product_id', 'product_category_name', 'product
 print(df_product_cat.isnull().sum())
 
 
+# df_order_item을 기준으로 merge
+df_order_item_prod = pd.merge(df_order_item, df_product_cat, how='left', on=['product_id'])
+
+print(df_order_item_prod.describe())
+print(df_order_item_prod.isnull().sum())
+
+# 모든 컬럼을 기준으로 null값이 존재하는 row 출력
+print(df_order_item_prod[df_order_item_prod.isnull().any(axis=1)])
+
+# 모든 결측치를 포함한 row를 drop한다.
+df_order_item_prod_clean = df_order_item_prod.dropna(axis=0)
+df_order_item_prod_clean.reset_index(drop=True, inplace=True)
+
+print(df_order_item_prod_clean.shape)
+print(df_order_item_prod_clean.isnull().sum())
+
+# 상품 카테고리 별 정보를 살펴보자
+
+"""
+전체 평균값과 비교하며 카테고리별로 살펴본다.
+- 상품 카테고리 별 평균 제목/설명 길이, 사진 수
+- 상품 카테고리 별 상품의 평균 무게/길이/높이/너비
+"""
+
+# pandas 소수점 출력 설정 : 소수점 2째자리
+pd.options.display.float_format = '{:.2f}'.format
+
+# 상위 10개만 확인
+cat_top10 = df_order_item_prod_clean['product_category_name_english'].value_counts()[:10]
+
+# 상품 카테고리가 cat_top10의 값에 포함되는 row만 출력하기 (pandas의 isin 사용)
+## isin : 조건에 해당되는 값을 반환
+
+df_cat_10 = df_order_item_prod_clean[df_order_item_prod_clean['product_category_name_english'].isin(cat_top10.index)].reset_index(drop=True)
+
+# 상위 10개의 카테고리별 정보 - 상품등록정보
+cat_info1_col = ['product_name_lenght', 'product_description_lenght', 'product_photos_qty']
+
+print(df_cat_10.groupby('product_category_name_english')[cat_info1_col].mean())
+
+print(df_cat_10[cat_info1_col].describe())
+
+# 카테고리별 정보2 확인
+cat_info2_col = ['product_weight_g', 'product_length_cm', 'product_height_cm', 'product_width_cm']
+print(df_cat_10.groupby('product_category_name_english')[cat_info2_col].mean())
+print(df_cat_10[cat_info2_col].describe())
+
+
+# 2016년부터 2018년까지 어떤 상품 카테고리가 많은 매출을 기록하고 있는지 확인해보자
+
+# 상품 카테고리 종류 수
+print('상품 카테고리 종류 수 : {} 종류'.format(len(df_order_item_prod_clean['product_category_name_english'].unique())))
