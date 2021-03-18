@@ -448,3 +448,69 @@ print(df_cat_10[cat_info2_col].describe())
 
 # 상품 카테고리 종류 수
 print('상품 카테고리 종류 수 : {} 종류'.format(len(df_order_item_prod_clean['product_category_name_english'].unique())))
+
+# 매출액 기준 상품 카테고리
+temp = pd.DataFrame(df_order_item_prod_clean.groupby(by=['product_category_name_english'])['order_amount'].sum())
+
+# 매출액 높은 순으로 정렬
+temp = temp.sort_values(by='order_amount', ascending=False)
+print(temp)
+
+
+# squarify 를 활용해 트리맵으로 나타내기
+import squarify
+
+plt.figure(figsize=(12, 10))
+squarify.plot(sizes=temp['order_amount'][:10], label=temp.index.values[:10], alpha=.7)
+plt.show()
+## 가장 높은 매출액을 보이는 상품 카테고리는 'health_beauty'이다.
+
+
+# 상품 카테고리별 주문 수와 매출액의 관계 알아보기
+# 카테고리별 주문수 확인
+df_cat_order_cnt = pd.DataFrame(df_order_item_prod_clean['product_category_name_english'].value_counts())
+df_cat_order_cnt = df_cat_order_cnt.reset_index()
+df_cat_order_cnt.columns = ['category', 'order_cnt']
+print(df_cat_order_cnt)
+
+# 카테고리별 매출액 순
+df_cat_amount = pd.DataFrame(df_order_item_prod_clean.groupby(by=['product_category_name_english'])['order_amount'].sum())
+df_cat_amount = df_cat_amount.sort_values(by='order_amount',ascending=False)
+df_cat_amount = df_cat_amount.reset_index()
+df_cat_amount.columns = ['category', 'order_amount']
+print(df_cat_amount)
+
+# 두 테이블을 비교해주기 위해 스케일을 맞춰준다.
+# 카테고리별 주문 비율
+
+df_cat_order_cnt['order_cnt_perc'] = (df_cat_order_cnt['order_cnt'] / sum(df_cat_order_cnt['order_cnt']))*100
+
+# 카테고리별 매출 비율
+
+df_cat_amount['order_amount_perc'] = (df_cat_amount['order_amount'] / sum(df_cat_amount['order_amount']))*100
+
+# 카테고리별 주문수와 매출액 테이블 결합
+
+df_cat = pd.merge(df_cat_order_cnt, df_cat_amount,
+        how='inner', on='category')
+
+# 상위 10개 추출
+df_cat = df_cat.sort_values(by='order_amount', ascending=False)
+df_cat = df_cat.reset_index(drop=True)
+print(df_cat)
+
+# pandas의 melt 를 활용하여 x축과 y축에 들어갈 수 있는 데이터로 변환
+df_cat_melt = pd.melt(df_cat[:10], id_vars=['category'], value_vars=['order_cnt_perc', 'order_amount_perc'])
+print(df_cat_melt)
+
+# barplot으로 시각화
+plt.figure(figsize=(12, 10))
+ax = sns.barplot(data=df_cat_melt, x='category', y='value', hue='variable', color='salmon')
+ax.set_xticklabels(ax.get_xticklabels(), rotation=30)
+plt.show()
+
+"""
+매출액이 가장 높은 health_beauty의 경우, 주문수도 함께 많은 것을 알 수 있습니다. 
+watches_gifts는 주문수는 상대적으로 많은 편이 아니지만, 전체 매출에서 두번째로 높은 모습을 보이고 있는 것으로 볼 때, 
+시계와 같이 객당 단가가 높은 상품이 포함된 카테고리의 특징으로 생각해볼 수 있습니다.
+"""
