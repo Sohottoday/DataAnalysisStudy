@@ -514,3 +514,94 @@ plt.show()
 watches_gifts는 주문수는 상대적으로 많은 편이 아니지만, 전체 매출에서 두번째로 높은 모습을 보이고 있는 것으로 볼 때, 
 시계와 같이 객당 단가가 높은 상품이 포함된 카테고리의 특징으로 생각해볼 수 있습니다.
 """
+
+# 카테고리에 따른 월별 매출액 확인해보기
+"""
+현재 df_order_item_prod_clean 테이블에는 구매가 발생한 상세월에 대한 정보가 없다.
+따라서, 이러한 정보를 포함하고 있는 order_df 테이블과 함께 추출해야 한다.
+
+집계 기준
+ - 매출이 발생한 시점은 'order_approved_at'을 기준으로 한다.
+ - 'order_status'가 'delivered'된 값만 집계한다.
+
+활용 테이블
+ - df_order_clean
+ - df_order_item_prod_clean
+"""
+# for문을 이용해서 날짜데이터를 string으로 변환후 원하는 포맷으로 출력하기
+
+# # row가 많아 시간이 조금 걸릴 수 있습니다.
+# # date.strftime(format) : 지정된 포맷에 맞춰 date 객체의 정보를 문자열로 반환합니다.
+
+# for i in range(len(df_order_clean)):
+    
+#     # i번째 'date'칼럼에 원하는 값 지정
+#     date = df_order_clean['order_approved_at'][i].strftime('%Y%m')
+#     df_order_clean.loc[ i, 'order_date'] = date
+    
+# df_order_clean['order_date']
+
+
+# apply lambda를 이용해 날짜데이터를 string으로 변환 후 원하는 포맷으로 출력하기
+
+# strftime('%Y%m')
+df_order_clean['order_date'] = df_order_clean['order_approved_at'].apply(lambda x : x.strftime('%Y%m'))
+## for문을 적용한 것 보다 빠르다.
+
+# 두 테이블을 merge한다.
+df_order_tmp = pd.merge(df_order_clean, df_order_item_prod_clean, how='inner', on=['order_id'])
+
+# 결합한 데이터 결측치 확인
+print(df_order_tmp.isnull().sum())
+
+# pivot_table을 통해 상품카테고리들의 연월별 평균 매출액 출력
+df_order_pivot = df_order_tmp.pivot_table(values='order_amount', index='product_category_name_english', columns='order_date', aggfunc='mean')
+## order_maount : 매출액
+print(df_order_pivot)
+
+# 2016년부터 2018년까지 전체 매출이 가장 높았던 health_beauty 카테고리의 월별 변화량을 시각화
+# health_beauty 카테고리 연월별 평균 매출액 출력
+print(df_order_pivot.loc['health_beauty', :])
+
+# null값이 존재하므로 제거
+df_health_beauty = pd.DataFrame(df_order_pivot.loc['health_beauty', :])
+df_health_beauty = df_health_beauty.reset_index()
+df_health_beauty.columns = ['date', 'health_beauty_amount']
+df_health_beauty.dropna(inplace=True)
+
+# 막대그래프로 시각화
+plt.figure(figsize=(12, 8))
+sns.barplot(data=df_health_beauty, x='date', y='health_beauty_amount', palette='Blues_d')
+plt.xticks(fontsize=14, rotation=30)
+plt.show()
+
+# lineplot으로 시각화
+plt.figure(figsize=(12, 8))
+ax = sns.lineplot(data=df_health_beauty, x='date', y='health_beauty_amount', palette='Blues_d')
+ax.set_xticklabels(ax.get_xticklabels(), rotation=30)
+plt.show()
+
+# olist_order_payments
+## 고객들이 주문결제를 어떻게 했는제, 결제정보가 담긴 테이블 살펴보기
+print(df_order_pay.info())
+print(df_order_pay.describe())
+print(df_order_pay.isnull().sum())
+
+## 정보를 확인해보니 결제수단이 29가지나 되는 경우도 존재하는데 이런 값은 이상하므로 확인해본다.
+# df_order_pay 에서 payment_sequential이 최대값인 order_id 확인
+print(df_order_pay[df_order_pay['payment_sequential']==df_order_pay['payment_sequential'].max()])
+
+print(df_order_pay[df_order_pay['order_id']=='fa65dad1b0e818e3ccc5cb0e39231352'].sort_values(by='payment_sequential'))
+## 결과를 보니 모두 상품권으로 결제하였지만 각기 다른 상품권인걸 예상해 볼 수 있다.
+
+# 결제 방법 별 수 확인
+print(df_order_pay['payment_type'].value_counts())
+
+# 결제방법이 신용카드인 경우 확인
+df_credit = df_order_pay[df_order_pay['payment_type']=='credit_card']
+print(df_credit)
+print(df_credit.describe())
+
+# 고객들이 많이 선택한 결제 방법 별 비율
+print(df_order_pay['payment_type'].value_counts(normalize=True)*100)
+## 신용카드로 많이 결제하는것을 알 수 있다.
