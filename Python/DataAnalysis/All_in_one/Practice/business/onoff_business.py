@@ -605,3 +605,70 @@ print(df_credit.describe())
 # 고객들이 많이 선택한 결제 방법 별 비율
 print(df_order_pay['payment_type'].value_counts(normalize=True)*100)
 ## 신용카드로 많이 결제하는것을 알 수 있다.
+
+# olist_order_reviews
+# 고객들의 리뷰
+
+print(df_order_review.info())
+print(df_order_review.isnull().sum())
+# 사람들이 리뷰 점수는 줘도 제목과 내용은 잘 작성하지 않는것을 알 수 있다.
+
+print(df_order_review.describe())
+
+# 리뷰 점수 별 수
+df_review = pd.DataFrame(df_order_review['review_score'].value_counts())
+df_review.reset_index(inplace=True)
+df_review.columns = ['review_score', 'cnt']
+print(df_review)
+
+# review_score별 비율
+print(df_order_review['review_score'].value_counts(normalize=True)*100)
+
+# review_score 별 비율 시각화 : piechart
+temp = pd.DataFrame(df_order_review['review_score'].value_counts(normalize=True)*100)
+
+labels = temp.index
+sizes = temp['review_score']
+
+explode = (0.1, 0, 0, 0, 0)
+
+plt.pie(sizes, labels=labels, explode=explode, autopct='%1.2f%%', shadow=True, startangle=70, textprops={'fontsize':14})
+plt.axis('equal')
+plt.title('리뷰 점수별 분포 비율', fontsize=20)
+plt.show()
+
+# 고객들이 만족 설문조사 작성까지 보통 얼마나 걸리는지 알아보기
+## review_creation_date : 고객한테 만족 서베이가 보내진 날짜
+## review_answer_timestamp : 만족 서베이가 답변된 시간
+
+# 고객의 리뷰 작성까지 걸리는 시간
+df_order_review['answer_lead_time'] = df_order_review['review_answer_timestamp'] - df_order_review['review_creation_date']
+
+# 걸리는 시간 초 단위로 변환
+# pandas의 total_seconds
+
+df_order_review['answer_lead_time_seconds'] = df_order_review['answer_lead_time'].apply(lambda x : x.total_seconds())
+print(df_order_review['answer_lead_time_seconds'])
+
+plt.figure(figsize=(12,6))
+sns.distplot(df_order_review['answer_lead_time_seconds'])
+plt.show()
+## 값들이 왼쪽으로 몰려있는데 지나치게 큰 이상치가 존재함을 알 수 있다.
+
+# 이상치 boxplot으로 확인
+plt.figure(figsize=(12,8))
+sns.boxplot(data=df_order_review['answer_lead_time_seconds'], color='yellow')
+plt.show()
+
+# answer_lead_time_seconds 이상치 수
+print("이상치 수 : {} 건".format(outliers_iqr(df_order_review['answer_lead_time_seconds'])[0].shape[0]))
+
+# # answer_lead_time_seconds 이상치 출력
+df_order_review.loc[outliers_iqr(df_order_review['answer_lead_time_seconds'])[0],'answer_lead_time_seconds']
+
+# answer_lead_time 이상치 출력
+df_order_review.loc[outliers_iqr(df_order_review['answer_lead_time'])[0],'answer_lead_time'].sort_values(ascending=False)
+## 500일이 넘어서 리뷰가 작성되는 경우도 있다.
+
+
+
