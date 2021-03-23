@@ -671,4 +671,74 @@ df_order_review.loc[outliers_iqr(df_order_review['answer_lead_time'])[0],'answer
 ## 500일이 넘어서 리뷰가 작성되는 경우도 있다.
 
 
+# olist_geolocation_dataset
+## 지리정보 데이터셋
+
+print(df_geo.info())
+print(df_geo.head())
+
+# state별 도시 수 출력
+pd.DataFrame(df_geo.groupby(by=['geolocation_state'])['geolocation_city'].count().sort_values(ascending=False))
+
+# 위도와 경도 정보로 산점도 시각화
+df_geo.plot.scatter(x='geolocation_lng', y='geolocation_lat', figsize=(12, 8), grid=True)
+
+# state별 색상 구분하여 산점도로 시각화
+"""
+plt.figure(figsize=(14, 10))
+ax = sns.scatterplot(data=df_geo, x='geolocation_lng', y='geolocation_lat', hue='geolocation_state')
+plt.setp(ax.get_legend().get_texts(), fontsize='10')
+plt.show()
+"""
+
+# olist_sellers_dataset
+## 셀러 데이터셋
+print(df_seller.info())
+
+# seller의 state별 도시 수
+pd.DataFrame(df_seller.groupby(by=['seller_state'])['seller_city'].count().sort_values(ascending=False))
+
+# 도시 별 셀러 수
+df_seller['seller_city'].value_counts()
+
+# 도시 별 고객 수
+df_cust['customer_city'].value_counts()
+
+# 도시별 고객과 판매자 비율 비교
+df_seller_lives = pd.DataFrame(df_seller['seller_city'].value_counts(normalize=True)*100)
+df_seller_lives.reset_index(inplace=True)
+df_seller_lives.columns = ['city', 'seller_lives']
+
+# customer 데이터
+df_cust_lives = pd.DataFrame(df_cust['customer_city'].value_counts(normalize=True)*100)
+df_cust_lives.reset_index(inplace=True)
+df_cust_lives.columns = ['city', 'customer_lives']
+
+# merge
+df_seller_cust_lives = pd.merge(df_seller_lives, df_cust_lives, how='inner', on=['city'])
+
+# 고객 수가 많은 순서대로 출력
+df_seller_cust_lives = df_seller_cust_lives.sort_values(by='customer_lives', ascending=False)
+df_seller_cust_lives = df_seller_cust_lives.reset_index(drop=True)
+
+# 고객 수가 많은 순서의 도시 상위 10개 출력
+top10 = df_seller_cust_lives[:10]
+print(top10)
+
+# 시각화를 위한 데이터 구조 변환
+top10 = pd.melt(top10, id_vars=['city'], value_vars=['seller_lives', 'customer_lives'])
+
+# 시각화
+plt.figure(figsize=(12, 10))
+ax = sns.barplot(data=top10, x='city', y='value', hue='variable', palette='Blues_d')
+ax.set_xticklabels(ax.get_xticklabels(), rotation=30)
+plt.show()
+
+"""
+구매자와 판매자 모두 상파울루에 제일 많이 거주하고 있지만 판매자 비율이 상대적으로 더 높음을 알 수 있다.
+반면, 리우데자네이루의 경우, 판매자보다 고객의 비율이 더 높은데, 이런 점을 볼 때, 
+상파울루가 다른 도시들에 비해 판매자 비율이 상대적으로 더 높은 이유를 조금 더 찾아보는 것도 의미가 있다.
+"""
+
+# https://datascienceschool.net/intro.html
 
