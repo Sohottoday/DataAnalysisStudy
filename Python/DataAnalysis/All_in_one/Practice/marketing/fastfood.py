@@ -29,13 +29,13 @@ print(df_store.columns)
 print(df_store.info())
 print(df_store.isnull().sum())
 
-plt.figure(figsize=(16, 6))
-sns.heatmap(df_store.isnull(), cbar=False)
-plt.xticks(rotation=45, fontsize=12)
-plt.show()
+# plt.figure(figsize=(16, 6))
+# sns.heatmap(df_store.isnull(), cbar=False)
+# plt.xticks(rotation=45, fontsize=12)
+# plt.show()
 
-msno.matrix(df_store, fontsize=12, figsize=(16, 6))
-plt.show()
+# msno.matrix(df_store, fontsize=12, figsize=(16, 6))
+# plt.show()
 
 # 결측치 처리하기
 """
@@ -81,4 +81,34 @@ ggplot(df_store_jeju)
 + theme(text=element_text(family='NanumSquareRound'))
 )
 """
+
+print(df_store_clean[df_store_clean['상호명'].str.lower().str.contains('맥도날드|mcdonald')])
+print(df_store_clean[df_store_clean['상호명'].str.lower().str.contains('맥도날드|mcdonald')]['상권업종소분류명'].unique())
+
+# 이러한 방식으로 연도별 맥도날드 데이터셋을 모두 가져와 비교 분석을 진행하면 된다.
+
+# 동일한 방식으로 버거킹과 다른 패스트푸드 매장도 비교 분석이 가능하다.
+print(df_store_clean[df_store_clean['상호명'].str.lower().str.contains('버거킹|burgerking')])
+
+print(df_store_clean[df_store_clean['상호명'].str.lower().str.contains('롯데리아|lotteria')])
+
+print(df_store_clean[df_store_clean['상호명'].str.lower().str.contains('맘스터치|momstouch')])
+
+# 패스트푸드 매장들을 하나로 합쳐준다.
+mac = df_store_clean[df_store_clean['상호명'].str.lower().str.contains('맥도날드|mcdonald')]
+bur = df_store_clean[df_store_clean['상호명'].str.lower().str.contains('버거킹|burgerking')]
+lot = df_store_clean[df_store_clean['상호명'].str.lower().str.contains('롯데리아|lotteria')]
+mom = df_store_clean[df_store_clean['상호명'].str.lower().str.contains('맘스터치|momstouch')]
+
+df_fastfood = pd.concat([mac, bur, lot, mom])
+df_fastfood = df_fastfood.reset_index(drop=True)
+print(df_fastfood.shape)
+print(df_fastfood.isnull().sum())
+
+# 브랜드별 매장 수 비교
+print(df_fastfood.groupby(by='상호명').count())
+
+# plt.figure(figsize=(12, 8))
+
+
 
