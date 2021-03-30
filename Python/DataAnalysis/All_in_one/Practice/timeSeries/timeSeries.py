@@ -32,7 +32,7 @@ df.value.plot()
 plt.show()
 
 # 너무 오래된 데이터도 존재해 최신 데이터만 사용
-df_new = df[df.index > '1991-12-31']
+df_new = df[df.index > '1999-12-31']
 
 result = seasonal_decompose(df_new, model='additive', two_sided=False)
 # seasonal_decompose : 
@@ -50,4 +50,30 @@ df_re.head()
 
 plt.figure(figsize=(16, 6))
 plt.plot(df_re.obs)
+plt.plot(df_re.trend)
+plt.plot(df_re.seasonal+df_re.trend)
+plt.legend(['observed', 'trend', 'seasonal+trend'])
+plt.show()
+# 2006년 2007년에는 ordinary한 cycle에서 벗어나는 경향이 있다. (residual 크다. )
+
+# trend
+df_re.trend.pct_change()
+## 트렌드가 얼마나 증가하고 감소했는지 를 표시해준다.
+
+df_re.trend.pct_change().dropna().plot(kind='bar', figsize=(16, 5))
+plt.show()
+
+# 연월이 시분초까지 표현되어 지저분하므로 정리해준다.
+
+ax = df_re.trend.pct_change().dropna().plot(kind='bar', figsize=(16, 5))
+def get_date(date):
+    return (str(date.year) + '-' + str(date.month))
+
+get_date(df_re.index)
+ax.set_xticklabels(list(map(lambda x : get_date(x), df_re.index)))
+plt.show()
+
+# residual : unexpected 값들
+# 연도별로 봤을 경우(평균)
+df_re.groupby('year')['resid'].mean().plot(kind='bar')
 plt.show()
