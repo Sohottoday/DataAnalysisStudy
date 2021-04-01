@@ -131,11 +131,15 @@ print(df.info())
 print(df.isnull().sum())
 
 print(df.head())
-
+print("------------------")
 # 점만 찍혀있는 데이터 제거
-df['DEXKOUS'].replace('.', '', inplace=True)
+df['DEXKOUS'].replace(".", "", inplace=True)
+print(df)
+print("---232323---------------")
 df['DEXKOUS'] = pd.to_numeric(df['DEXKOUS'])        # 숫자 형식으로 바꿔준다.
-df['DEXKOUS'] = df['DEXKOUS'].fillna(method='ffill', inplace=True)
+print(df)
+
+df['DEXKOUS'].fillna(method='ffill', inplace=True)
 # 점만 찍혀있는 값을 빈값으로 바꿔준 뒤 앞에 있는 값으로 채워넣음
 print(df.info())
 print(df.head())
@@ -162,3 +166,45 @@ print(df.rolling(30).std().resample('M').mean())       # 매월 말 기준으로
 
 df.rolling(30).std().resample('M').mean().plot()
 plt.show()
+
+# 안정성 검정(ADF Test)
+"""
+귀무가설 = 안정적이지 않다
+p-value가 0.05보다 작으면 귀무가설 기각. 즉, 안정적인 시계열
+p-value가 0.05보다 크면, 귀무가설 채택. 즉, 불안정한 시계열
+
+- 안정적인 데이터로 변경 : 변화율 / 로그 차분
+"""
+
+print(adfuller(df['DEXKOUS']))
+"""
+출력값이 아래와 같이 나옴
+(-2.6235188039221238, 0.08823317575724848, 0, 1305, {'1%': -3.4353708501743654, '5%': -2.8637572934525286, '10%': -2.56795049999266}, 8358.34690710183)
+
+위의 의미는 
+ADF Statistic : -2.6235188
+p-value : 0.088233175
+Crtical Values ; 1% ~ 
+와 같은 식으로 출력된다.
+아래와 같이 함수로 만들어 출력해본다.
+"""
+def print_adfuller(inputSeries):
+    result = adfuller(inputSeries)
+    print(f'ADF Statistic : {result[0]}')
+    print(f'p-value : {result[1]}')
+    print(f'CriticalValues : ')
+    for key, value in result[4].items():
+        print(f'{key, value}')
+
+print_adfuller(df['DEXKOUS'])
+
+print(adfuller(df.DEXKOUS.pct_change().dropna()))
+print_adfuller(df.DEXKOUS.pct_change().dropna())
+
+print(df.DEXKOUS.pct_change().dropna())
+
+# 안정적인 데이터로 변환하기 위해 '변화율/로그 차분'을 해준다
+# 이를 위해 데이터를 한칸씩 뒤로 밀어주는 shift(1) 을 사용한다.
+
+(df.DEXKOUS / df.DEXKOUS.shift(1) - 1).dropna()        # 이 값이 df.DEXKOUS.pct_change().dropna() 이 값과 같다.
+
