@@ -116,3 +116,57 @@ print(r_a_d_US)
 
 r_a_d_KR = (1+r_a_KR)**(1/p_KR.shape[0])-1
 print(r_a_d_KR)
+
+# 포트폴리오 Returns
+## 전체 포트폴리오 수익 : weights를 0.25, 0.25 0.25, 0.25로 투자한 경우를 가정
+weights = np.array([0.25, 0.25, 0.25, 0.25])
+
+port_return_US = np.dot(weights, r_a_d_US)
+port_return_KR = np.dot(weights, r_a_d_KR)
+
+print(port_return_US)
+print(port_return_KR)
+
+# 포트폴리오 Risk
+## 
+covar_US = r_US.cov() * 252
+covar_KR = r_KR.cov() * 252
+
+sns.heatmap(covar_US, cmap='PuBuGn')
+plt.show()
+## 넷플릭스와 페이스북의 리스크가 가장 크다
+## 넷플릭스는 페이스북과 궁합이 잘 맞고 아마존은 페이스북과 궁합이 잘 맞는다
+## 등 위와 같은 인사이트를 도출할 수 있따.
+
+sns.heatmap(covar_KR, cmap='PuBuGn')
+plt.show()
+
+port_risk_US = np.dot(weights.T, np.dot(covar_US, weights))
+port_risk_KR = np.dot(weights.T, np.dot(covar_KR, weights))
+
+print(port_risk_US)
+print(port_risk_KR)
+## 리스크는 국내 투자가 조금 더 낮다.
+
+# Sharpe ratio
+rf = 0.02       # 미국 안전자산의 수익률(적금 등)
+port_sr_US = (port_return_US - rf) / port_risk_US
+port_sr_KR = (port_return_KR - rf) / port_risk_KR
+
+print(port_sr_US)
+print(port_sr_KR)
+# 단위 리스크당 수익은 US 투자가 더 크다.
+
+# 시각화
+## 시각화를 위해 
+
+result = np.array([[port_return_KR, port_return_US], [port_risk_KR, port_risk_US], [port_sr_KR, port_sr_US]])
+result = np.round(result, 3)        # 소수점 3자리로 자른다.
+
+result = pd.DataFrame(result)
+result.columns = ['KR', 'US']
+result.index = ['Return', 'Risk', 'Sharpe Ratio']
+print(result)
+
+result.plot(kind='bar')
+plt.show()
