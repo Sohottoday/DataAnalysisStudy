@@ -46,6 +46,7 @@ import numpy as np
 import yfinance as yf       # 금융정보를 가져올 수 있는 라이브러리
 import matplotlib.pyplot as plt
 import seaborn as sns
+from scipy.optimize import minimize 
 
 """
 # 종목코드 예시
@@ -243,3 +244,77 @@ Boundary(경계)
     X1, X2는 음의 값을 가질 수 없다.
     식 : X1, X2 >=0
 """
+
+# 최적화 문제 정의
+"""
+목적함수 : Sharpe ratio(max), Risk(min)
+선택변수 : weights
+제약(constraint) : 모든 weights의 합은 1
+한계(boundary) : 각 weight는 0과 1 사이
+"""
+
+# 포트폴리오 최적화 : 세가지 점을 구해봄
+## 포트폴리오 리스크 최소
+## Sharpe 지수 최대
+## 효율적 투자점 : 목표 수익을 달성하기 위한 최소 risk를 가질 수 있는 포트폴리오
+
+# minimize(목적함수, w0, constraints = , bounds=)
+
+# 목적함수 정의
+## 먼저 weights를 넣으면, return, risk, sharpe ratio를 return하는 함수를 정의 => 목적함수 정의
+def get_stats(weights):
+    r_a = (p_KR.iloc[-1] + d_KR.sum()) / p_KR.iloc[0] - 1
+    port_return = np.dot(weights, r_a)
+    covar_KR = (p_KR / p_KR.shift() - 1).cov() * 252
+    port_risk = np.dot(weights.T, np.dot(covar_KR, weights))
+    port_sharpe = port_return / port_risk
+    return [port_return, port_risk, port_sharpe]
+
+print(get_stats(weights))
+
+def objective_return(weights):
+    return -get_stats(weights)[0]
+
+def objective_risk(weights):
+    return get_stats(weights)[1]
+
+def objective_sharpe(weights):
+    return -get_stats(weights)[2]
+
+# w0 정의
+w0 = np.ones(len(Tech_KR)) / len(Tech_KR)
+
+# constraints
+constraints = {'type':'eq', 'fun':lambda x : np.sum(x)-1}
+
+# bounds
+bound = (0, 1)
+bounds = tuple(bound for ii in range(len(Tech_KR)))
+
+# 최적화 1. Risk 최소
+opt_risk = minimize(objective_risk, w0, constraints=constraints, bounds=bounds)
+print(minimize(objective_risk, w0, constraints=constraints, bounds=bounds))
+"""
+     fun: 0.06469435580685386                                           # minimize된 리스크가 0.06 이라는 의미
+     jac: array([0.12929158, 0.1303496 , 0.12956896, 0.12950648])       
+ message: 'Optimization terminated successfully.'
+    nfev: 54
+     nit: 9
+    njev: 9
+  status: 0
+ success: True
+       x: array([5.98590012e-01, 1.95156391e-18, 1.73924053e-01, 2.27485935e-01])       # 리스크가 최소화된 값(삼성, sk하이닉스, 네이버, 카카오 순)
+"""
+# 따라서 opt_risk['fun'] : 최적화된 리스크, opt_risk['x'] : 최적화된 때의 weights(포트폴리오)  이런 방식으로 출력한다.
+
+# 최적화 2. Sharpe ratio 최대
+opt_sharpe = minimize(objective_sharpe, w0, constraints=constraints, bounds=bounds)
+print(-opt_sharpe['fun'])       # 최적화된 shapre ratio
+print(opt_sharpe['x'])          # 그때의 weights(포트폴리오)
+
+# 이러한 것들을 portfolio.py 의 내용처럼 scatter 그래프로 출력하면 시각화 할 수 있다.
+# Ch04.주식종목 분석 및 포트폴리오 구성하기 - 05.(실습) 최적의 포트폴리오 도출하기.ipynb 참조
+
+
+
+
