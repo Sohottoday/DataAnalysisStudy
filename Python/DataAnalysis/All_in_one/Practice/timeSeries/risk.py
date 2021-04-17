@@ -315,6 +315,35 @@ print(opt_sharpe['x'])          # 그때의 weights(포트폴리오)
 # 이러한 것들을 portfolio.py 의 내용처럼 scatter 그래프로 출력하면 시각화 할 수 있다.
 # Ch04.주식종목 분석 및 포트폴리오 구성하기 - 05.(실습) 최적의 포트폴리오 도출하기.ipynb 참조
 
+# 효율적 투자점 : 목표 수익을 달성하기 위한 최소 risk를 가질 수 있는 포트폴리오
+target_returns = np.linspace(0.14, 0.23, 50)
 
+target_risks = []
+target_port = {}
 
+for target_return in target_returns:
+    constraints=({'type':'eq', 'fun':lambda x : np.sum(x)-1}, {'type':'eq', 'fun':lambda x : get_stats(x)[0]-target_return})
+    opt_target=minimize(objective_risk, w0, constraints=constraints, bounds=bounds)
+    target_risks.append(opt_target['fun'])
+    target_port[target_return]=opt_target['x']
+
+target_risks = np.array(target_risks)
+
+print(target_risks)
+w = pd.DataFrame(target_port.values())
+w.columns = ['SS', 'SKH', 'NVR', 'KKO']
+w.index = target_returns.round(3)
+## 왼쪽에 있는 수익률을 달성하기 위한 best portfolio
+
+w.plot(figsize=(12, 6), kind='bar', stacked=True)
+plt.show()
+
+"""
+plt.scatter(port_risks, port_returns, c=port_returns/port_risks)
+plt.colorbar(label='Sharpe ratio')
+plt.xlabel('expected_risk')
+plt.ylabel('expected_return')
+plt.grid(True)
+plt.show()
+"""
 
